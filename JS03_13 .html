@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QUÁN PHỞ CỒ NAM ĐỊNH</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:#f5f5f5;
+}
+
+#d1{
+    position:relative;
+    height:50vw;
+    background-image:
+        linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+        url('pho-6760890_1280.jpg');
+    background-size:cover;
+    background-position:center;
+}
+.logo{
+    position:absolute;
+    top:15px;
+    left:50%;
+    transform:translateX(-50%);
+}
+.search-box{
+    position:absolute;
+    top:15px;
+    right:5%;
+    padding:15px 20px;
+    border-radius:20px;
+    border:none;
+}
+.menu-box{
+    position:absolute;
+    top:90px;
+    left:50%;
+    transform:translateX(-50%);
+    width:80%;
+    padding:10px 30px;
+    border-radius:50px;
+    background:rgba(255,255,255,0.9);
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+.menu{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:30px;
+}
+.menu p{
+    margin:0;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+.menu p:hover{
+    color:#e67e22;
+    transform:translateY(-5px);
+}
+
+.btn{
+    background:#e67e22;
+    color:#fff;
+    border:none;
+    padding:10px 20px;
+    border-radius:25px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:0.15s;
+}
+
+.btn:hover{ background:#cf711f; }
+
+.btn:active,
+.order-submit:active{
+    transform:scale(1.2);
+}
+
+.text{
+    position:absolute;
+    top:80px;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
+
+.text p{
+    margin:0;
+    color:#c75619;
+    font-weight:bold;
+    animation:nhay 1s infinite;
+}
+
+@keyframes nhay{
+    50%{ transform:translateY(-8px); }
+}
+
+.arrow{
+    position:absolute;
+    bottom:0;
+    border-radius:20px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.6);
+    animation:float 5s infinite ease-in-out;
+}
+
+@keyframes float{
+    50%{ transform:translateY(-10px); }
+}
+
+.arrow1{ width:30%; right:35%; animation-duration:4s; }
+.arrow2{ width:15%; right:18%; animation-duration:5s; }
+.arrow3{ width:15%; left:18%; animation-duration:6s; }
+.arrow4{ width:12%; right:4%; animation-duration:4.5s; }
+.arrow5{ width:12%; left:4%; animation-duration:5.5s; }
+
+#menu-food,
+#menu-full{
+    padding:80px 5%;
+    text-align:center;
+    background-image:url("white2.avif");
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+}
+
+.menu-title{
+    font-size:40px;
+    margin-bottom:50px;
+    color:#5a2c0f;
+}
+
+.food-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:30px;
+}
+
+.food-card{
+    background:#fff;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,0.15);
+    transition:0.35s;
+}
+
+.food-card:hover{
+    transform:translateY(-12px) scale(1.02);
+    box-shadow:0 20px 40px rgba(0,0,0,0.3);
+}
+
+.food-card img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+}
+
+.food-info{
+    padding:20px;
+}
+
+.food-info h3{
+    margin:10px 0;
+}
+
+.food-info p{
+    margin:0;
+    color:#c0392b;
+    font-weight:bold;
+}
+
+.food-info label{
+    display:block;
+    margin-top:10px;
+}
+
+.category{
+    margin-bottom:50px;
+}
+
+.category h2{
+    border-bottom:3px solid orange;
+    display:inline-block;
+}
+
+.menu-list{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+    margin-top:20px;
+}
+
+.menu-item{
+    display:flex;
+    justify-content:space-between;
+    padding:15px;
+    background:#fff;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+.order-submit{
+    display:block;
+    margin:40px auto;
+    padding:15px 40px;
+    background:#e67e22;
+    color:#fff;
+    border:none;
+    border-radius:20px;
+    font-size:18px;
+    cursor:pointer;
+    transition:0.15s;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="d1">
+
+    <img class="logo" src="https://icolor.vn/wp-content/uploads/2024/09/Logo-quan-pho-7.jpg" width="90px">
+
+    <input class="search-box" type="text" placeholder="Tìm món...">
+
+    <div class="menu-box">
+        <div class="menu">
+            <p>TRANG CHỦ</p>
+            <p>GIỚI THIỆU</p>
+            <p>THỰC ĐƠN</p>
+            <p>ƯU ĐÃI</p>
+            <p>LIÊN HỆ</p>
+            <p>ĐÁNH GIÁ</p>
+            <button class="btn">Đặt Món</button>
+        </div>
+    </div>
+
+    <div class="text">
+        <p>PHỞ CỒ NAM ĐỊNH</p>
+    </div>
+
+    <img class="arrow arrow1" src="arrow1.png">
+    <img class="arrow arrow2" src="arrow2.png">
+    <img class="arrow arrow3" src="arrow3.png">
+    <img class="arrow arrow4" src="aroww4.png">
+    <img class="arrow arrow5" src="arrow5.png">
+
+</div>
+
+<div id="menu-food">
+
+    <h2 class="menu-title">BEST SELLER</h2>
+
+    <form id="orderForm">
+
+        <div class="food-grid">
+
+            <div class="food-card">
+                <img src="phodacbiet.jpg">
+                <div class="food-info">
+                    <h3>Phở Đặc Biệt</h3>
+                    <p>50k</p>
+                    <label><input type="checkbox" name="order" value="Phở đặc biệt 50k"> Chọn món</label>
+                </div>
+            </div>
+
+            <div class="food-card">
+                <img src="myxao.png">
+                <div class="food-info">
+                    <h3>Mỳ Xào Hải Sản</h3>
+                    <p>40k</p>
+                    <label><input type="checkbox" name="order" value="Mỳ xào hải sản 40k"> Chọn món</label>
+                </div>
+            </div>
+
+            <div class="food-card">
+                <img src="comrang.png">
+                <div class="food-info">
+                    <h3>Cơm Rang Thập Cẩm</h3>
+                    <p>50k</p>
+                    <label><input type="checkbox" name="order" value="Cơm rang thập cẩm 50k"> Chọn món</label>
+                </div>
+            </div>
+
+            <div class="food-card">
+                <img src="phoxao.png">
+                <div class="food-info">
+                    <h3>Phở Xào Bò</h3>
+                    <p>55k</p>
+                    <label><input type="checkbox" name="order" value="Phở xào bò 55k"> Chọn món</label>
+                </div>
+            </div>
+
+        </div>
+
+</div>
+
+<div id="menu-full">
+
+    <h1>MENU THỰC ĐƠN</h1>
+
+    <div class="category">
+        <h2>Phở</h2>
+        <div class="menu-list">
+            <div class="menu-item"><span>Phở tái 30k</span><input type="checkbox" name="order" value="Phở tái 30k"></div>
+            <div class="menu-item"><span>Phở chín 30k</span><input type="checkbox" name="order" value="Phở chín 30k"></div>
+            <div class="menu-item"><span>Phở đặc biệt 50k</span><input type="checkbox" name="order" value="Phở đặc biệt 50k"></div>
+        </div>
+    </div>
+
+    <div class="category">
+        <h2>Món mặn</h2>
+        <div class="menu-list">
+            <div class="menu-item"><span>Cơm rang 50k</span><input type="checkbox" name="order" value="Cơm rang 50k"></div>
+            <div class="menu-item"><span>Mỳ xào 40k</span><input type="checkbox" name="order" value="Mỳ xào 40k"></div>
+            <div class="menu-item"><span>Phở xào 55k</span><input type="checkbox" name="order" value="Phở xào 55k"></div>
+        </div>
+    </div>
+
+    <div class="category">
+        <h2>Giải khát</h2>
+        <div class="menu-list">
+            <div class="menu-item"><span>Pepsi 10k</span><input type="checkbox" name="order" value="Pepsi 10k"></div>
+            <div class="menu-item"><span>7up 10k</span><input type="checkbox" name="order" value="7up 10k"></div>
+            <div class="menu-item"><span>Aquafina 10k</span><input type="checkbox" name="order" value="Aquafina 10k"></div>
+        </div>
+    </div>
+
+    <button type="button" class="order-submit" onclick="datHang()">Đặt hàng</button>
+
+    </form>
+
+</div>
+
+<script>
+function datHang(){
+    let mon = document.querySelectorAll('input[name="order"]:checked');
+    if(mon.length == 0){
+        alert("Bạn chưa chọn món");
+        return;
+    }
+    let text = "Món đã chọn:\n";
+    mon.forEach(function(m){
+        text += "- " + m.value + "\n";
+    });
+    alert(text);
+}
+</script>
+
+</body>
+</html>
