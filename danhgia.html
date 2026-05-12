@@ -815,6 +815,26 @@ const mainMenu = document.getElementById('mainMenu');
 hamburgerBtn.addEventListener('click', function () {
     mainMenu.classList.toggle('open');
 });
+let stars = document.querySelectorAll(".star");
+let ratingValue = document.getElementById("sao");
+
+stars.forEach(star => {
+
+    star.addEventListener("click", function(){
+
+        let value = this.getAttribute("data-value");
+
+        ratingValue.value = value;
+
+        stars.forEach(s => s.classList.remove("active"));
+
+        for(let i = 0; i < value; i++){
+            stars[i].classList.add("active");
+        }
+
+    });
+
+});
 </script>
 </body>
 </html>
