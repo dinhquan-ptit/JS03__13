@@ -181,6 +181,64 @@ body {
     visibility: visible;
     transform: translateY(0);
 }
+
+/* ===== MOBILE MENU ===== */
+@media (max-width: 768px) {
+    .menu-box {
+        border-radius: 12px;
+        padding: 8px 12px;
+    }
+
+    .hamburger { display: flex; }
+
+    .menu {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease;
+    }
+
+    .menu.open {
+        max-height: 500px;
+    }
+
+    .menu-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .menu a {
+        font-size: 14px;
+        padding: 10px 4px;
+        border-bottom: 1px solid #eee;
+        white-space: normal;
+    }
+
+    .menu a:last-child { border-bottom: none; }
+
+    .dropdown-menu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        padding: 0 0 0 12px;
+        border-radius: 0;
+    }
+
+    .dropdown-menu a { padding: 8px 12px; font-size: 13px; }
+
+    .btn {
+        text-align: center;
+        padding: 10px;
+        margin-top: 6px;
+        border-radius: 12px;
+    }
+}
+
 /* text tiêu đề */
 .text {
     width: 100%;
@@ -198,71 +256,97 @@ body {
     font-size: clamp(14px, 2.5vw, 24px);
     font-family: Cambria, Georgia, serif;
 }
+@media (max-width: 768px) {
+    .text p {
+        top: 50px;
+    }
+}
 /* arrows */
 .arrow {
     position: absolute;
     bottom: 0;
+
     border-radius: 20px;
     box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+
     animation: float 5s infinite ease-in-out;
 }
 
-/* Ảnh giữa */
+/* ảnh giữa */
 .arrow1 {
-    width: clamp(160px, 30vw, 350px);
+    width: clamp(170px, 28vw, 340px);
 
     left: 50%;
     transform: translateX(-50%);
 
+    z-index: 5;
     animation-duration: 4s;
 }
 
 /* 2 ảnh gần giữa */
+.arrow2,
+.arrow3 {
+    width: clamp(90px, 11vw, 170px);
+
+    bottom: 10px;
+}
+
 .arrow2 {
-    width: clamp(80px, 12vw, 180px);
-
-    right: 18vw;
-
+    right: 24vw;
     animation-duration: 5s;
 }
 
 .arrow3 {
-    width: clamp(80px, 12vw, 180px);
-
-    left: 18vw;
-
+    left: 24vw;
     animation-duration: 6s;
 }
 
 /* 2 ảnh ngoài */
+.arrow4,
+.arrow5 {
+    width: clamp(70px, 9vw, 130px);
+
+    bottom: 5px;
+}
+
 .arrow4 {
-    width: clamp(60px, 10vw, 140px);
-
-    right: 5vw;
-
+    right: 12vw;
     animation-duration: 4.5s;
 }
 
 .arrow5 {
-    width: clamp(60px, 10vw, 140px);
-
-    left: 5vw;
-
+    left: 12vw;
     animation-duration: 5.5s;
 }
-@media (max-width: 480px) {
-
-    .arrow2,
-    .arrow3,
-    .arrow4,
-    .arrow5 {
-        display: none;
-    }
+@media (max-width: 768px) {
 
     .arrow1 {
-        width: 70%;
-        left: 50%;
-        transform: translateX(-50%);
+        width: 30%;
+    }
+
+    .arrow2,
+    .arrow3 {
+        width: 15%;
+    }
+
+    .arrow2 {
+        right: 20%;
+    }
+
+    .arrow3 {
+        left: 20%;
+    }
+
+    .arrow4,
+    .arrow5 {
+        width:10%;
+    }
+    .arrow4 {
+        right: 10%;
+    }
+
+    .arrow5 {
+        left: 10%;
     }
 }
 /* ===== MENU FOOD ===== */
@@ -590,7 +674,8 @@ body {
 
     <div class="menu-box" id="menuBox">
         <div class="menu-header">
-                <button class="hamburger" id="hamburgerBtn" aria-label="Mở menu">
+            <span style="font-weight:bold; font-family:Georgia,serif; color:#5a2c0f; font-size:14px;">☰ MENU</span>
+            <button class="hamburger" id="hamburgerBtn" aria-label="Mở menu">
                 <span></span><span></span><span></span>
             </button>
         </div>
@@ -734,6 +819,14 @@ window.addEventListener("scroll", function () {
     } else {
         menuBox.classList.remove("fixed");
     }
+});
+
+// Hamburger toggle (mobile)
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const mainMenu = document.getElementById('mainMenu');
+hamburgerBtn.addEventListener('click', function () {
+    mainMenu.classList.toggle('open');
+});
 </script>
 </body>
 </html>
