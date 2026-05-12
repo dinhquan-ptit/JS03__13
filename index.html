@@ -1,180 +1,202 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>QUÁN PHỞ CỒ NAM ĐỊNH</title>
-
 <style>
-html{
-    scroll-behavior: smooth;
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f5f5;
 }
 
-body{
-    margin:0;
-    font-family:Arial, Helvetica, sans-serif;
-    background:#f5f5f5;
-}
-
-/* ===== HEADER (#d1) ===== */
-#d1{
-    position:relative;
-    height:50vw;
+/* ===== HEADER ===== */
+#d1 {
+    position: relative;
+    height: 60vw;
+    min-height: 260px;
+    max-height: 600px;
     background-image:
         linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
         url('pho-6760890_1280.jpg');
-    background-size:cover;
-    background-position:center;
+    background-size: cover;
+    background-position: center;
 }
 
 /* logo */
-.logo{
-    position:absolute;
-    top:15px;
-    left:50%;
-    transform:translateX(-50%);
+.logo {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: clamp(60px, 10vw, 90px);
 }
 
-/* search */
-.search-box{
-    position:absolute;
-    top:15px;
-    right:8%;
-    padding:20px 20px;
-    border-radius:20px;
-    border:none;
+/* search - ẩn trên mobile, hiện trên desktop */
+.search-box {
+    position: absolute;
+    top: 12px;
+    right: 5%;
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: none;
+    font-size: 14px;
+    width: clamp(100px, 15vw, 180px);
 }
 
-/* menu */
-.menu-box{
-    position:absolute;
-    top:90px;
-    left:50%;
-    transform:translateX(-50%);
-    width:80%;
-    padding:10px 30px;
-    border-radius:50px;
-    background:rgba(255,255,255,0.9);
-    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+@media (max-width: 600px) {
+    .search-box { display: none; }
+}
+
+/* ===== MENU BOX ===== */
+.menu-box {
+    position: absolute;
+    top: clamp(70px, 14vw, 100px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 92%;
+    padding: 8px 16px;
+    border-radius: 50px;
+    background: rgba(255,255,255,0.95);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     transition: all 0.4s ease;
+    z-index: 100;
 }
 
-.menu-box.fixed{
-    position:fixed;
-    top:0;
-    left:50%;
-    transform:translateX(-50%);
-    width:90%;
-    border-radius:0;
-    z-index:9999;
-    animation: slideDown 0.4s ease;
-}
-.menu{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:30px;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+.menu-box.fixed {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    border-radius: 0;
+    z-index: 9999;
 }
 
-.menu a{
-    margin:0;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.3s;
-    text-decoration:none;
-    color:black;
-    display:inline-block;
+/* nút hamburger - chỉ hiện trên mobile */
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: #333;
+    border-radius: 2px;
+    transition: 0.3s;
+}
+
+/* menu ngang - desktop */
+.menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+}
+
+.menu a {
+    margin: 0;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+    color: black;
+    display: inline-block;
     font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: clamp(11px, 1.4vw, 15px);
+    white-space: nowrap;
 }
 
-.menu a:hover{
-    color:#e67e22;
-    transform:translateY(-5px);
+.menu a:hover {
+    color: #e67e22;
+    transform: translateY(-3px);
 }
 
 /* button */
-.btn{
-    background:#e67e22;
-    color:#fff;
-    border:none;
-    padding:10px 20px;
-    border-radius:25px;
-    cursor:pointer;
-    font-weight:bold;
-    transition:0.15s;
+.btn {
+    background: #e67e22;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.15s;
+    white-space: nowrap;
+    font-size: clamp(11px, 1.3vw, 14px);
+    text-decoration: none;
 }
 
-.btn:hover{ 
-    background:#cf711f; 
-}
+.btn:hover { background: #cf711f; }
+.btn:active { transform: scale(1.1); }
 
-.btn:active{
-    transform:scale(1.2);
-}
-/* ===== DROPDOWN MENU ===== */
-.dropdown{
-    position: relative;
-}
+/* ===== DROPDOWN ===== */
+.dropdown { position: relative; }
 
-/* menu con */
-.dropdown-menu{
+.dropdown-menu {
     position: absolute;
     top: 120%;
     left: 0;
-
     background: #fff;
     border-radius: 15px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-
     padding: 10px 0;
     min-width: 180px;
-
     opacity: 0;
     visibility: hidden;
     transform: translateY(10px);
-
     transition: 0.3s;
     z-index: 999;
 }
 
-/* từng item */
-.dropdown-menu a{
+.dropdown-menu a {
     display: block;
     padding: 10px 20px;
     color: #333;
-    text-decoration: none;
+    font-size: 13px;
     font-weight: normal;
-    transition: 0.25s;
 }
 
-.dropdown-menu a:hover{
+.dropdown-menu a:hover {
     background: #e67e22;
     color: white;
     padding-left: 25px;
 }
 
-/* hover để hiện menu */
-.dropdown:hover .dropdown-menu{
+.dropdown:hover .dropdown-menu {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
 }
-/* text */
-.text{
-    position:absolute;
-    top:75px;
-    left:50%;
-    transform:translate(-50%,-50%);
-    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+/* text tiêu đề */
+.text {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
-
-.text p{
-    margin:0;
-    color:#c75619;
-    font-weight:bold;
-
+.text p {
+    position: relative;
+    top: 60px;
+    margin: 0;
+    color: #c75619;
+    font-weight: bold;
+    font-size: clamp(14px, 2.5vw, 24px);
+    font-family: Cambria, Georgia, serif;
 }
 /* arrows */
 .arrow {
@@ -185,573 +207,541 @@ body{
     animation: float 5s infinite ease-in-out;
 }
 
-@keyframes float { 50% { transform: translateY(-10px); } }
+/* Ảnh giữa */
+.arrow1 {
+    width: clamp(160px, 30vw, 350px);
 
-.arrow1 { width: clamp(160px, 30%, 350px); right: 35%; animation-duration: 4s; }
-.arrow2 { width: clamp(80px, 15%, 180px); right: 18%; animation-duration: 5s; }
-.arrow3 { width: clamp(80px, 15%, 180px); left: 18%; animation-duration: 6s; }
-.arrow4 { width: clamp(60px, 12%, 140px); right: 4%; animation-duration: 4.5s; }
-.arrow5 { width: clamp(60px, 12%, 140px); left: 4%; animation-duration: 5.5s; }
+    left: 50%;
+    transform: translateX(-50%);
 
+    animation-duration: 4s;
+}
+
+/* 2 ảnh gần giữa */
+.arrow2 {
+    width: clamp(80px, 12vw, 180px);
+
+    right: 18vw;
+
+    animation-duration: 5s;
+}
+
+.arrow3 {
+    width: clamp(80px, 12vw, 180px);
+
+    left: 18vw;
+
+    animation-duration: 6s;
+}
+
+/* 2 ảnh ngoài */
+.arrow4 {
+    width: clamp(60px, 10vw, 140px);
+
+    right: 5vw;
+
+    animation-duration: 4.5s;
+}
+
+.arrow5 {
+    width: clamp(60px, 10vw, 140px);
+
+    left: 5vw;
+
+    animation-duration: 5.5s;
+}
 @media (max-width: 480px) {
-    .arrow2, .arrow3, .arrow4, .arrow5 { display: none; }
-    .arrow1 { width: 70%; right: 15%; }
+
+    .arrow2,
+    .arrow3,
+    .arrow4,
+    .arrow5 {
+        display: none;
+    }
+
+    .arrow1 {
+        width: 70%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
 }
 /* ===== MENU FOOD ===== */
-#menu-food{
-    padding:80px 5%;
-    text-align:center;
-    background-image:url("white2.avif");
-    background-size:cover;
-    background-position:center;
-    background-attachment:fixed;
+#menu-food {
+    padding: clamp(40px, 8vw, 80px) 5%;
+    text-align: center;
+    background-image: url("white2.avif");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
-.menu-title{
-    font-size:40px;
-    margin-bottom:50px;
-    color:#5a2c0f;
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+@media (max-width: 600px) {
+    #menu-food { background-attachment: scroll; }
 }
 
-.food-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:30px;
+.menu-title {
+    font-size: clamp(24px, 5vw, 40px);
+    margin-bottom: 30px;
+    color: #5a2c0f;
+    font-family: Impact, 'Arial Narrow Bold', sans-serif;
 }
 
-.food-card{
-    background:#fff;
-    border-radius:15px;
-    overflow:hidden;
-    box-shadow:0 10px 30px rgba(0,0,0,0.15);
-    transition:0.35s;
+.food-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
 }
 
-.food-card:hover{
-    transform:translateY(-12px) scale(1.02);
-    box-shadow:0 20px 40px rgba(0,0,0,0.3);
+@media (max-width: 480px) {
+    .food-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
 }
 
-.food-card img{
-    width:100%;
-    height:220px;
-    object-fit:cover;
+.food-card {
+    background: #fff;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    transition: 0.35s;
 }
 
-.food-card p,
-.food-card h3{
-    font-family:Georgia, 'Times New Roman', Times, serif;
+.food-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
 }
 
-.food-info{
-    padding:20px;
+.food-card img {
+    width: 100%;
+    height: clamp(140px, 20vw, 220px);
+    object-fit: cover;
+    display: block;
 }
 
-.food-info h3{
-    margin:10px 0;
+.food-card p, .food-card h3 {
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
-.food-info p{
-    margin:0;
-    color:#c0392b;
-    font-weight:bold;
+.food-info { padding: clamp(10px, 3vw, 20px); }
+
+.food-info h3 {
+    margin: 6px 0;
+    font-size: clamp(13px, 2vw, 17px);
 }
-.food-info input[type="checkbox"]{
-    transform:scale(1.2);
-    cursor:pointer;
+
+.food-info p {
+    margin: 0;
+    color: #c0392b;
+    font-weight: bold;
+    font-size: clamp(13px, 2vw, 16px);
 }
+
 /* ===== GIỚI THIỆU ===== */
-#gioithieu{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    padding:100px 0;
-    background-image:url("ảnh xám.jpg");
-    background-size:cover;
-    background-position:center;
-    background-attachment:fixed;
-}
-.intro-img{
-    width:80%;    
-    height:50%;  
-    object-fit:cover; 
-    border-radius:20px;
-    box-shadow:0 50px 50px rgba(0,0,0,0.3);
-    transition:0.4s;
-    border:5px solid rgba(255,255,255,0.8);
+#gioithieu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: clamp(40px, 8vw, 100px) 4%;
+    background-image: url("ảnh xám.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
-.intro-img:hover{
-    transform:scale(1.03);
-    box-shadow:0 70px 70px rgba(0,0,0,0.5);
+@media (max-width: 600px) {
+    #gioithieu { background-attachment: scroll; }
 }
-/*lo go vị trí , tìm kiếm */
-.floating-icons{
-    position:fixed;
-    right:20px;
-    bottom:50%;
-    display:flex;
-    flex-direction:column;
-    gap:15px;
-    z-index:9999;
-}
-.floating-icons span{
-    font-family: Georgia, 'Times New Roman', Times, serif;
-    color:#f5f5f5
-}
-.icon{
-    width:60px;
-    height:60px;
-    border-radius:50%;
-    background:#fff;
-    padding:10px;
-    box-shadow:0 10px 20px rgba(0,0,0,0.3);
-    cursor:pointer;
-    transition:0.3s;
-}
-/*nút gọi điện */
-.goidien{
-    position:fixed;
-    left:20px;
-    bottom:20px;
-    height:60px;
-    padding:0 20px;
-    border-radius:30px;
-    background:#e74c3c;
-    color:#fff;
-    font-weight:bold;
-    display:flex;
-    align-items:center;
-    text-decoration:none;
 
-    box-shadow:0 10px 25px rgba(0,0,0,0.3);
-    z-index:99999;
+.intro-img {
+    width: 90%;
+    max-width: 900px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 0 30px 50px rgba(0,0,0,0.3);
+    transition: 0.4s;
+    border: 4px solid rgba(255,255,255,0.8);
+}
 
-    transition:0.3s;
+.intro-img:hover {
+    transform: scale(1.02);
+}
+
+/* ===== FLOATING ICONS ===== */
+.floating-icons {
+    position: fixed;
+    right: 12px;
+    bottom: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 9999;
+}
+
+.floating-icons span {
+    font-family: Georgia, serif;
+    color: #f5f5f5;
+    font-size: 11px;
+}
+
+.icon {
+    width: clamp(44px, 8vw, 60px);
+    height: clamp(44px, 8vw, 60px);
+    border-radius: 50%;
+    background: #fff;
+    padding: 8px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: 0.3s;
+    object-fit: contain;
+}
+
+.icon:hover { transform: scale(1.1); }
+
+/* ===== NÚT GỌI ĐIỆN ===== */
+.goidien {
+    position: fixed;
+    left: 12px;
+    bottom: 16px;
+    height: 50px;
+    padding: 0 16px;
+    border-radius: 30px;
+    background: #e74c3c;
+    color: #fff;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    z-index: 99999;
+    transition: 0.3s;
     animation: rungNgang 1.2s infinite;
+    font-size: 14px;
 }
 
-/* hover */
-.goidien:hover{
-    transform:scale(1.1);
+.goidien:hover { transform: scale(1.08); }
+
+@keyframes rungNgang {
+    0%   { transform: translateX(0); }
+    25%  { transform: translateX(5px); }
+    50%  { transform: translateX(-5px); }
+    75%  { transform: translateX(5px); }
+    100% { transform: translateX(0); }
 }
 
-/* lắc nhẹ */
-@keyframes rungNgang{
-    0%{ transform:translateX(0); }
-    25%{ transform:translateX(5px); }
-    50%{ transform:translateX(-5px); }
-    75%{ transform:translateX(5px); }
-    100%{ transform:translateX(0); }
-}
-.icon:hover{
-    transform:scale(1.1);
-}
-/* chữ VIDEO */
-.VIDEO{
-    text-align:center;
-    font-size:40px;
-    margin-bottom:40px;
-    margin:10px 0 50px;
-    color:#5a2c0f;
-    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-}
-.video-section{
-    padding:80px 0;
-    background-image:url("ảnh nền xám 3.jpg");
-    background-size:cover;
-    background-position:center;
-    background-attachment:fixed;
-}
-/* grid */
-.video-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:30px;
-    max-width:1200px;
-    margin:auto;
-    padding:0 10%;
-}
-.video-card{
-    background:#fff;
-    border-radius:15px;
-    overflow:hidden;
-    box-shadow:0 10px 30px rgba(0,0,0,0.2);
-    cursor:pointer;
-    transition:0.3s;
-    text-decoration:none;
-    color:inherit;
+.goidien img { width: 24px; margin-right: 8px; }
 
+@media (max-width: 400px) {
+    .goidien span { display: none; }
+    .goidien { padding: 0 12px; border-radius: 50%; width: 50px; height: 50px; justify-content: center; }
+    .goidien img { margin-right: 0; }
 }
 
-.video-card:hover{
-    transform:translateY(-10px) scale(1.03);
+/* ===== VIDEO ===== */
+.VIDEO {
+    text-align: center;
+    font-size: clamp(24px, 5vw, 40px);
+    margin: 0 0 40px;
+    color: #5a2c0f;
+    font-family: Impact, sans-serif;
 }
 
-.video-card img{
-    width:100%;
-    height:220px;
-    object-fit:cover;
+.video-section {
+    padding: clamp(40px, 8vw, 80px) 4%;
+    background-image: url("ảnh nền xám 3.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
-.video-card p{
-    text-align:center;
-    padding:15px;
-    font-weight:bold;
-    color:#e67e22;
-    font-family: Georgia, 'Times New Roman', Times, serif;
-}
-.pho-footer{
-  background: #0d0d0d;
-  color: #fff;
-  margin-top: auto;
+@media (max-width: 600px) {
+    .video-section { background-attachment: scroll; }
 }
 
-.pho-footer__inner{
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 20px 28px;
-  display: grid;
-  grid-template-columns: 1.2fr 1fr 1.2fr 0.8fr;
-  gap: 32px;
-  align-items: start;
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: auto;
 }
 
-.pho-footer__col{
-  min-width: 0;
+@media (max-width: 480px) {
+    .video-grid { grid-template-columns: 1fr; gap: 16px; }
 }
 
-.pho-footer__brand{
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+.video-card {
+    background: #fff;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+    color: inherit;
 }
 
-.pho-footer__logo-wrap{
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
+.video-card:hover { transform: translateY(-8px) scale(1.02); }
+
+.video-card img {
+    width: 100%;
+    height: clamp(140px, 20vw, 220px);
+    object-fit: cover;
+    display: block;
 }
 
-.pho-footer__logo{
-  width: 150px;
-  max-width: 100%;
-  height: auto;
-  display: block;
+.video-card p {
+    text-align: center;
+    padding: 12px;
+    font-weight: bold;
+    color: #e67e22;
+    font-family: Georgia, serif;
+    font-size: clamp(13px, 2vw, 15px);
+    margin: 0;
 }
 
-.pho-footer__desc{
-  margin: 0;
-  line-height: 1.7;
-  color: #e7e7e7;
-  font-size: 15px;
-  max-width: 320px;
+/* ===== FOOTER ===== */
+.pho-footer {
+    background: #0d0d0d;
+    color: #fff;
 }
 
-.pho-footer__title{
-  margin: 0 0 18px;
-  color: #f2a23a;
-  font-size: 20px;
-  font-weight: 700;
+.pho-footer__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px 28px;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1.2fr 0.8fr;
+    gap: 32px;
+    align-items: start;
 }
 
-.pho-footer__list,
-.pho-footer__links{
-  list-style: none;
-  padding: 0;
-  margin: 0;
+@media (max-width: 900px) {
+    .pho-footer__inner { grid-template-columns: 1fr 1fr; }
 }
 
-.pho-footer__list li{
-  margin-bottom: 12px;
-  line-height: 1.6;
-  color: #f1f1f1;
+@media (max-width: 540px) {
+    .pho-footer__inner {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 28px 16px 20px;
+    }
 }
 
-.pho-footer__label{
-  font-weight: 700;
-  color: #fff;
+.pho-footer__brand { display: flex; flex-direction: column; gap: 14px; }
+
+.pho-footer__logo { width: 130px; max-width: 100%; height: auto; display: block; }
+
+.pho-footer__desc { margin: 0; line-height: 1.7; color: #e7e7e7; font-size: 14px; }
+
+.pho-footer__title { margin: 0 0 16px; color: #f2a23a; font-size: 18px; font-weight: 700; }
+
+.pho-footer__list, .pho-footer__links { list-style: none; padding: 0; margin: 0; }
+
+.pho-footer__list li { margin-bottom: 10px; line-height: 1.6; color: #f1f1f1; font-size: 14px; }
+
+.pho-footer__label { font-weight: 700; color: #fff; }
+
+.pho-footer__links li { margin-bottom: 8px; }
+
+.pho-footer__links a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 1.6;
+    transition: 0.25s;
 }
 
-.pho-footer__links li{
-  margin-bottom: 10px;
+.pho-footer__links a:hover { color: #f2a23a; padding-left: 4px; }
+
+.pho-footer__social { display: flex; flex-wrap: wrap; gap: 12px; }
+
+.pho-footer__social-link {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: 0.25s;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.25);
 }
 
-.pho-footer__links a{
-  color: #fff;
-  text-decoration: none;
-  line-height: 1.6;
-  transition: 0.25s ease;
-}
+.pho-footer__social-link:hover { transform: translateY(-3px); background: #f2a23a; }
 
-.pho-footer__links a:hover{
-  color: #f2a23a;
-  padding-left: 4px;
-}
+.pho-footer__social-link svg { width: 22px; height: 22px; fill: #111; }
 
-.pho-footer__social{
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.pho-footer__social-link{
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background: #fff;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  transition: 0.25s ease;
-  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
-}
-
-.pho-footer__social-link:hover{
-  transform: translateY(-3px);
-  background: #f2a23a;
-}
-
-.pho-footer__social-link svg{
-  width: 22px;
-  height: 22px;
-  fill: #111;
-}
-
-.pho-footer__bottom{
-  border-top: 1px solid rgba(255,255,255,0.12);
-  text-align: center;
-  padding: 14px 20px;
-  color: #d7d7d7;
-  font-size: 14px;
-}
-
-/* Responsive */
-@media (max-width: 992px){
-  .pho-footer__inner{
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (max-width: 640px){
-  .pho-footer__inner{
-    grid-template-columns: 1fr;
-    gap: 24px;
-    padding: 32px 16px 22px;
-  }
-
-  .pho-footer__title{
-    font-size: 18px;
-  }
-
-  .pho-footer__social-link{
-    width: 42px;
-    height: 42px;
-  }
+.pho-footer__bottom {
+    border-top: 1px solid rgba(255,255,255,0.12);
+    text-align: center;
+    padding: 14px 20px;
+    color: #d7d7d7;
+    font-size: 13px;
 }
 </style>
 </head>
 <body>
 
 <div id="d1">
-
-    <img class="logo" src="https://icolor.vn/wp-content/uploads/2024/09/Logo-quan-pho-7.jpg" width="90">
-
+    <img class="logo" src="https://icolor.vn/wp-content/uploads/2024/09/Logo-quan-pho-7.jpg" alt="Logo">
     <input class="search-box" type="text" placeholder="Tìm món...">
-    <div class="menu-box">
-        <div class="menu">
-        <a href="JS03_13 .html">TRANG CHỦ</a>
-        <a href="gioithieu.html#tranggioithieu">GIỚI THIỆU</a>
-        <div class="dropdown">
-            <a href="thucdon.html#menu-full">THỰC ĐƠN</a>
-            <div class="dropdown-menu">
-                <a href="thucdon.html#pho">CÁC MÓN PHỞ</a>
-                <a href="thucdon.html#my">CÁC MÓN MÌ</a>
-                <a href="thucdon.html#comrang">CƠM RANG</a>
-                <a href="thucdon.html#nuoc">NƯỚC UỐNG</a>
+
+    <div class="menu-box" id="menuBox">
+        <div class="menu-header">
+                <button class="hamburger" id="hamburgerBtn" aria-label="Mở menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <div class="menu" id="mainMenu">
+            <a href="JS03_13.html">TRANG CHỦ</a>
+            <a href="gioithieu.html#tranggioithieu">GIỚI THIỆU</a>
+            <div class="dropdown">
+                <a href="thucdon.html#menu-full">THỰC ĐƠN</a>
+                <div class="dropdown-menu">
+                    <a href="thucdon.html#pho">CÁC MÓN PHỞ</a>
+                    <a href="thucdon.html#my">CÁC MÓN MÌ</a>
+                    <a href="thucdon.html#comrang">CƠM RANG</a>
+                    <a href="thucdon.html#nuoc">NƯỚC UỐNG</a>
+                </div>
             </div>
-        </div>
-        <a href="uudai.html#phanuudai">ƯU ĐÃI</a>
-        <a href="#lienhe">LIÊN HỆ</a>
-        <a href="danhgia.html#phandanhgia">ĐÁNH GIÁ</a>
-        <a href="datban.html#datban" class="btn" target="_blank">Đặt bàn</a>
+            <a href="uudai.html#phanuudai">ƯU ĐÃI</a>
+            <a href="#lienhe">LIÊN HỆ</a>
+            <a href="danhgia.html#phandanhgia">ĐÁNH GIÁ</a>
+            <a href="datban.html#datban" class="btn" target="_blank">Đặt bàn</a>
         </div>
     </div>
-</div>
 
+    <div class="text"><p>PHỞ CỒ NAM ĐỊNH</p></div>
 
-    <div class="text">
-        <p>PHỞ CỒ NAM ĐỊNH</p>
-    </div>
-
-    <img class="arrow arrow1" src="arrow1.png">
-    <img class="arrow arrow2" src="arrow2.png">
-    <img class="arrow arrow3" src="arrow3.png">
-    <img class="arrow arrow4" src="aroww4.png">
-    <img class="arrow arrow5" src="arrow5.png">
-
+    <img class="arrow arrow1" src="arrow1.png" alt="">
+    <img class="arrow arrow2" src="arrow2.png" alt="">
+    <img class="arrow arrow3" src="arrow3.png" alt="">
+    <img class="arrow arrow4" src="aroww4.png" alt="">
+    <img class="arrow arrow5" src="arrow5.png" alt="">
 </div>
 
 <div id="menu-food">
-
     <h2 class="menu-title">BEST SELLER</h2>
-
-    <form id="orderForm">
-
-        <div class="food-grid">
-
-            <div class="food-card">
-                <img src="phodacbiet.jpg">
-                <div class="food-info">
-                    <h3>Phở Đặc Biệt</h3>
-                    <p>50k</p>
-                </div>
-            </div>
-            <div class="food-card">
-                <img src="myxao.png">
-                <div class="food-info">
-                    <h3>Mỳ Xào Hải Sản</h3>
-                    <p>40k</p>
-                </div>
-            </div>
-            <div class="food-card">
-                <img src="comrang.png">
-                <div class="food-info">
-                    <h3>Cơm Rang Thập Cẩm</h3>
-                    <p>50k</p>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="phoxao.png">
-                <div class="food-info">
-                    <h3>Phở Xào Bò</h3>
-                    <p>55k</p>
-                </div>
-            </div>
-
+    <div class="food-grid">
+        <div class="food-card">
+            <img src="phodacbiet.jpg" alt="Phở Đặc Biệt">
+            <div class="food-info"><h3>Phở Đặc Biệt</h3><p>50k</p></div>
         </div>
-    </form>
+        <div class="food-card">
+            <img src="myxao.png" alt="Mỳ Xào Hải Sản">
+            <div class="food-info"><h3>Mỳ Xào Hải Sản</h3><p>40k</p></div>
+        </div>
+        <div class="food-card">
+            <img src="comrang.png" alt="Cơm Rang Thập Cẩm">
+            <div class="food-info"><h3>Cơm Rang Thập Cẩm</h3><p>50k</p></div>
+        </div>
+        <div class="food-card">
+            <img src="phoxao.png" alt="Phở Xào Bò">
+            <div class="food-info"><h3>Phở Xào Bò</h3><p>55k</p></div>
+        </div>
+    </div>
 </div>
+
 <div id="gioithieu">
-    <img class="intro-img" src="ảnh giới thiệu trang.jpg">
+    <img class="intro-img" src="ảnh giới thiệu trang.jpg" alt="Giới thiệu">
 </div>
-<script>
-const menu = document.querySelector(".menu-box");
-const menuTop = menu.offsetTop;
 
-window.addEventListener("scroll", function(){
-    if(window.scrollY >= menuTop){
-        menu.classList.add("fixed");
-    } else {
-        menu.classList.remove("fixed");
-    }
-});
-
-</script>
 <div class="floating-icons">
-    <img src="icon tìmmkieems.jpg" class="icon" onclick="alert('Mở tìm kiếm')" title="TÌM MÓN">
-    <img src="bản đồ.jpg" class="icon" onclick="alert('Mở bản đồ')" title="TRA VỊ TRÍ">
+    <img src="icon tìmmkieems.jpg" class="icon" onclick="alert('Mở tìm kiếm')" title="TÌM MÓN" alt="Tìm kiếm">
+    <img src="bản đồ.jpg" class="icon" onclick="alert('Mở bản đồ')" title="TRA VỊ TRÍ" alt="Bản đồ">
     <a href="tel:0363005144" class="goidien">
-        <img src="ảnh gọi điện.png" style="width:30px; margin-right:10px;">
+        <img src="ảnh gọi điện.png" alt="Gọi điện">
         <span>GỌI NGAY</span>
     </a>
 </div>
+
 <div class="video-section">
-
-    <h2 class="VIDEO">_ VIDEO _</h2><br>
-
+    <h2 class="VIDEO">_ VIDEO _</h2>
     <div class="video-grid">
         <a href="https://youtu.be/2I9SYt4oJ8Q" target="_blank" class="video-card">
-            <img src="VIDEO1 (1).png">
+            <img src="VIDEO1 (1).png" alt="Video 1">
             <p>PHỞ BÒ NAM ĐỊNH - Hương vị trăm năm</p>
         </a>
-
         <a href="https://youtu.be/vZvCmine8W8" target="_blank" class="video-card">
-            <img src="VIDEO 2.png">
+            <img src="VIDEO 2.png" alt="Video 2">
             <p>Phân biệt PHỞ NAM ĐỊNH - PHỞ HÀ NỘI</p>
         </a>
-
         <a href="https://youtu.be/eI51O8gPGKk" target="_blank" class="video-card">
-            <img src="VIDEO 3.png">
+            <img src="VIDEO 3.png" alt="Video 3">
             <p>KHÁM PHÁ QUÁN PHỞ TRUYỀN THỐNG</p>
         </a>
     </div>
 </div>
 
-<!-- Đặt footer ở cuối body -->
 <footer id="lienhe" class="pho-footer">
-  <div class="pho-footer__inner">
-    <!-- Cột 1 -->
-    <div class="pho-footer__col pho-footer__brand">
-      <div class="pho-footer__logo-wrap">
-        <img src="logo.jpg" alt="Logo quán phở" class="pho-footer__logo">
-      </div>
-      <p class="pho-footer__desc">
-        Hương vị phở truyền thống, nước dùng thanh ngọt, nguyên liệu tươi mỗi ngày.
-      </p>
+    <div class="pho-footer__inner">
+        <div class="pho-footer__col pho-footer__brand">
+            <div><img src="logo.jpg" alt="Logo" class="pho-footer__logo"></div>
+            <p class="pho-footer__desc">Hương vị phở truyền thống, nước dùng thanh ngọt, nguyên liệu tươi mỗi ngày.</p>
+        </div>
+        <div class="pho-footer__col">
+            <h3 class="pho-footer__title">Thông tin liên hệ</h3>
+            <ul class="pho-footer__list">
+                <li><span class="pho-footer__label">Địa chỉ:</span> </li>
+                <li><span class="pho-footer__label">Điện thoại:</span> </li>
+                <li><span class="pho-footer__label">Hotline:</span> </li>
+                <li><span class="pho-footer__label">Email:</span> </li>
+                <li><span class="pho-footer__label">Website:</span> </li>
+            </ul>
+        </div>
+        <div class="pho-footer__col">
+            <h3 class="pho-footer__title">Tin tức nổi bật</h3>
+            <ul class="pho-footer__links">
+                <li><a href="#">Nhóm đông đặt tiệc</a></li>
+                <li><a href="#">Đặt món phục vụ tại nhà</a></li>
+                <li><a href="#">Thông tin về giá sản phẩm</a></li>
+                <li><a href="#">Chính sách đổi trả</a></li>
+                <li><a href="#">Chính sách thanh toán</a></li>
+                <li><a href="#">Chính sách vận chuyển</a></li>
+                <li><a href="#">Chính sách bảo mật</a></li>
+            </ul>
+        </div>
+        <div class="pho-footer__col">
+            <h3 class="pho-footer__title">Mạng xã hội</h3>
+            <div class="pho-footer__social">
+                <a href="#" aria-label="Facebook" class="pho-footer__social-link">
+                    <svg viewBox="0 0 24 24"><path d="M14 8.5V7c0-.8.5-1 1-1h2V3h-3c-3 0-4 2-4 4.5v2H7v3h3v8h4v-8h3l1-3h-4z"/></svg>
+                </a>
+                <a href="#" aria-label="Instagram" class="pho-footer__social-link">
+                    <svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5zM17.8 6.2a1.2 1.2 0 1 1-1.2 1.2 1.2 1.2 0 0 1 1.2-1.2z"/></svg>
+                </a>
+                <a href="#" aria-label="YouTube" class="pho-footer__social-link">
+                    <svg viewBox="0 0 24 24"><path d="M21.6 7.2a3 3 0 0 0-2.1-2.1C17.7 4.6 12 4.6 12 4.6s-5.7 0-7.5.5A3 3 0 0 0 2.4 7.2 31.4 31.4 0 0 0 2 12a31.4 31.4 0 0 0 .4 4.8 3 3 0 0 0 2.1 2.1c1.8.5 7.5.5 7.5.5s5.7 0 7.5-.5a3 3 0 0 0 2.1-2.1A31.4 31.4 0 0 0 22 12a31.4 31.4 0 0 0-.4-4.8zM10 15.2V8.8L15.5 12z"/></svg>
+                </a>
+                <a href="#" aria-label="Zalo" class="pho-footer__social-link">
+                    <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4V4zm3.2 5.1h4.8v.8l-3.1 4h3.2V15H6.8v-.8l3.1-4H7.2V9.1zm7.5 0h1.6v5.9h-1.6V9.1zm.8-2.1a.9.9 0 1 1 0 1.8.9.9 0 0 1 0-1.8z"/></svg>
+                </a>
+            </div>
+        </div>
     </div>
-
-    <!-- Cột 2 -->
-    <div class="pho-footer__col">
-      <h3 class="pho-footer__title">Thông tin liên hệ</h3>
-      <ul class="pho-footer__list">
-        <li><span class="pho-footer__label">Địa chỉ:</span> </li>
-        <li><span class="pho-footer__label">Điện thoại:</span> </li>
-        <li><span class="pho-footer__label">Hotline:</span> </li>
-        <li><span class="pho-footer__label">Email:</span> </li>
-        <li><span class="pho-footer__label">Website:</span> </li>
-      </ul>
-    </div>
-
-    <!-- Cột 3 -->
-    <div class="pho-footer__col">
-      <h3 class="pho-footer__title">Tin tức nổi bật</h3>
-      <ul class="pho-footer__links">
-        <li><a href="#">Nhóm đông đặt tiệc</a></li>
-        <li><a href="#">Đặt món phục vụ tại nhà</a></li>
-        <li><a href="#">Thông tin về giá sản phẩm</a></li>
-        <li><a href="#">Chính sách đổi trả</a></li>
-        <li><a href="#">Chính sách thanh toán</a></li>
-        <li><a href="#">Chính sách vận chuyển</a></li>
-        <li><a href="#">Chính sách bảo mật</a></li>
-      </ul>
-    </div>
-
-    <!-- Cột 4 -->
-    <div class="pho-footer__col">
-      <h3 class="pho-footer__title">Mạng xã hội</h3>
-
-      <div class="pho-footer__social">
-        <a href="#" aria-label="Facebook" class="pho-footer__social-link">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M14 8.5V7c0-.8.5-1 1-1h2V3h-3c-3 0-4 2-4 4.5v2H7v3h3v8h4v-8h3l1-3h-4z"/>
-          </svg>
-        </a>
-
-        <a href="#" aria-label="Instagram" class="pho-footer__social-link">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5zM17.8 6.2a1.2 1.2 0 1 1-1.2 1.2 1.2 1.2 0 0 1 1.2-1.2z"/>
-          </svg>
-        </a>
-
-        <a href="#" aria-label="YouTube" class="pho-footer__social-link">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M21.6 7.2a3 3 0 0 0-2.1-2.1C17.7 4.6 12 4.6 12 4.6s-5.7 0-7.5.5A3 3 0 0 0 2.4 7.2 31.4 31.4 0 0 0 2 12a31.4 31.4 0 0 0 .4 4.8 3 3 0 0 0 2.1 2.1c1.8.5 7.5.5 7.5.5s5.7 0 7.5-.5a3 3 0 0 0 2.1-2.1A31.4 31.4 0 0 0 22 12a31.4 31.4 0 0 0-.4-4.8zM10 15.2V8.8L15.5 12z"/>
-          </svg>
-        </a>
-
-        <a href="#" aria-label="Zalo" class="pho-footer__social-link">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 4h16v16H4V4zm3.2 5.1h4.8v.8l-3.1 4h3.2V15H6.8v-.8l3.1-4H7.2V9.1zm7.5 0h1.6v5.9h-1.6V9.1zm.8-2.1a.9.9 0 1 1 0 1.8.9.9 0 0 1 0-1.8z"/>
-          </svg>
-        </a>
-      </div>
-    </div>
-  </div>
+    <div class="pho-footer__bottom">© 2025 Phở Cồ Nam Định. All rights reserved.</div>
 </footer>
+
+<script>
+// Sticky menu
+const menuBox = document.getElementById('menuBox');
+const menuTop = menuBox.offsetTop;
+window.addEventListener("scroll", function () {
+    if (window.scrollY >= menuTop) {
+        menuBox.classList.add("fixed");
+    } else {
+        menuBox.classList.remove("fixed");
+    }
+});
+
+// Hamburger toggle (mobile)
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const mainMenu = document.getElementById('mainMenu');
+hamburgerBtn.addEventListener('click', function () {
+    mainMenu.classList.toggle('open');
+});
 </script>
 </body>
 </html>
