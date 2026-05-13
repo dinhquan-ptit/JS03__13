@@ -38,13 +38,181 @@ body {
     position: absolute;
     top: 12px;
     right: 5%;
-    padding: 8px 14px;
+    padding: 8px 14px 8px 36px;
     border-radius: 20px;
     border: none;
     font-size: 14px;
     width: clamp(100px, 15vw, 180px);
+    cursor: pointer;
+    background: rgba(255,255,255,0.92) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2.5'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat 12px center;
 }
 @media (max-width: 600px) { .search-box { display: none; } }
+
+/* ===== SEARCH OVERLAY ===== */
+.search-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(4px);
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 80px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s, visibility 0.25s;
+}
+.search-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Hộp tìm kiếm trung tâm */
+.search-modal {
+    width: 90%;
+    max-width: 560px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+    overflow: hidden;
+    transform: translateY(-20px);
+    transition: transform 0.3s;
+}
+.search-overlay.open .search-modal {
+    transform: translateY(0);
+}
+
+/* Input bên trong modal */
+.search-modal-bar {
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    border-bottom: 1.5px solid #f0f0f0;
+    gap: 12px;
+}
+.search-modal-bar svg {
+    flex-shrink: 0;
+    color: #e67e22;
+}
+.search-modal-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 17px;
+    font-family: Georgia, serif;
+    color: #333;
+    padding: 18px 0;
+    background: transparent;
+}
+.search-modal-input::placeholder { color: #bbb; }
+.search-close-btn {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #aaa;
+    padding: 4px 8px;
+    line-height: 1;
+    transition: color 0.2s;
+}
+.search-close-btn:hover { color: #e67e22; }
+
+/* Kết quả */
+.search-results {
+    max-height: 340px;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-bottom: 1px solid #f8f8f8;
+}
+.search-result-item:last-child { border-bottom: none; }
+.search-result-item:hover { background: #fff8f2; }
+.search-result-item img {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+.search-result-info { flex: 1; }
+.search-result-name {
+    font-family: Georgia, serif;
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 15px;
+}
+.search-result-price {
+    color: #e67e22;
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: 2px;
+}
+.search-result-cat {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 2px;
+}
+
+/* Trạng thái rỗng / không tìm thấy */
+.search-empty {
+    text-align: center;
+    padding: 30px 20px;
+    color: #bbb;
+    font-family: Georgia, serif;
+    font-size: 15px;
+}
+.search-empty span { font-size: 32px; display: block; margin-bottom: 10px; }
+
+/* Gợi ý nhanh */
+.search-suggestions {
+    padding: 14px 18px 6px;
+}
+.search-suggestions p {
+    font-size: 11px;
+    font-weight: 700;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 10px;
+}
+.search-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.search-tag {
+    background: #fff5ea;
+    border: 1px solid #f0d4b0;
+    color: #c0601a;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.search-tag:hover { background: #e67e22; color: #fff; border-color: #e67e22; }
+
+/* Mobile: icon floating tìm kiếm kích hoạt overlay */
+.icon-search-btn { cursor: pointer; }
+
+/* Highlight card khi được tìm thấy */
+@keyframes highlightPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(230,126,34,0.7), 0 10px 25px rgba(0,0,0,0.12); transform: scale(1); }
+    40%  { box-shadow: 0 0 0 12px rgba(230,126,34,0.15), 0 20px 45px rgba(0,0,0,0.25); transform: scale(1.03); }
+    100% { box-shadow: 0 0 0 0 rgba(230,126,34,0), 0 10px 25px rgba(0,0,0,0.12); transform: scale(1); }
+}
+.food-card.highlighted {
+    animation: highlightPulse 1.2s ease 2;
+    border: 2.5px solid #e67e22;
+}
 
 /* ===== MENU BOX ===== */
 .menu-box {
@@ -497,7 +665,7 @@ main { flex: 1; }
 
 <div id="d1">
     <img class="logo" src="https://icolor.vn/wp-content/uploads/2024/09/Logo-quan-pho-7.jpg" alt="Logo">
-    <input class="search-box" type="text" placeholder="Tìm món...">
+    <input class="search-box" type="text" placeholder="🔍 Tìm món..." readonly onclick="openSearch()" id="searchBoxTop">
 
     <div class="menu-box" id="menuBox">
         <div class="menu-header">
@@ -535,7 +703,7 @@ main { flex: 1; }
 </div>
 
 <div class="floating-icons">
-    <img src="icon tìmmkieems.jpg" class="icon" onclick="alert('Mở tìm kiếm')" title="TÌM MÓN" alt="Tìm kiếm">
+    <img src="icon tìmmkieems.jpg" class="icon icon-search-btn" onclick="openSearch()" title="TÌM MÓN" alt="Tìm kiếm">
     <img src="bản đồ.jpg" class="icon" onclick="alert('Mở bản đồ')" title="TRA VỊ TRÍ" alt="Bản đồ">
 </div>
 <a href="tel:0363005144" class="goidien">
@@ -559,7 +727,7 @@ main { flex: 1; }
         <h2 class="category-title">Phở</h2>
         <div class="food-grid">
 
-            <div class="food-card">
+            <div class="food-card" id="card-pho-tai">
                 <img src="monan/pho-tai-lan.jpg" alt="Phở tái">
                 <div class="food-info">
                     <h3>Phở tái</h3><p>30k</p>
@@ -567,7 +735,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-pho-chin">
                 <img src="monan/phochin.jpg" alt="Phở chín">
                 <div class="food-info">
                     <h3>Phở chín</h3><p>30k</p>
@@ -575,7 +743,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-pho-dacbiet">
                 <img src="monan/phodacbiet.png" alt="Phở đặc biệt">
                 <div class="food-info">
                     <h3>Phở đặc biệt</h3><p>50k</p>
@@ -583,7 +751,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-pho-taichin">
                 <img src="monan/photaichin.jpg" alt="Phở tái chín">
                 <div class="food-info">
                     <h3>Phở tái chín</h3><p>30k</p>
@@ -591,7 +759,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-pho-tainam">
                 <img src="monan/photinam.jpg" alt="Phở tái nạm">
                 <div class="food-info">
                     <h3>Phở tái nạm</h3><p>35k</p>
@@ -599,7 +767,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-pho-taigau">
                 <img src="monan/photigau.jpg" alt="Phở tái gầu">
                 <div class="food-info">
                     <h3>Phở tái gầu</h3><p>35k</p>
@@ -607,7 +775,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-pho-taibap">
                 <img src="monan/photibap.jpg" alt="Phở tái bắp">
                 <div class="food-info">
                     <h3>Phở tái bắp</h3><p>35k</p>
@@ -615,7 +783,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-pho-tailan">
                 <img src="monan/photilan.jpg" alt="Phở tái lăn">
                 <div class="food-info">
                     <h3>Phở tái lăn</h3><p>35k</p>
@@ -623,7 +791,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-pho-apchao">
                 <img src="monan/phoapchao.jpg" alt="Phở áp chảo">
                 <div class="food-info">
                     <h3>Phở áp chảo</h3><p>35k</p>
@@ -631,7 +799,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-pho-xao">
                 <img src="monan/phoxao.jpg" alt="Phở xào">
                 <div class="food-info">
                     <h3>Phở xào</h3><p>55k</p>
@@ -647,7 +815,7 @@ main { flex: 1; }
         <h2 class="category-title">Cơm rang</h2>
         <div class="food-grid">
 
-            <div class="food-card">
+            <div class="food-card" id="card-com-rang">
                 <img src="monan/comrang.jpg" alt="Cơm rang">
                 <div class="food-info">
                     <h3>Cơm rang</h3><p>50k</p>
@@ -655,7 +823,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-com-trung">
                 <img src="monan/comrangtrung.jpg" alt="Cơm rang trứng">
                 <div class="food-info">
                     <h3>Cơm rang trứng</h3><p>25k</p>
@@ -663,7 +831,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-com-xucxich">
                 <img src="monan/comrangxucxich.jpg" alt="Cơm rang xúc xích">
                 <div class="food-info">
                     <h3>Cơm rang xúc xích</h3><p>30k</p>
@@ -671,7 +839,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-com-thapcam">
                 <img src="monan/comrangthapcam.jpg" alt="Cơm rang thập cẩm">
                 <div class="food-info">
                     <h3>Cơm rang thập cẩm</h3><p>35k</p>
@@ -679,7 +847,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-com-duabo">
                 <img src="monan/comrangduabo.jpg" alt="Cơm rang dưa bò">
                 <div class="food-info">
                     <h3>Cơm rang dưa bò</h3><p>35k</p>
@@ -687,7 +855,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-com-caibo">
                 <img src="monan/comrangcaibo.jpg" alt="Cơm rang cải bò">
                 <div class="food-info">
                     <h3>Cơm rang cải bò</h3><p>35k</p>
@@ -695,7 +863,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-com-duiga">
                 <img src="monan/comrangduiga.jpg" alt="Cơm rang đùi gà">
                 <div class="food-info">
                     <h3>Cơm rang đùi gà</h3><p>35k</p>
@@ -711,7 +879,7 @@ main { flex: 1; }
         <h2 class="category-title">Mỳ</h2>
         <div class="food-grid">
 
-            <div class="food-card">
+            <div class="food-card" id="card-my-xao">
                 <img src="monan/myxao.jpg" alt="Mỳ xào">
                 <div class="food-info">
                     <h3>Mỳ xào</h3><p>40k</p>
@@ -719,8 +887,8 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
-                <img src="monan/boxaoraucai.jpg" alt="Bò xào rau cải">
+            <div class="food-card" id="card-bo-raucai">
+                <img src="monan/boxaoraucai.jpg" alt="Mỳ Bò xào rau cải">
                 <div class="food-info">
                     <h3>Bò xào rau cải</h3><p>40k</p>
                     <label><input type="checkbox" name="order" value="Bò xào rau cải 40k"><span class="tick">Chọn món</span></label>
@@ -735,7 +903,7 @@ main { flex: 1; }
         <h2 class="category-title">Nước</h2>
         <div class="food-grid">
 
-            <div class="food-card">
+            <div class="food-card" id="card-pepsi">
                 <img src="monan/pepsi.jpg" alt="Pepsi">
                 <div class="food-info">
                     <h3>Pepsi</h3><p>10k</p>
@@ -743,7 +911,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-7up">
                 <img src="monan/7up.jpg" alt="7up">
                 <div class="food-info">
                     <h3>7up</h3><p>10k</p>
@@ -751,7 +919,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-aquafina">
                 <img src="monan/aquafina.jpg" alt="Aquafina">
                 <div class="food-info">
                     <h3>Aquafina</h3><p>10k</p>
@@ -759,7 +927,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-mirinda">
                 <img src="monan/mirinda.jpg" alt="Mirinda">
                 <div class="food-info">
                     <h3>Mirinda</h3><p>10k</p>
@@ -767,7 +935,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-tangluc">
                 <img src="monan/nuoctangluc.jpg" alt="Nước tăng lực">
                 <div class="food-info">
                     <h3>Nước tăng lực</h3><p>15k</p>
@@ -775,7 +943,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-rockstar">
                 <img src="monan/rockstar.jpg" alt="Rockstar">
                 <div class="food-info">
                     <h3>Rockstar</h3><p>15k</p>
@@ -783,7 +951,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-twister">
                 <img src="monan/twister.jpg" alt="Cam ép Twister">
                 <div class="food-info">
                     <h3>Cam ép Twister</h3><p>15k</p>
@@ -791,7 +959,7 @@ main { flex: 1; }
                 </div>
             </div>
 
-            <div class="food-card">
+            <div class="food-card" id="card-teaplus">
                 <img src="monan/teaplus.jpg" alt="Trà ô long Tea+">
                 <div class="food-info">
                     <h3>Trà ô long Tea+</h3><p>10k</p>
@@ -856,6 +1024,31 @@ main { flex: 1; }
     </div>
     <div class="pho-footer__bottom">© 2025 Phở Cồ Nam Định. All rights reserved.</div>
 </footer>
+
+<!-- ===== SEARCH OVERLAY ===== -->
+<div class="search-overlay" id="searchOverlay" onclick="handleOverlayClick(event)">
+    <div class="search-modal" id="searchModal">
+        <div class="search-modal-bar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input class="search-modal-input" id="searchModalInput" type="text" placeholder="Nhập tên món... vd: phở tái, pepsi">
+            <button class="search-close-btn" onclick="closeSearch()">✕</button>
+        </div>
+        <div id="searchBody">
+            <!-- Gợi ý mặc định -->
+            <div class="search-suggestions">
+                <p>Tìm nhanh</p>
+                <div class="search-tags">
+                    <span class="search-tag" onclick="quickSearch('phở tái')">Phở tái</span>
+                    <span class="search-tag" onclick="quickSearch('đặc biệt')">Đặc biệt</span>
+                    <span class="search-tag" onclick="quickSearch('cơm rang')">Cơm rang</span>
+                    <span class="search-tag" onclick="quickSearch('mỳ xào')">Mỳ xào</span>
+                    <span class="search-tag" onclick="quickSearch('pepsi')">Pepsi</span>
+                    <span class="search-tag" onclick="quickSearch('rockstar')">Rockstar</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
 // ===== 1. STICKY MENU (chỉ 1 lần duy nhất) =====
@@ -948,6 +1141,136 @@ window.onload = function () {
 
     window._menuLoaded = true; // Đánh dấu đã load xong
 };
+
+// ===== 7. DỮ LIỆU MÓN ĂN ĐỂ TÌM KIẾM =====
+const monAnData = [
+    // PHỞ
+    { ten: 'Phở tái',       gia: '30k', tab: 'pho',     cardId: 'card-pho-tai',     img: 'monan/pho-tai-lan.jpg' },
+    { ten: 'Phở chín',      gia: '30k', tab: 'pho',     cardId: 'card-pho-chin',    img: 'monan/phochin.jpg' },
+    { ten: 'Phở đặc biệt',  gia: '50k', tab: 'pho',     cardId: 'card-pho-dacbiet', img: 'monan/phodacbiet.png' },
+    { ten: 'Phở tái chín',  gia: '30k', tab: 'pho',     cardId: 'card-pho-taichin', img: 'monan/photaichin.jpg' },
+    { ten: 'Phở tái nạm',   gia: '35k', tab: 'pho',     cardId: 'card-pho-tainam',  img: 'monan/photinam.jpg' },
+    { ten: 'Phở tái gầu',   gia: '35k', tab: 'pho',     cardId: 'card-pho-taigau',  img: 'monan/photigau.jpg' },
+    { ten: 'Phở tái bắp',   gia: '35k', tab: 'pho',     cardId: 'card-pho-taibap',  img: 'monan/photibap.jpg' },
+    { ten: 'Phở tái lăn',   gia: '35k', tab: 'pho',     cardId: 'card-pho-tailan',  img: 'monan/photilan.jpg' },
+    { ten: 'Phở áp chảo',   gia: '35k', tab: 'pho',     cardId: 'card-pho-apchao',  img: 'monan/phoapchao.jpg' },
+    { ten: 'Phở xào',       gia: '55k', tab: 'pho',     cardId: 'card-pho-xao',     img: 'monan/phoxao.jpg' },
+    // CƠM RANG
+    { ten: 'Cơm rang',          gia: '50k', tab: 'comrang', cardId: 'card-com-rang',      img: 'monan/comrang.jpg' },
+    { ten: 'Cơm rang trứng',    gia: '25k', tab: 'comrang', cardId: 'card-com-trung',     img: 'monan/comrangtrung.jpg' },
+    { ten: 'Cơm rang xúc xích', gia: '30k', tab: 'comrang', cardId: 'card-com-xucxich',   img: 'monan/comrangxucxich.jpg' },
+    { ten: 'Cơm rang thập cẩm', gia: '35k', tab: 'comrang', cardId: 'card-com-thapcam',   img: 'monan/comrangthapcam.jpg' },
+    { ten: 'Cơm rang dưa bò',   gia: '35k', tab: 'comrang', cardId: 'card-com-duabo',     img: 'monan/comrangduabo.jpg' },
+    { ten: 'Cơm rang cải bò',   gia: '35k', tab: 'comrang', cardId: 'card-com-caibo',     img: 'monan/comrangcaibo.jpg' },
+    { ten: 'Cơm rang đùi gà',   gia: '35k', tab: 'comrang', cardId: 'card-com-duiga',     img: 'monan/comrangduiga.jpg' },
+    // MỲ
+    { ten: 'Mỳ xào',         gia: '40k', tab: 'my', cardId: 'card-my-xao',       img: 'monan/myxao.jpg' },
+    { ten: 'Mỳ Bò xào rau cải', gia: '40k', tab: 'my', cardId: 'card-bo-raucai',    img: 'monan/boxaoraucai.jpg' },
+    // NƯỚC
+    { ten: 'Pepsi',            gia: '10k', tab: 'nuoc', cardId: 'card-pepsi',    img: 'monan/pepsi.jpg' },
+    { ten: '7up',              gia: '10k', tab: 'nuoc', cardId: 'card-7up',      img: 'monan/7up.jpg' },
+    { ten: 'Aquafina',         gia: '10k', tab: 'nuoc', cardId: 'card-aquafina', img: 'monan/aquafina.jpg' },
+    { ten: 'Mirinda',          gia: '10k', tab: 'nuoc', cardId: 'card-mirinda',  img: 'monan/mirinda.jpg' },
+    { ten: 'Nước tăng lực',    gia: '15k', tab: 'nuoc', cardId: 'card-tangluc',  img: 'monan/nuoctangluc.jpg' },
+    { ten: 'Rockstar',         gia: '15k', tab: 'nuoc', cardId: 'card-rockstar', img: 'monan/rockstar.jpg' },
+    { ten: 'Cam ép Twister',   gia: '15k', tab: 'nuoc', cardId: 'card-twister',  img: 'monan/twister.jpg' },
+    { ten: 'Trà ô long Tea+',  gia: '10k', tab: 'nuoc', cardId: 'card-teaplus',  img: 'monan/teaplus.jpg' },
+];
+
+const tabLabel = { pho: 'Phở', comrang: 'Cơm rang', my: 'Mỳ', nuoc: 'Nước' };
+
+// Chuẩn hoá tiếng Việt để so sánh không phân biệt dấu
+function normalize(str) {
+    return str.toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+}
+
+// ===== 8. MỞ / ĐÓNG OVERLAY =====
+function openSearch() {
+    document.getElementById('searchOverlay').classList.add('open');
+    setTimeout(() => document.getElementById('searchModalInput').focus(), 200);
+}
+function closeSearch() {
+    document.getElementById('searchOverlay').classList.remove('open');
+    document.getElementById('searchModalInput').value = '';
+    renderSuggestions(); // reset về gợi ý
+}
+function handleOverlayClick(e) {
+    if (e.target === document.getElementById('searchOverlay')) closeSearch();
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
+
+// ===== 9. RENDER GỢI Ý MẶC ĐỊNH =====
+function renderSuggestions() {
+    document.getElementById('searchBody').innerHTML = `
+        <div class="search-suggestions">
+            <p>Tìm nhanh</p>
+            <div class="search-tags">
+                <span class="search-tag" onclick="quickSearch('phở tái')">Phở tái</span>
+                <span class="search-tag" onclick="quickSearch('đặc biệt')">Đặc biệt</span>
+                <span class="search-tag" onclick="quickSearch('cơm rang')">Cơm rang</span>
+                <span class="search-tag" onclick="quickSearch('mỳ xào')">Mỳ xào</span>
+                <span class="search-tag" onclick="quickSearch('pepsi')">Pepsi</span>
+                <span class="search-tag" onclick="quickSearch('rockstar')">Rockstar</span>
+            </div>
+        </div>`;
+}
+
+// ===== 10. TÌM KIẾM =====
+document.getElementById('searchModalInput').addEventListener('input', function() {
+    const q = this.value.trim();
+    if (!q) { renderSuggestions(); return; }
+    const qn = normalize(q);
+    const ketQua = monAnData.filter(m => normalize(m.ten).includes(qn));
+    renderResults(ketQua, q);
+});
+
+function quickSearch(text) {
+    const input = document.getElementById('searchModalInput');
+    input.value = text;
+    input.dispatchEvent(new Event('input'));
+}
+
+// ===== 11. HIỂN THỊ KẾT QUẢ =====
+function renderResults(ketQua, q) {
+    const body = document.getElementById('searchBody');
+    if (ketQua.length === 0) {
+        body.innerHTML = `<div class="search-empty"><span>🍜</span>Không tìm thấy món "<strong>${q}</strong>"<br><small>Thử tìm: phở, cơm, mỳ, pepsi...</small></div>`;
+        return;
+    }
+    const items = ketQua.map(m => `
+        <div class="search-result-item" onclick="goToCard('${m.tab}', '${m.cardId}')">
+            <img src="${m.img}" alt="${m.ten}" onerror="this.style.background='#eee';this.removeAttribute('src')">
+            <div class="search-result-info">
+                <div class="search-result-name">${m.ten}</div>
+                <div class="search-result-price">${m.gia}</div>
+                <div class="search-result-cat">📂 ${tabLabel[m.tab]}</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>`).join('');
+    body.innerHTML = `<div class="search-results">${items}</div>`;
+}
+
+// ===== 12. CHUYỂN ĐẾN CARD & HIGHLIGHT =====
+function goToCard(tab, cardId) {
+    closeSearch();
+
+    // 1. Hiện đúng tab
+    showMenu(tab);
+
+    // 2. Đợi DOM render xong rồi scroll + highlight
+    setTimeout(() => {
+        const card = document.getElementById(cardId);
+        if (!card) return;
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        card.classList.remove('highlighted'); // reset nếu đang highlight
+        void card.offsetWidth; // reflow để animation chạy lại
+        card.classList.add('highlighted');
+        // Xoá highlight sau khi animation xong
+        setTimeout(() => card.classList.remove('highlighted'), 2800);
+    }, 120);
+}
 </script>
 </body>
 </html>
