@@ -1051,99 +1051,136 @@ main { flex: 1; }
 </div>
 
 <script>
-// ===== 1. STICKY MENU (chỉ 1 lần duy nhất) =====
-const menuBox = document.getElementById('menuBox');
-const menuTop = menuBox.offsetTop;
-window.addEventListener("scroll", function () {
-    menuBox.classList.toggle("fixed", window.scrollY >= menuTop);
-});
+// ===== 1. STICKY MENU =====
+var menuBox = document.getElementById('menuBox');
+var menuTop = menuBox.offsetTop;
+
+window.onscroll = function() {
+    if (window.scrollY >= menuTop) {
+        menuBox.classList.add("fixed");
+    } else {
+        menuBox.classList.remove("fixed");
+    }
+};
+
 
 // ===== 2. HAMBURGER TOGGLE =====
-const hamburgerBtn = document.getElementById('hamburgerBtn');
-const mainMenu = document.getElementById('mainMenu');
-hamburgerBtn.addEventListener('click', function () {
-    mainMenu.classList.toggle('open');
-});
+var hamburgerBtn = document.getElementById('hamburgerBtn');
+var mainMenu = document.getElementById('mainMenu');
+
+hamburgerBtn.onclick = function() {
+    if (mainMenu.classList.contains('open')) {
+        mainMenu.classList.remove('open');
+    } else {
+        mainMenu.classList.add('open');
+    }
+};
+
 
 // ===== 3. DROPDOWN TOGGLE TRÊN MOBILE =====
-const dropdownEl   = document.getElementById('dropdownThucdon');
-const dropdownToggleLink = document.getElementById('dropdownToggle');
-const dropdownMenu = document.getElementById('dropdownMenu');
+var dropdownEl = document.getElementById('dropdownThucdon');
+var dropdownToggleLink = document.getElementById('dropdownToggle');
+var dropdownMenu = document.getElementById('dropdownMenu');
 
-dropdownToggleLink.addEventListener('click', function (e) {
-    // Chỉ toggle trên mobile (menu đang mở = màn hình nhỏ)
+dropdownToggleLink.onclick = function(e) {
     if (window.innerWidth <= 768) {
-        e.preventDefault(); // không chuyển trang khi đang toggle
-        dropdownEl.classList.toggle('open-sub');
-        dropdownMenu.classList.toggle('open-sub');
-    }
-    // Trên desktop: để link hoạt động bình thường (chuyển sang thucdon.html#menu-full)
-});
+        e.preventDefault();
 
-// ===== 4. SHOW MENU SECTION + SCROLL =====
+        if (dropdownEl.classList.contains('open-sub')) {
+            dropdownEl.classList.remove('open-sub');
+        } else {
+            dropdownEl.classList.add('open-sub');
+        }
+
+        if (dropdownMenu.classList.contains('open-sub')) {
+            dropdownMenu.classList.remove('open-sub');
+        } else {
+            dropdownMenu.classList.add('open-sub');
+        }
+    }
+};
+
+
+// ===== 4. SHOW MENU SECTION =====
 function showMenu(id) {
-    // Ẩn tất cả category
-    document.querySelectorAll('.category').forEach(cat => {
-        cat.style.display = "none";
-    });
+    // Lấy tất cả các category rồi ẩn hết
+    var categories = document.querySelectorAll('.category');
+    for (var i = 0; i < categories.length; i++) {
+        categories[i].style.display = "none";
+    }
 
     // Hiện category được chọn
-    const target = document.getElementById(id);
-    if (target) target.style.display = "block";
+    var target = document.getElementById(id);
+    if (target) {
+        target.style.display = "block";
+    }
 
-    // Cập nhật tab active
-    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove("active"));
-    const activeTab = document.querySelector('[onclick="showMenu(\'' + id + '\')"]');
-    if (activeTab) activeTab.classList.add("active");
+    // Bỏ class active ở tất cả các tab
+    var tabs = document.querySelectorAll('.tab');
+    for (var i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove("active");
+    }
+
+    // Thêm class active vào tab đang chọn
+    var activeTab = document.querySelector('[onclick="showMenu(\'' + id + '\')"]');
+    if (activeTab) {
+        activeTab.classList.add("active");
+    }
 
     // Scroll xuống section (trừ lần đầu load)
     if (window._menuLoaded) {
-        setTimeout(() => {
-            const el = document.getElementById(id);
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(function() {
+            var el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }, 50);
     }
 }
 
-// ===== 5. HÀM ĐIỀU HƯỚNG TỪ DROPDOWN MENU =====
-// Khi click "CÁC MÓN PHỞ" v.v. từ dropdown, hiện đúng tab và scroll xuống
-function goToSection(id, linkEl) {
-    // Nếu đang ở trang thucdon.html (trang hiện tại có #menu-full)
-    if (document.getElementById('menu-full')) {
-        // Ngăn chuyển trang
-        if (linkEl) linkEl.preventDefault ? linkEl.preventDefault() : null;
-        showMenu(id);
 
-        // Đóng mobile menu sau khi chọn
+// ===== 5. ĐIỀU HƯỚNG TỪ DROPDOWN =====
+function goToSection(id, linkEl) {
+    if (document.getElementById('menu-full')) {
+        showMenu(id);
         mainMenu.classList.remove('open');
         dropdownEl.classList.remove('open-sub');
         dropdownMenu.classList.remove('open-sub');
     }
-    // Nếu ở trang khác: để href chuyển trang bình thường (thucdon.html#pho)
-    // Trang thucdon.html sẽ tự đọc hash khi load
 }
 
-// ===== 6. KHI LOAD TRANG: ĐỌC HASH URL ĐỂ HIỆN ĐÚNG MỤC =====
-window.onload = function () {
-    const hash = window.location.hash.replace('#', ''); // vd: "pho", "my", "comrang", "nuoc"
-    const validSections = ['pho', 'my', 'comrang', 'nuoc'];
 
-    if (validSections.includes(hash)) {
-        showMenu(hash);
-        // Scroll sau khi trang load xong
-        setTimeout(() => {
-            const el = document.getElementById(hash);
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 300);
-    } else {
-        showMenu('pho'); // Mặc định hiện Phở
+// ===== 6. KHI LOAD TRANG: ĐỌC HASH URL =====
+window.onload = function() {
+    var hash = window.location.hash.replace('#', '');
+    var validSections = ['pho', 'my', 'comrang', 'nuoc'];
+
+    var isValid = false;
+    for (var i = 0; i < validSections.length; i++) {
+        if (validSections[i] === hash) {
+            isValid = true;
+            break;
+        }
     }
 
-    window._menuLoaded = true; // Đánh dấu đã load xong
+    if (isValid) {
+        showMenu(hash);
+        setTimeout(function() {
+            var el = document.getElementById(hash);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 300);
+    } else {
+        showMenu('pho');
+    }
+
+    window._menuLoaded = true;
 };
 
-// ===== 7. DỮ LIỆU MÓN ĂN ĐỂ TÌM KIẾM =====
-const monAnData = [
+
+// ===== 7. DỮ LIỆU MÓN ĂN =====
+var monAnData = [
     // PHỞ
     { ten: 'Phở tái',       gia: '30k', tab: 'pho',     cardId: 'card-pho-tai',     img: 'monan/pho-tai-lan.jpg' },
     { ten: 'Phở chín',      gia: '30k', tab: 'pho',     cardId: 'card-pho-chin',    img: 'monan/phochin.jpg' },
@@ -1156,119 +1193,161 @@ const monAnData = [
     { ten: 'Phở áp chảo',   gia: '35k', tab: 'pho',     cardId: 'card-pho-apchao',  img: 'monan/phoapchao.jpg' },
     { ten: 'Phở xào',       gia: '55k', tab: 'pho',     cardId: 'card-pho-xao',     img: 'monan/phoxao.jpg' },
     // CƠM RANG
-    { ten: 'Cơm rang',          gia: '50k', tab: 'comrang', cardId: 'card-com-rang',      img: 'monan/comrang.jpg' },
-    { ten: 'Cơm rang trứng',    gia: '25k', tab: 'comrang', cardId: 'card-com-trung',     img: 'monan/comrangtrung.jpg' },
-    { ten: 'Cơm rang xúc xích', gia: '30k', tab: 'comrang', cardId: 'card-com-xucxich',   img: 'monan/comrangxucxich.jpg' },
-    { ten: 'Cơm rang thập cẩm', gia: '35k', tab: 'comrang', cardId: 'card-com-thapcam',   img: 'monan/comrangthapcam.jpg' },
-    { ten: 'Cơm rang dưa bò',   gia: '35k', tab: 'comrang', cardId: 'card-com-duabo',     img: 'monan/comrangduabo.jpg' },
-    { ten: 'Cơm rang cải bò',   gia: '35k', tab: 'comrang', cardId: 'card-com-caibo',     img: 'monan/comrangcaibo.jpg' },
-    { ten: 'Cơm rang đùi gà',   gia: '35k', tab: 'comrang', cardId: 'card-com-duiga',     img: 'monan/comrangduiga.jpg' },
+    { ten: 'Cơm rang',          gia: '50k', tab: 'comrang', cardId: 'card-com-rang',    img: 'monan/comrang.jpg' },
+    { ten: 'Cơm rang trứng',    gia: '25k', tab: 'comrang', cardId: 'card-com-trung',   img: 'monan/comrangtrung.jpg' },
+    { ten: 'Cơm rang xúc xích', gia: '30k', tab: 'comrang', cardId: 'card-com-xucxich', img: 'monan/comrangxucxich.jpg' },
+    { ten: 'Cơm rang thập cẩm', gia: '35k', tab: 'comrang', cardId: 'card-com-thapcam', img: 'monan/comrangthapcam.jpg' },
+    { ten: 'Cơm rang dưa bò',   gia: '35k', tab: 'comrang', cardId: 'card-com-duabo',   img: 'monan/comrangduabo.jpg' },
+    { ten: 'Cơm rang cải bò',   gia: '35k', tab: 'comrang', cardId: 'card-com-caibo',   img: 'monan/comrangcaibo.jpg' },
+    { ten: 'Cơm rang đùi gà',   gia: '35k', tab: 'comrang', cardId: 'card-com-duiga',   img: 'monan/comrangduiga.jpg' },
     // MỲ
-    { ten: 'Mỳ xào',         gia: '40k', tab: 'my', cardId: 'card-my-xao',       img: 'monan/myxao.jpg' },
-    { ten: 'Mỳ Bò xào rau cải', gia: '40k', tab: 'my', cardId: 'card-bo-raucai',    img: 'monan/boxaoraucai.jpg' },
+    { ten: 'Mỳ xào',            gia: '40k', tab: 'my', cardId: 'card-my-xao',    img: 'monan/myxao.jpg' },
+    { ten: 'Mỳ Bò xào rau cải', gia: '40k', tab: 'my', cardId: 'card-bo-raucai', img: 'monan/boxaoraucai.jpg' },
     // NƯỚC
-    { ten: 'Pepsi',            gia: '10k', tab: 'nuoc', cardId: 'card-pepsi',    img: 'monan/pepsi.jpg' },
-    { ten: '7up',              gia: '10k', tab: 'nuoc', cardId: 'card-7up',      img: 'monan/7up.jpg' },
-    { ten: 'Aquafina',         gia: '10k', tab: 'nuoc', cardId: 'card-aquafina', img: 'monan/aquafina.jpg' },
-    { ten: 'Mirinda',          gia: '10k', tab: 'nuoc', cardId: 'card-mirinda',  img: 'monan/mirinda.jpg' },
-    { ten: 'Nước tăng lực',    gia: '15k', tab: 'nuoc', cardId: 'card-tangluc',  img: 'monan/nuoctangluc.jpg' },
-    { ten: 'Rockstar',         gia: '15k', tab: 'nuoc', cardId: 'card-rockstar', img: 'monan/rockstar.jpg' },
-    { ten: 'Cam ép Twister',   gia: '15k', tab: 'nuoc', cardId: 'card-twister',  img: 'monan/twister.jpg' },
-    { ten: 'Trà ô long Tea+',  gia: '10k', tab: 'nuoc', cardId: 'card-teaplus',  img: 'monan/teaplus.jpg' },
+    { ten: 'Pepsi',           gia: '10k', tab: 'nuoc', cardId: 'card-pepsi',    img: 'monan/pepsi.jpg' },
+    { ten: '7up',             gia: '10k', tab: 'nuoc', cardId: 'card-7up',      img: 'monan/7up.jpg' },
+    { ten: 'Aquafina',        gia: '10k', tab: 'nuoc', cardId: 'card-aquafina', img: 'monan/aquafina.jpg' },
+    { ten: 'Mirinda',         gia: '10k', tab: 'nuoc', cardId: 'card-mirinda',  img: 'monan/mirinda.jpg' },
+    { ten: 'Nước tăng lực',   gia: '15k', tab: 'nuoc', cardId: 'card-tangluc',  img: 'monan/nuoctangluc.jpg' },
+    { ten: 'Rockstar',        gia: '15k', tab: 'nuoc', cardId: 'card-rockstar', img: 'monan/rockstar.jpg' },
+    { ten: 'Cam ép Twister',  gia: '15k', tab: 'nuoc', cardId: 'card-twister',  img: 'monan/twister.jpg' },
+    { ten: 'Trà ô long Tea+', gia: '10k', tab: 'nuoc', cardId: 'card-teaplus',  img: 'monan/teaplus.jpg' },
 ];
 
-const tabLabel = { pho: 'Phở', comrang: 'Cơm rang', my: 'Mỳ', nuoc: 'Nước' };
+var tabLabel = { pho: 'Phở', comrang: 'Cơm rang', my: 'Mỳ', nuoc: 'Nước' };
 
-// Chuẩn hoá tiếng Việt để so sánh không phân biệt dấu
+
+// ===== 8. CHUẨN HOÁ TIẾNG VIỆT =====
 function normalize(str) {
-    return str.toLowerCase()
-        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-        .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+    var result = str.toLowerCase();
+    result = result.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    result = result.replace(/đ/g, 'd').replace(/Đ/g, 'D');
+    return result;
 }
 
-// ===== 8. MỞ / ĐÓNG OVERLAY =====
+
+// ===== 9. MỞ / ĐÓNG SEARCH OVERLAY =====
 function openSearch() {
     document.getElementById('searchOverlay').classList.add('open');
-    setTimeout(() => document.getElementById('searchModalInput').focus(), 200);
+    setTimeout(function() {
+        document.getElementById('searchModalInput').focus();
+    }, 200);
 }
+
 function closeSearch() {
     document.getElementById('searchOverlay').classList.remove('open');
     document.getElementById('searchModalInput').value = '';
-    renderSuggestions(); // reset về gợi ý
+    renderSuggestions();
 }
+
 function handleOverlayClick(e) {
-    if (e.target === document.getElementById('searchOverlay')) closeSearch();
+    if (e.target === document.getElementById('searchOverlay')) {
+        closeSearch();
+    }
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
 
-// ===== 9. RENDER GỢI Ý MẶC ĐỊNH =====
+document.onkeydown = function(e) {
+    if (e.key === 'Escape') {
+        closeSearch();
+    }
+};
+
+
+// ===== 10. RENDER GỢI Ý MẶC ĐỊNH =====
 function renderSuggestions() {
-    document.getElementById('searchBody').innerHTML = `
-        <div class="search-suggestions">
-            <p>Tìm nhanh</p>
-            <div class="search-tags">
-                <span class="search-tag" onclick="quickSearch('phở tái')">Phở tái</span>
-                <span class="search-tag" onclick="quickSearch('đặc biệt')">Đặc biệt</span>
-                <span class="search-tag" onclick="quickSearch('cơm rang')">Cơm rang</span>
-                <span class="search-tag" onclick="quickSearch('mỳ xào')">Mỳ xào</span>
-                <span class="search-tag" onclick="quickSearch('pepsi')">Pepsi</span>
-                <span class="search-tag" onclick="quickSearch('rockstar')">Rockstar</span>
-            </div>
-        </div>`;
+    document.getElementById('searchBody').innerHTML =
+        '<div class="search-suggestions">' +
+            '<p>Tìm nhanh</p>' +
+            '<div class="search-tags">' +
+                '<span class="search-tag" onclick="quickSearch(\'phở tái\')">Phở tái</span>' +
+                '<span class="search-tag" onclick="quickSearch(\'đặc biệt\')">Đặc biệt</span>' +
+                '<span class="search-tag" onclick="quickSearch(\'cơm rang\')">Cơm rang</span>' +
+                '<span class="search-tag" onclick="quickSearch(\'mỳ xào\')">Mỳ xào</span>' +
+                '<span class="search-tag" onclick="quickSearch(\'pepsi\')">Pepsi</span>' +
+                '<span class="search-tag" onclick="quickSearch(\'rockstar\')">Rockstar</span>' +
+            '</div>' +
+        '</div>';
 }
 
-// ===== 10. TÌM KIẾM =====
-document.getElementById('searchModalInput').addEventListener('input', function() {
-    const q = this.value.trim();
-    if (!q) { renderSuggestions(); return; }
-    const qn = normalize(q);
-    const ketQua = monAnData.filter(m => normalize(m.ten).includes(qn));
-    renderResults(ketQua, q);
-});
 
-function quickSearch(text) {
-    const input = document.getElementById('searchModalInput');
-    input.value = text;
-    input.dispatchEvent(new Event('input'));
-}
+// ===== 11. TÌM KIẾM KHI GÕ =====
+document.getElementById('searchModalInput').oninput = function() {
+    var q = this.value.trim();
 
-// ===== 11. HIỂN THỊ KẾT QUẢ =====
-function renderResults(ketQua, q) {
-    const body = document.getElementById('searchBody');
-    if (ketQua.length === 0) {
-        body.innerHTML = `<div class="search-empty"><span>🍜</span>Không tìm thấy món "<strong>${q}</strong>"<br><small>Thử tìm: phở, cơm, mỳ, pepsi...</small></div>`;
+    if (q === '') {
+        renderSuggestions();
         return;
     }
-    const items = ketQua.map(m => `
-        <div class="search-result-item" onclick="goToCard('${m.tab}', '${m.cardId}')">
-            <img src="${m.img}" alt="${m.ten}" onerror="this.style.background='#eee';this.removeAttribute('src')">
-            <div class="search-result-info">
-                <div class="search-result-name">${m.ten}</div>
-                <div class="search-result-price">${m.gia}</div>
-                <div class="search-result-cat">📂 ${tabLabel[m.tab]}</div>
-            </div>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-        </div>`).join('');
-    body.innerHTML = `<div class="search-results">${items}</div>`;
+
+    var qn = normalize(q);
+    var ketQua = [];
+
+    for (var i = 0; i < monAnData.length; i++) {
+        if (normalize(monAnData[i].ten).indexOf(qn) !== -1) {
+            ketQua.push(monAnData[i]);
+        }
+    }
+
+    renderResults(ketQua, q);
+};
+
+function quickSearch(text) {
+    var input = document.getElementById('searchModalInput');
+    input.value = text;
+    input.oninput();  // gọi thủ công hàm tìm kiếm
 }
 
-// ===== 12. CHUYỂN ĐẾN CARD & HIGHLIGHT =====
+
+// ===== 12. HIỂN THỊ KẾT QUẢ =====
+function renderResults(ketQua, q) {
+    var body = document.getElementById('searchBody');
+
+    if (ketQua.length === 0) {
+        body.innerHTML =
+            '<div class="search-empty">' +
+                '<span>🍜</span> Không tìm thấy món "<strong>' + q + '</strong>"' +
+                '<br><small>Thử tìm: phở, cơm, mỳ, pepsi...</small>' +
+            '</div>';
+        return;
+    }
+
+    var html = '<div class="search-results">';
+
+    for (var i = 0; i < ketQua.length; i++) {
+        var m = ketQua[i];
+        html += '<div class="search-result-item" onclick="goToCard(\'' + m.tab + '\', \'' + m.cardId + '\')">';
+        html +=     '<img src="' + m.img + '" alt="' + m.ten + '" onerror="this.style.background=\'#eee\';this.removeAttribute(\'src\')">';
+        html +=     '<div class="search-result-info">';
+        html +=         '<div class="search-result-name">' + m.ten + '</div>';
+        html +=         '<div class="search-result-price">' + m.gia + '</div>';
+        html +=         '<div class="search-result-cat">📂 ' + tabLabel[m.tab] + '</div>';
+        html +=     '</div>';
+        html +=     '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>';
+        html += '</div>';
+    }
+
+    html += '</div>';
+    body.innerHTML = html;
+}
+
+
+// ===== 13. CHUYỂN ĐẾN CARD & HIGHLIGHT =====
 function goToCard(tab, cardId) {
     closeSearch();
-
-    // 1. Hiện đúng tab
     showMenu(tab);
 
-    // 2. Đợi DOM render xong rồi scroll + highlight
-    setTimeout(() => {
-        const card = document.getElementById(cardId);
+    setTimeout(function() {
+        var card = document.getElementById(cardId);
         if (!card) return;
+
         card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        card.classList.remove('highlighted'); // reset nếu đang highlight
-        void card.offsetWidth; // reflow để animation chạy lại
+        card.classList.remove('highlighted');
+        card.offsetWidth; // reflow để reset animation
         card.classList.add('highlighted');
-        // Xoá highlight sau khi animation xong
-        setTimeout(() => card.classList.remove('highlighted'), 2800);
+
+        setTimeout(function() {
+            card.classList.remove('highlighted');
+        }, 2800);
     }, 120);
 }
 </script>
