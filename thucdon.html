@@ -1051,7 +1051,7 @@ main { flex: 1; }
 </div>
 
 <script>
-// ===== 1. STICKY MENU =====
+
 var menuBox = document.getElementById('menuBox');
 var menuTop = menuBox.offsetTop;
 
@@ -1064,7 +1064,7 @@ window.onscroll = function() {
 };
 
 
-// ===== 2. HAMBURGER TOGGLE =====
+
 var hamburgerBtn = document.getElementById('hamburgerBtn');
 var mainMenu = document.getElementById('mainMenu');
 
@@ -1077,7 +1077,7 @@ hamburgerBtn.onclick = function() {
 };
 
 
-// ===== 3. DROPDOWN TOGGLE TRÊN MOBILE =====
+
 var dropdownEl = document.getElementById('dropdownThucdon');
 var dropdownToggleLink = document.getElementById('dropdownToggle');
 var dropdownMenu = document.getElementById('dropdownMenu');
@@ -1101,33 +1101,32 @@ dropdownToggleLink.onclick = function(e) {
 };
 
 
-// ===== 4. SHOW MENU SECTION =====
+
 function showMenu(id) {
-    // Lấy tất cả các category rồi ẩn hết
     var categories = document.querySelectorAll('.category');
     for (var i = 0; i < categories.length; i++) {
         categories[i].style.display = "none";
     }
 
-    // Hiện category được chọn
+
     var target = document.getElementById(id);
     if (target) {
         target.style.display = "block";
     }
 
-    // Bỏ class active ở tất cả các tab
+
     var tabs = document.querySelectorAll('.tab');
     for (var i = 0; i < tabs.length; i++) {
         tabs[i].classList.remove("active");
     }
 
-    // Thêm class active vào tab đang chọn
+
     var activeTab = document.querySelector('[onclick="showMenu(\'' + id + '\')"]');
     if (activeTab) {
         activeTab.classList.add("active");
     }
 
-    // Scroll xuống section (trừ lần đầu load)
+
     if (window._menuLoaded) {
         setTimeout(function() {
             var el = document.getElementById(id);
@@ -1139,7 +1138,7 @@ function showMenu(id) {
 }
 
 
-// ===== 5. ĐIỀU HƯỚNG TỪ DROPDOWN =====
+
 function goToSection(id, linkEl) {
     if (document.getElementById('menu-full')) {
         showMenu(id);
@@ -1150,7 +1149,6 @@ function goToSection(id, linkEl) {
 }
 
 
-// ===== 6. KHI LOAD TRANG: ĐỌC HASH URL =====
 window.onload = function() {
     var hash = window.location.hash.replace('#', '');
     var validSections = ['pho', 'my', 'comrang', 'nuoc'];
@@ -1179,7 +1177,7 @@ window.onload = function() {
 };
 
 
-// ===== 7. DỮ LIỆU MÓN ĂN =====
+
 var monAnData = [
     // PHỞ
     { ten: 'Phở tái',       gia: '30k', tab: 'pho',     cardId: 'card-pho-tai',     img: 'monan/pho-tai-lan.jpg' },
@@ -1217,7 +1215,7 @@ var monAnData = [
 var tabLabel = { pho: 'Phở', comrang: 'Cơm rang', my: 'Mỳ', nuoc: 'Nước' };
 
 
-// ===== 8. CHUẨN HOÁ TIẾNG VIỆT =====
+
 function normalize(str) {
     var result = str.toLowerCase();
     result = result.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -1226,7 +1224,6 @@ function normalize(str) {
 }
 
 
-// ===== 9. MỞ / ĐÓNG SEARCH OVERLAY =====
 function openSearch() {
     document.getElementById('searchOverlay').classList.add('open');
     setTimeout(function() {
@@ -1253,7 +1250,6 @@ document.onkeydown = function(e) {
 };
 
 
-// ===== 10. RENDER GỢI Ý MẶC ĐỊNH =====
 function renderSuggestions() {
     document.getElementById('searchBody').innerHTML =
         '<div class="search-suggestions">' +
@@ -1270,7 +1266,6 @@ function renderSuggestions() {
 }
 
 
-// ===== 11. TÌM KIẾM KHI GÕ =====
 document.getElementById('searchModalInput').oninput = function() {
     var q = this.value.trim();
 
@@ -1298,7 +1293,7 @@ function quickSearch(text) {
 }
 
 
-// ===== 12. HIỂN THỊ KẾT QUẢ =====
+
 function renderResults(ketQua, q) {
     var body = document.getElementById('searchBody');
 
