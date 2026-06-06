@@ -594,6 +594,126 @@ body {
     color: #d7d7d7;
     font-size: 13px;
 }
+.search-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 999999;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 80px;
+}
+.search-overlay.active { display: flex; }
+
+.search-modal {
+    background: #fff;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 560px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    overflow: hidden;
+    animation: slideDown 0.25s ease;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-30px); opacity: 0; }
+    to   { transform: translateY(0);     opacity: 1; }
+}
+
+.search-modal-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.search-modal-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-family: Georgia, serif;
+    color: #333;
+}
+
+.search-close-btn {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #888;
+    line-height: 1;
+    padding: 0 4px;
+}
+.search-close-btn:hover { color: #e67e22; }
+
+.search-results {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: 0.2s;
+    text-decoration: none;
+    color: inherit;
+}
+.search-result-item:hover { background: #fff5ec; }
+
+.search-result-item img {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.search-result-info { flex: 1; }
+.search-result-info strong {
+    display: block;
+    font-size: 14px;
+    color: #2c3e50;
+    font-family: Georgia, serif;
+}
+.search-result-info span {
+    font-size: 13px;
+    color: #e67e22;
+    font-weight: bold;
+}
+.search-result-tag {
+    font-size: 11px;
+    background: #fff0e0;
+    color: #c0660f;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.search-empty {
+    text-align: center;
+    padding: 30px 20px;
+    color: #888;
+    font-family: Georgia, serif;
+    font-size: 14px;
+}
+.search-empty span { font-size: 28px; display: block; margin-bottom: 8px; }
+
+.search-hint {
+    padding: 14px 20px;
+    font-size: 12px;
+    color: #aaa;
+    border-top: 1px solid #f0f0f0;
+    text-align: center;
+    font-family: Georgia, serif;
+}
 </style>
 </head>
 <body>
@@ -637,7 +757,7 @@ body {
     <img class="arrow arrow5" src="arrow5.png" alt="">
 </div>
 <div class="floating-icons">
-    <img src="icon tìmmkieems.jpg" class="icon" onclick="alert('Mở tìm kiếm')" title="TÌM MÓN" alt="Tìm kiếm">
+    <img src="icon tìmmkieems.jpg" class="icon" onclick="openSearch()" title="TÌM MÓN" alt="Tìm kiếm">
     <img src="bản đồ.jpg" class="icon" onclick="alert('Mở bản đồ')" title="TRA VỊ TRÍ" alt="Bản đồ">
     <a href="tel:0363005144" class="goidien">
         <img src="ảnh gọi điện.png" alt="Gọi điện">
@@ -723,24 +843,142 @@ body {
     </div>
     <div class="pho-footer__bottom">© 2025 Phở Cồ Nam Định. All rights reserved.</div>
 </footer>
-
+<div class="search-overlay" id="searchOverlay" onclick="handleOverlayClick(event)">
+    <div class="search-modal">
+        <div class="search-modal-header">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e67e22" stroke-width="2.5" stroke-linecap="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input
+                class="search-modal-input"
+                id="searchModalInput"
+                type="text"
+                placeholder="Tìm món ăn... (vd: phở tái, cơm rang)"
+                autocomplete="off"
+                oninput="renderSearchResults(this.value)"
+            >
+            <button class="search-close-btn" onclick="closeSearch()">✕</button>
+        </div>
+        <div class="search-results" id="searchResults">
+            <!-- kết quả render ở đây -->
+        </div>
+        <div class="search-hint">Nhấn vào món để xem trong thực đơn</div>
+    </div>
+</div>
 <script>
-// Sticky menu
+// ===== DỮ LIỆU MÓN ĂN =====
+const ALL_DISHES = [
+    // Phở
+    { name: "Phở tái",       price: "30k", img: "monan/pho-tai-lan.jpg",  section: "pho",     tag: "Phở" },
+    { name: "Phở chín",      price: "30k", img: "monan/phochin.jpg",      section: "pho",     tag: "Phở" },
+    { name: "Phở đặc biệt",  price: "50k", img: "monan/phodacbiet.png",   section: "pho",     tag: "Phở" },
+    { name: "Phở tái chín",  price: "30k", img: "monan/photaichin.jpg",   section: "pho",     tag: "Phở" },
+    { name: "Phở tái nạm",   price: "35k", img: "monan/photinam.jpg",     section: "pho",     tag: "Phở" },
+    { name: "Phở tái gầu",   price: "35k", img: "monan/photigau.jpg",     section: "pho",     tag: "Phở" },
+    { name: "Phở tái bắp",   price: "35k", img: "monan/photibap.jpg",     section: "pho",     tag: "Phở" },
+    { name: "Phở tái lăn",   price: "35k", img: "monan/photilan.jpg",     section: "pho",     tag: "Phở" },
+    { name: "Phở áp chảo",   price: "35k", img: "monan/phoapchao.jpg",    section: "pho",     tag: "Phở" },
+    { name: "Phở xào",       price: "55k", img: "monan/phoxao.jpg",       section: "pho",     tag: "Phở" },
+    // Cơm rang
+    { name: "Cơm rang",            price: "50k", img: "monan/comrang.jpg",        section: "comrang", tag: "Cơm rang" },
+    { name: "Cơm rang trứng",      price: "25k", img: "monan/comrangtrung.jpg",   section: "comrang", tag: "Cơm rang" },
+    { name: "Cơm rang xúc xích",   price: "30k", img: "monan/comrangxucxich.jpg", section: "comrang", tag: "Cơm rang" },
+    { name: "Cơm rang thập cẩm",   price: "35k", img: "monan/comrangthapcam.jpg", section: "comrang", tag: "Cơm rang" },
+    { name: "Cơm rang dưa bò",     price: "35k", img: "monan/comrangduabo.jpg",   section: "comrang", tag: "Cơm rang" },
+    { name: "Cơm rang cải bò",     price: "35k", img: "monan/comrangcaibo.jpg",   section: "comrang", tag: "Cơm rang" },
+    { name: "Cơm rang đùi gà",     price: "35k", img: "monan/comrangduiga.jpg",   section: "comrang", tag: "Cơm rang" },
+    // Mỳ
+    { name: "Mỳ xào",          price: "40k", img: "monan/myxao.jpg",       section: "my",  tag: "Mỳ" },
+    { name: "Bò xào rau cải",  price: "40k", img: "monan/boxaoraucai.jpg", section: "my",  tag: "Mỳ" },
+    // Nước
+    { name: "Pepsi",            price: "10k", img: "monan/pepsi.jpg",       section: "nuoc", tag: "Nước" },
+    { name: "7up",              price: "10k", img: "monan/7up.jpg",         section: "nuoc", tag: "Nước" },
+    { name: "Aquafina",         price: "10k", img: "monan/aquafina.jpg",    section: "nuoc", tag: "Nước" },
+    { name: "Mirinda",          price: "10k", img: "monan/mirinda.jpg",     section: "nuoc", tag: "Nước" },
+    { name: "Nước tăng lực",    price: "15k", img: "monan/nuoctangluc.jpg", section: "nuoc", tag: "Nước" },
+    { name: "Rockstar",         price: "15k", img: "monan/rockstar.jpg",    section: "nuoc", tag: "Nước" },
+    { name: "Cam ép Twister",   price: "15k", img: "monan/twister.jpg",     section: "nuoc", tag: "Nước" },
+    { name: "Trà ô long Tea+",  price: "10k", img: "monan/teaplus.jpg",     section: "nuoc", tag: "Nước" },
+];
+
+// ===== MỞ / ĐÓNG SEARCH =====
+function openSearch() {
+    document.getElementById('searchOverlay').classList.add('active');
+    setTimeout(() => document.getElementById('searchModalInput').focus(), 100);
+    renderSearchResults(''); // hiện gợi ý mặc định
+}
+
+function closeSearch() {
+    document.getElementById('searchOverlay').classList.remove('active');
+    document.getElementById('searchModalInput').value = '';
+    document.getElementById('searchResults').innerHTML = '';
+}
+
+function handleOverlayClick(e) {
+    if (e.target === document.getElementById('searchOverlay')) closeSearch();
+}
+
+// Phím ESC đóng modal
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
+
+// ===== RENDER KẾT QUẢ =====
+function renderSearchResults(query) {
+    const q = query.trim().toLowerCase();
+    const box = document.getElementById('searchResults');
+
+    // Nếu chưa gõ gì: hiện best seller
+    const list = q === ''
+        ? ALL_DISHES.filter(d => ['Phở đặc biệt','Phở xào','Cơm rang thập cẩm','Mỳ xào'].includes(d.name))
+        : ALL_DISHES.filter(d => d.name.toLowerCase().includes(q));
+
+    if (list.length === 0) {
+        box.innerHTML = `
+            <div class="search-empty">
+                <span>🍜</span>
+                Không tìm thấy món "<strong>${query}</strong>"
+            </div>`;
+        return;
+    }
+
+    box.innerHTML = list.map(d => `
+        <a class="search-result-item" href="thucdon.html#${d.section}" onclick="closeSearch()">
+            <img src="${d.img}" alt="${d.name}" onerror="this.src='phodacbiet.jpg'">
+            <div class="search-result-info">
+                <strong>${highlight(d.name, q)}</strong>
+                <span>${d.price}</span>
+            </div>
+            <div class="search-result-tag">${d.tag}</div>
+        </a>
+    `).join('');
+}
+
+// Highlight từ khớp
+function highlight(text, q) {
+    if (!q) return text;
+    const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+    return text.replace(re, '<mark style="background:#ffe0b2;border-radius:3px;padding:0 2px">$1</mark>');
+}
+
+// ===== SEARCH BOX TRÊN HEADER (input góc trên phải) =====
+const headerSearchBox = document.querySelector('.search-box');
+if (headerSearchBox) {
+    headerSearchBox.addEventListener('focus', openSearch);
+    headerSearchBox.addEventListener('input', function() {
+        document.getElementById('searchModalInput').value = this.value;
+        renderSearchResults(this.value);
+    });
+}
+
+// ===== STICKY MENU =====
 const menuBox = document.getElementById('menuBox');
 const menuTop = menuBox.offsetTop;
 window.addEventListener("scroll", function () {
-    if (window.scrollY >= menuTop) {
-        menuBox.classList.add("fixed");
-    } else {
-        menuBox.classList.remove("fixed");
-    }
+    menuBox.classList.toggle("fixed", window.scrollY >= menuTop);
 });
 
-// Hamburger toggle (mobile)
-const hamburgerBtn = document.getElementById('hamburgerBtn');
-const mainMenu = document.getElementById('mainMenu');
-hamburgerBtn.addEventListener('click', function () {
-    mainMenu.classList.toggle('open');
+// ===== HAMBURGER =====
+document.getElementById('hamburgerBtn').addEventListener('click', function () {
+    document.getElementById('mainMenu').classList.toggle('open');
 });
 </script>
 </body>
