@@ -812,52 +812,63 @@ document.querySelectorAll('input[name="order"]').forEach(function(cb) {
 });
 
 // ===== ĐẶT MÓN → GỬI LÊN SUPABASE =====
+// ===== ĐẶT MÓN → GỬI LÊN SUPABASE (Đã sửa đổi cho khớp với Database) =====
 async function datMon() {
-    // Kiểm tra chưa chọn món
-    var danhSach = Object.keys(gioMon);
-    if (danhSach.length === 0) {
-        hienToast('⚠️ Bạn chưa chọn món nào!', 2000);
+    var danhSachMoneys = Object.keys(gioMon);
+    if (danhSachMoneys.length === 0) {
+        hienToast("⚠️ Vui lòng chọn ít nhất một món ăn trước khi đặt!");
         return;
     }
 
-    // Kiểm tra chưa quét QR bàn
+    // Nếu không quét QR để lấy số bàn
     if (!soBan) {
-        hienToast('⚠️ Không xác định được số bàn!\nVui lòng quét lại mã QR trên bàn.', 3000);
-        return;
+        var nhapBan = prompt("Vui lòng nhập số bàn của bạn để nhà bếp phục vụ:");
+        if (!nhapBan || isNaN(parseInt(nhapBan))) {
+            hienToast("⚠️ Số bàn không hợp lệ. Không thể gửi đơn hàng!");
+            return;
+        }
+        soBan = parseInt(nhapBan);
     }
 
-    hienToast('⏳ Đang gửi đơn...', 5000);
+    // Gộp tên các món và giá thành một chuỗi (Ví dụ: "Phở tái (30k), Pepsi (10k)")
+    var chiTietDonHang = [];
+    for (var tenMon in gioMon) {
+        chiTietDonHang.push(tenMon + " (" + gioMon[tenMon].gia + ")");
+    }
+    var chuoiMonAn = chiTietDonHang.join(", ");
 
-    // Tạo danh sách records để insert
-    var records = [];
-    for (var ten in gioMon) {
-        records.push({
-            so_ban:    soBan,
-            ten_mon:   ten,
-            so_luong:  gioMon[ten].soLuong,
-            gia:       gioMon[ten].gia,
-            trang_thai: 'cho_xu_ly'
+    try {
+        // Gửi dữ liệu lên bảng 'orders' của Supabase khớp theo ảnh image_b279c8.png
+        const { data, error } = await db
+            .from('orders')
+            .insert([
+                { 
+                    so_ban: soBan,          // Khớp với cột 'so_ban' (int4)
+                    ten_mon: chuoiMonAn,    // Khớp với cột 'ten_mon' (text)
+                    so_luong: 1,            // Khớp với cột 'so_luong' (int4) - tạm thời để 1 nhóm đơn
+                    gia: "Xem chi tiết",     // Khớp với cột 'gia' (text)
+                    trang_thai: 'pending'   // Khớp với cột 'trang_thai' (text)
+                }
+            ]);
+
+        if (error) throw error;
+
+        // Xử lý thành công
+        hienToast("🎉 Đặt món thành công!<br>Đơn hàng của Bàn " + soBan + " đã được gửi tới nhà bếp.");
+        
+        // Reset lại giao diện và giỏ hàng
+        gioMon = {};
+        document.querySelectorAll('input[name="order"]').forEach(function(cb) {
+            cb.checked = false;
         });
+        capNhatNut();
+
+    } catch (err) {
+        console.error("Lỗi gửi đơn hàng:", err);
+        alert("Lỗi Supabase: " + (err.message || JSON.stringify(err)));
+        hienToast("❌ Có lỗi xảy ra khi gửi đơn hàng. Vui lòng liên hệ nhân viên!");
     }
-
-    var result = await db.from('orders').insert(records);
-
-    if (result.error) {
-        hienToast('❌ Gửi đơn thất bại!\n' + result.error.message, 4000);
-        return;
-    }
-
-    // Thành công: reset giỏ
-    hienToast('✅ Đặt món thành công!\nBàn ' + soBan + ' — ' + danhSach.length + ' món\nNhân viên sẽ phục vụ ngay!', 3500);
-
-    // Bỏ tick tất cả checkbox
-    document.querySelectorAll('input[name="order"]').forEach(function(cb) {
-        cb.checked = false;
-    });
-    gioMon = {};
-    capNhatNut();
 }
-
 // ===== LOAD TRANG =====
 window.onload = function() {
     docSoBan();
