@@ -704,6 +704,51 @@ textarea { resize: none; line-height: 1.6; }
     text-align: center;
     font-family: Georgia, serif;
 }
+.form-msg {
+    min-height: 22px;
+    margin: 6px 0 2px;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+}
+.form-msg.error   { color: #e74c3c; }
+.form-msg.success { color: #27ae60; }
+.form-group input.invalid,
+.form-group textarea.invalid { border-color: #e74c3c !important; }
+
+/* ===== KHU CHỌN MÓN ===== */
+.menu-pick {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 4px;
+    margin-bottom: 12px;
+}
+.mon-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 6px 10px;
+}
+.mon-item img { width: 42px; height: 42px; object-fit: cover; border-radius: 8px; }
+.mon-item .mon-name { flex: 1; font-size: 14px; line-height: 1.2; }
+.mon-item .mon-price { color: #e67e22; font-weight: 600; font-size: 13px; }
+.qty-box { display: flex; align-items: center; gap: 6px; }
+.qty-box button {
+    width: 26px; height: 26px; border: none; border-radius: 50%;
+    background: #e67e22; color: #fff; font-size: 16px; cursor: pointer; line-height: 1;
+}
+.qty-box button:hover { background: #cf6f1a; }
+.qty-box .qty { min-width: 18px; text-align: center; font-weight: 600; }
+.menu-total {
+    text-align: right; font-size: 17px; font-weight: 700;
+    color: #c0392b; margin-bottom: 10px;
+}
 </style>
 </head>
 <body>
@@ -734,7 +779,7 @@ textarea { resize: none; line-height: 1.6; }
             <a href="uudai.html#phanuudai">ƯU ĐÃI</a>
             <a href="#lienhe">LIÊN HỆ</a>
             <a href="danhgia.html#phandanhgia">ĐÁNH GIÁ</a>
-            <a href="datban.html#datban" class="btn" target="_blank">Đặt bàn</a>
+            <a href="datban.html#datban" class="btn">Đặt bàn</a>
         </div>
     </div>
 
@@ -749,7 +794,7 @@ textarea { resize: none; line-height: 1.6; }
 
 <div class="floating-icons">
     <img src="icon tìmmkieems.jpg" class="icon" onclick="openSearch()" title="TÌM MÓN" alt="Tìm kiếm">
-    <img src="bản đồ.jpg" class="icon" onclick="alert('Mở bản đồ')" title="TRA VỊ TRÍ" alt="Bản đồ">
+    <img src="bản đồ.jpg" class="icon" onclick="openMap()" title="TRA VỊ TRÍ" alt="Bản đồ">
 </div>
 <a href="tel:0363005144" class="goidien">
     <img src="ảnh gọi điện.png" alt="Gọi điện">
@@ -798,42 +843,50 @@ textarea { resize: none; line-height: 1.6; }
             <div class="form-row">
                 <div class="form-group">
                     <label>Họ và tên</label>
-                    <input type="text" placeholder="Nguyễn Văn A">
+                    <input id="bk-name" type="text" placeholder="Nguyễn Văn A">
                 </div>
                 <div class="form-group">
                     <label>Số điện thoại</label>
-                    <input type="tel" placeholder="0xxx xxx xxx">
+                    <input id="bk-phone" type="tel" placeholder="0xxx xxx xxx">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="email" placeholder="email@example.com">
+                    <input id="bk-email" type="email" placeholder="email@example.com">
                 </div>
                 <div class="form-group">
                     <label>Số người</label>
-                    <input type="number" placeholder="2" min="1" max="50">
+                    <input id="bk-guests" type="number" placeholder="2" min="1" max="50">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label>Ngày đặt</label>
-                    <input type="date">
+                    <input id="bk-date" type="date">
                 </div>
                 <div class="form-group">
                     <label>Giờ đến</label>
-                    <input type="time">
+                    <input id="bk-time" type="time">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group full">
                     <label>Ghi chú</label>
-                    <textarea rows="4" placeholder="Yêu cầu đặc biệt, dị ứng thực phẩm, dịp đặc biệt..."></textarea>
+                    <textarea id="bk-note" rows="4" placeholder="Yêu cầu đặc biệt, dị ứng thực phẩm, dịp đặc biệt..."></textarea>
                 </div>
             </div>
+
+            <div class="form-divider"></div>
+            <h3 class="form-title" style="font-size:20px;margin-bottom:4px;">🍜 Chọn món (tuỳ chọn)</h3>
+            <p class="form-subtitle">Bạn có thể gọi món trước, nhà hàng sẽ chuẩn bị sẵn.</p>
+            <div id="menu-pick" class="menu-pick"></div>
+            <div class="menu-total">Tổng tạm tính: <span id="tong-tien">0</span>k</div>
+
+            <p id="bk-msg" class="form-msg"></p>
 
             <button class="book-btn" onclick="datBan()">
                 🍜 &nbsp; Xác nhận đặt bàn
@@ -1029,6 +1082,199 @@ window.addEventListener("scroll", function () {
 document.getElementById('hamburgerBtn').addEventListener('click', function () {
     document.getElementById('mainMenu').classList.toggle('open');
 });
+
+// =====================================================
+//  KHU CHỌN MÓN (dùng chung giỏ với trang Thực đơn qua sessionStorage)
+// =====================================================
+const MENU = [
+    { name: "Phở tái",           price: 30, img: "monan/pho-tai-lan.jpg" },
+    { name: "Phở chín",          price: 30, img: "monan/phochin.jpg" },
+    { name: "Phở đặc biệt",      price: 50, img: "monan/phodacbiet.png" },
+    { name: "Phở tái chín",      price: 30, img: "monan/photaichin.jpg" },
+    { name: "Phở tái nạm",       price: 35, img: "monan/photinam.jpg" },
+    { name: "Phở tái gầu",       price: 35, img: "monan/photigau.jpg" },
+    { name: "Phở tái bắp",       price: 35, img: "monan/photibap.jpg" },
+    { name: "Phở tái lăn",       price: 35, img: "monan/photilan.jpg" },
+    { name: "Phở áp chảo",       price: 35, img: "monan/phoapchao.jpg" },
+    { name: "Phở xào",           price: 55, img: "monan/phoxao.jpg" },
+    { name: "Cơm rang",          price: 50, img: "monan/comrang.jpg" },
+    { name: "Cơm rang trứng",    price: 25, img: "monan/comrangtrung.jpg" },
+    { name: "Cơm rang xúc xích", price: 30, img: "monan/comrangxucxich.jpg" },
+    { name: "Cơm rang thập cẩm", price: 35, img: "monan/comrangthapcam.jpg" },
+    { name: "Cơm rang dưa bò",   price: 35, img: "monan/comrangduabo.jpg" },
+    { name: "Cơm rang cải bò",   price: 35, img: "monan/comrangcaibo.jpg" },
+    { name: "Cơm rang đùi gà",   price: 35, img: "monan/comrangduiga.jpg" },
+    { name: "Mỳ xào",            price: 40, img: "monan/myxao.jpg" },
+    { name: "Bò xào rau cải",    price: 40, img: "monan/boxaoraucai.jpg" },
+    { name: "Pepsi",             price: 10, img: "monan/pepsi.jpg" },
+    { name: "7up",               price: 10, img: "monan/7up.jpg" },
+    { name: "Aquafina",          price: 10, img: "monan/aquafina.jpg" },
+    { name: "Mirinda",           price: 10, img: "monan/mirinda.jpg" },
+    { name: "Nước tăng lực",     price: 15, img: "monan/nuoctangluc.jpg" },
+    { name: "Rockstar",          price: 15, img: "monan/rockstar.jpg" },
+    { name: "Cam ép Twister",    price: 15, img: "monan/twister.jpg" },
+    { name: "Trà ô long Tea+",   price: 10, img: "monan/teaplus.jpg" },
+];
+
+// giỏ = { "Phở tái": 2, ... }  (lưu sessionStorage để dùng chung với thucdon.html)
+function layGio()  { return JSON.parse(sessionStorage.getItem('gioMon') || '{}'); }
+function luuGio(g) { sessionStorage.setItem('gioMon', JSON.stringify(g)); }
+
+function doiSoLuong(ten, delta) {
+    const gio = layGio();
+    gio[ten] = (gio[ten] || 0) + delta;
+    if (gio[ten] <= 0) delete gio[ten];
+    luuGio(gio);
+    renderMenu();
+}
+
+function tinhTongTien() {
+    const gio = layGio();
+    return MENU.reduce((t, m) => t + (gio[m.name] || 0) * m.price, 0);
+}
+
+function renderMenu() {
+    const box = document.getElementById('menu-pick');
+    const gio = layGio();
+    box.innerHTML = MENU.map(m => `
+        <div class="mon-item">
+            <img src="${m.img}" alt="${m.name}">
+            <div class="mon-name">${m.name}<br><span class="mon-price">${m.price}k</span></div>
+            <div class="qty-box">
+                <button type="button" onclick="doiSoLuong('${m.name.replace(/'/g, "\\'")}', -1)">−</button>
+                <span class="qty">${gio[m.name] || 0}</span>
+                <button type="button" onclick="doiSoLuong('${m.name.replace(/'/g, "\\'")}', 1)">+</button>
+            </div>
+        </div>
+    `).join('');
+    document.getElementById('tong-tien').textContent = tinhTongTien();
+}
+renderMenu();
+
+// =====================================================
+//  ĐẶT BÀN -> gửi tới PHP/MySQL (datban.php)
+// =====================================================
+function showMsg(text, type) {
+    const msg = document.getElementById('bk-msg');
+    msg.textContent = text;
+    msg.className = 'form-msg ' + type;
+}
+
+async function datBan() {
+    const name   = document.getElementById('bk-name');
+    const phone  = document.getElementById('bk-phone');
+    const email  = document.getElementById('bk-email');
+    const guests = document.getElementById('bk-guests');
+    const date   = document.getElementById('bk-date');
+    const time   = document.getElementById('bk-time');
+    const note   = document.getElementById('bk-note');
+
+    // reset trạng thái lỗi
+    [name, phone, email, guests, date, time].forEach(el => el.classList.remove('invalid'));
+
+    // ----- VALIDATE -----
+    if (name.value.trim() === '') {
+        name.classList.add('invalid');
+        return showMsg('Vui lòng nhập họ và tên.', 'error');
+    }
+    if (!/^0\d{9}$/.test(phone.value.trim())) {
+        phone.classList.add('invalid');
+        return showMsg('Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0.', 'error');
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
+        email.classList.add('invalid');
+        return showMsg('Email không hợp lệ.', 'error');
+    }
+    const sokhach = parseInt(guests.value, 10);
+    if (!sokhach || sokhach < 1 || sokhach > 50) {
+        guests.classList.add('invalid');
+        return showMsg('Số người phải từ 1 đến 50.', 'error');
+    }
+    if (date.value === '') {
+        date.classList.add('invalid');
+        return showMsg('Vui lòng chọn ngày đặt.', 'error');
+    }
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    if (new Date(date.value) < today) {
+        date.classList.add('invalid');
+        return showMsg('Ngày đặt không được ở quá khứ.', 'error');
+    }
+    if (time.value === '') {
+        time.classList.add('invalid');
+        return showMsg('Vui lòng chọn giờ đến.', 'error');
+    }
+
+    // ----- Gói dữ liệu (kèm danh sách món) -----
+    const gio = layGio();
+    const monList = Object.keys(gio).map(ten => {
+        const m = MENU.find(x => x.name === ten);
+        return { ten, so_luong: gio[ten], gia: m ? m.price : 0 };
+    });
+
+    const payload = {
+        ho_ten:   name.value.trim(),
+        sdt:      phone.value.trim(),
+        email:    email.value.trim(),
+        so_nguoi: sokhach,
+        ngay:     date.value,
+        gio:      time.value,
+        ghi_chu:  note.value.trim(),
+        mon:      monList,
+        tong_tien: tinhTongTien()
+    };
+
+    // ----- Gửi tới CSDL (PHP/MySQL) -----
+    showMsg('Đang gửi...', '');
+    try {
+        const res = await fetch('/api/datban', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+            return showMsg('❌ ' + (data.error || 'Đặt bàn thất bại.'), 'error');
+        }
+
+        showMsg('✅ Đặt bàn thành công (mã #' + data.id + ')! Chúng tôi sẽ liên hệ qua ' + payload.sdt + '.', 'success');
+
+        // đã có bàn -> đánh dấu, xoá giỏ
+        sessionStorage.setItem('daDatBan', '1');
+        sessionStorage.removeItem('gioMon');
+        renderMenu();
+        [name, phone, email, guests, date, time, note].forEach(el => el.value = '');
+    } catch (err) {
+        showMsg('❌ Không kết nối được máy chủ. Hãy chạy server Node (npm start) rồi mở qua http://localhost:3000', 'error');
+    }
+}
+</script>
+
+<!-- ===== POPUP BẢN ĐỒ ===== -->
+<script>
+function openMap() {
+    let m = document.getElementById('mapModal');
+    if (!m) {
+        m = document.createElement('div');
+        m.id = 'mapModal';
+        m.onclick = e => { if (e.target === m) closeMap(); };
+        m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:100000;padding:16px;';
+        m.innerHTML =
+            '<div style="position:relative;width:min(900px,95vw);background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4);">' +
+                '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#e67e22;color:#fff;font-weight:700;font-family:Georgia,serif;">' +
+                    '<span>📍 Vị trí Quán Phở Cồ Nam Định</span>' +
+                    '<button onclick="closeMap()" style="background:none;border:none;color:#fff;font-size:22px;cursor:pointer;line-height:1;">✕</button>' +
+                '</div>' +
+                '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.241696548188!2d105.79684737602601!3d20.982946489349036!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135acc406cbf25b%3A0x778d30381b0712d8!2zMzQgTmcuIDY4IFAuIFRyaeG7gXUgS2jDumMsIFRyaeG7gXUgS2jDumMsIFRoYW5oIExp4buHdCwgSMOgIE7hu5lpLCBWaeG7h3QgTmFt!5e0!3m2!1svi!2s!4v1780906718636!5m2!1svi!2s" style="width:100%;height:60vh;border:0;display:block;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>' +
+            '</div>';
+        document.body.appendChild(m);
+    }
+    m.style.display = 'flex';
+}
+function closeMap() {
+    const m = document.getElementById('mapModal');
+    if (m) m.style.display = 'none';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMap(); });
 </script>
 
 </body>

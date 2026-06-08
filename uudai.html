@@ -744,7 +744,7 @@ body {
             <a href="uudai.html#phanuudai">ƯU ĐÃI</a>
             <a href="#lienhe">LIÊN HỆ</a>
             <a href="danhgia.html#phandanhgia">ĐÁNH GIÁ</a>
-            <a href="datban.html#datban" class="btn" target="_blank">Đặt bàn</a>
+            <a href="datban.html#datban" class="btn">Đặt bàn</a>
         </div>
     </div>
 
@@ -758,7 +758,7 @@ body {
 </div>
 <div class="floating-icons">
     <img src="icon tìmmkieems.jpg" class="icon" onclick="openSearch()" title="TÌM MÓN" alt="Tìm kiếm">
-    <img src="bản đồ.jpg" class="icon" onclick="alert('Mở bản đồ')" title="TRA VỊ TRÍ" alt="Bản đồ">
+    <img src="bản đồ.jpg" class="icon" onclick="openMap()" title="TRA VỊ TRÍ" alt="Bản đồ">
     <a href="tel:0363005144" class="goidien">
         <img src="ảnh gọi điện.png" alt="Gọi điện">
         <span>GỌI NGAY</span>
@@ -981,5 +981,33 @@ document.getElementById('hamburgerBtn').addEventListener('click', function () {
     document.getElementById('mainMenu').classList.toggle('open');
 });
 </script>
+<!-- ===== POPUP BẢN ĐỒ ===== -->
+<script>
+function openMap() {
+    let m = document.getElementById('mapModal');
+    if (!m) {
+        m = document.createElement('div');
+        m.id = 'mapModal';
+        m.onclick = e => { if (e.target === m) closeMap(); };
+        m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:100000;padding:16px;';
+        m.innerHTML =
+            '<div style="position:relative;width:min(900px,95vw);background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4);">' +
+                '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#e67e22;color:#fff;font-weight:700;font-family:Georgia,serif;">' +
+                    '<span>📍 Vị trí Quán Phở Cồ Nam Định</span>' +
+                    '<button onclick="closeMap()" style="background:none;border:none;color:#fff;font-size:22px;cursor:pointer;line-height:1;">✕</button>' +
+                '</div>' +
+                '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.241696548188!2d105.79684737602601!3d20.982946489349036!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135acc406cbf25b%3A0x778d30381b0712d8!2zMzQgTmcuIDY4IFAuIFRyaeG7gXUgS2jDumMsIFRyaeG7gXUgS2jDumMsIFRoYW5oIExp4buHdCwgSMOgIE7hu5lpLCBWaeG7h3QgTmFt!5e0!3m2!1svi!2s!4v1780906718636!5m2!1svi!2s" style="width:100%;height:60vh;border:0;display:block;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>' +
+            '</div>';
+        document.body.appendChild(m);
+    }
+    m.style.display = 'flex';
+}
+function closeMap() {
+    const m = document.getElementById('mapModal');
+    if (m) m.style.display = 'none';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMap(); });
+</script>
+
 </body>
 </html>

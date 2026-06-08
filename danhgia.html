@@ -750,7 +750,7 @@ button {
             <a href="uudai.html#phanuudai">ƯU ĐÃI</a>
             <a href="#lienhe">LIÊN HỆ</a>
             <a href="danhgia.html#phandanhgia">ĐÁNH GIÁ</a>
-            <a href="datban.html#datban" class="btn" target="_blank">Đặt bàn</a>
+            <a href="datban.html#datban" class="btn">Đặt bàn</a>
         </div>
     </div>
 
@@ -764,7 +764,7 @@ button {
 </div>
 <div class="floating-icons">
     <img src="icon tìmmkieems.jpg" class="icon" onclick="openSearch()" title="TÌM MÓN" alt="Tìm kiếm">
-    <img src="bản đồ.jpg" class="icon" onclick="alert('Mở bản đồ')" title="TRA VỊ TRÍ" alt="Bản đồ">
+    <img src="bản đồ.jpg" class="icon" onclick="openMap()" title="TRA VỊ TRÍ" alt="Bản đồ">
     <a href="tel:0363005144" class="goidien">
         <img src="ảnh gọi điện.png" alt="Gọi điện">
         <span>GỌI NGAY</span>
@@ -1073,6 +1073,120 @@ stars.forEach(star => {
     });
 
 });
+
+// ===== GỬI ĐÁNH GIÁ =====
+function escapeHTML(str){
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;')
+              .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function taoReviewHTML(r){
+    const sao = '⭐'.repeat(r.sao);
+    const div = document.createElement('div');
+    div.className = 'review';
+    div.innerHTML =
+        '<img src="https://i.pravatar.cc/50?u=' + encodeURIComponent(r.ten) + '">' +
+        '<div>' +
+            '<div class="stars">' + sao + '</div>' +
+            '<div class="ten">' + escapeHTML(r.ten) + '</div>' +
+            '<p>' + escapeHTML(r.noidung) + '</p>' +
+        '</div>';
+    return div;
+}
+
+async function guiDanhGia(){
+    const ten     = document.getElementById('ten');
+    const noidung = document.getElementById('noidung');
+    const sao     = parseInt(document.getElementById('sao').value, 10);
+
+    if(ten.value.trim() === ''){
+        alert('Vui lòng nhập tên của bạn.');
+        ten.focus();
+        return;
+    }
+    if(noidung.value.trim() === ''){
+        alert('Vui lòng viết nội dung đánh giá.');
+        noidung.focus();
+        return;
+    }
+    if(!sao || sao < 1){
+        alert('Vui lòng chọn số sao.');
+        return;
+    }
+
+    const review = { ten: ten.value.trim(), noidung: noidung.value.trim(), sao: sao };
+
+    // ----- Gửi tới CSDL (PHP/MySQL) -----
+    try {
+        const res = await fetch('/api/danhgia', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(review)
+        });
+        const data = await res.json();
+        if(!res.ok || !data.ok){
+            alert('❌ ' + (data.error || 'Gửi đánh giá thất bại.'));
+            return;
+        }
+
+        // hiển thị ngay (mới nhất lên đầu)
+        document.getElementById('danhsach').prepend(taoReviewHTML(review));
+
+        // reset form
+        ten.value = '';
+        noidung.value = '';
+        document.getElementById('sao').value = '0';
+        stars.forEach(s => s.classList.remove('active'));
+
+        alert('Cảm ơn bạn đã đánh giá! ⭐');
+    } catch(err) {
+        alert('❌ Không kết nối được máy chủ. Hãy chạy server Node (npm start) rồi mở qua http://localhost:3000');
+    }
+}
+
+// load các đánh giá đã lưu trong CSDL khi mở trang
+async function loadDanhGia(){
+    try {
+        const res = await fetch('/api/danhgia');
+        const data = await res.json();
+        if(data.ok){
+            const danhsach = document.getElementById('danhsach');
+            // API trả mới nhất trước; prepend để mới nhất nằm trên cùng
+            data.data.slice().reverse().forEach(r => danhsach.prepend(taoReviewHTML(r)));
+        }
+    } catch(err) {
+        // chạy bằng mở file trực tiếp (không qua server) -> bỏ qua
+    }
+}
+loadDanhGia();
 </script>
+<!-- ===== POPUP BẢN ĐỒ ===== -->
+<script>
+function openMap() {
+    let m = document.getElementById('mapModal');
+    if (!m) {
+        m = document.createElement('div');
+        m.id = 'mapModal';
+        m.onclick = e => { if (e.target === m) closeMap(); };
+        m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:100000;padding:16px;';
+        m.innerHTML =
+            '<div style="position:relative;width:min(900px,95vw);background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4);">' +
+                '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#e67e22;color:#fff;font-weight:700;font-family:Georgia,serif;">' +
+                    '<span>📍 Vị trí Quán Phở Cồ Nam Định</span>' +
+                    '<button onclick="closeMap()" style="background:none;border:none;color:#fff;font-size:22px;cursor:pointer;line-height:1;">✕</button>' +
+                '</div>' +
+                '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.241696548188!2d105.79684737602601!3d20.982946489349036!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135acc406cbf25b%3A0x778d30381b0712d8!2zMzQgTmcuIDY4IFAuIFRyaeG7gXUgS2jDumMsIFRyaeG7gXUgS2jDumMsIFRoYW5oIExp4buHdCwgSMOgIE7hu5lpLCBWaeG7h3QgTmFt!5e0!3m2!1svi!2s!4v1780906718636!5m2!1svi!2s" style="width:100%;height:60vh;border:0;display:block;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>' +
+            '</div>';
+        document.body.appendChild(m);
+    }
+    m.style.display = 'flex';
+}
+function closeMap() {
+    const m = document.getElementById('mapModal');
+    if (m) m.style.display = 'none';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMap(); });
+</script>
+
 </body>
 </html>
