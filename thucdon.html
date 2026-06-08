@@ -13,6 +13,23 @@ body {
     background: #f5f5f5;
 }
 
+/* ===== BANNER BÀN ===== */
+#ban-banner {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 99999;
+    background: #e67e22;
+    color: #fff;
+    text-align: center;
+    padding: 8px 16px;
+    font-weight: bold;
+    font-size: 15px;
+    font-family: Georgia, serif;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+#ban-banner span { font-size: 18px; }
+
 /* ===== HEADER ===== */
 #d1 {
     position: relative;
@@ -89,7 +106,6 @@ body {
     transition: 0.3s;
 }
 
-/* menu ngang - desktop */
 .menu {
     display: flex;
     justify-content: space-between;
@@ -129,7 +145,6 @@ body {
 .btn:hover { background: #cf711f; }
 .btn:active { transform: scale(1.1); }
 
-/* ===== DROPDOWN - Desktop only ===== */
 .dropdown { position: relative; }
 
 .dropdown-menu {
@@ -159,7 +174,6 @@ body {
     color: white;
     padding-left: 25px;
 }
-/* Chỉ hover trên desktop */
 @media (min-width: 769px) {
     .dropdown:hover .dropdown-menu {
         opacity: 1;
@@ -168,14 +182,9 @@ body {
     }
 }
 
-/* ===== MOBILE MENU ===== */
 @media (max-width: 768px) {
-    .menu-box {
-        border-radius: 12px;
-        padding: 8px 12px;
-    }
+    .menu-box { border-radius: 12px; padding: 8px 12px; }
     .hamburger { display: flex; }
-
     .menu {
         flex-direction: column;
         align-items: stretch;
@@ -185,29 +194,23 @@ body {
         transition: max-height 0.4s ease;
     }
     .menu.open { max-height: 600px; }
-
     .menu-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
-
-    .menu > a,
-    .menu > .dropdown > a {
+    .menu > a, .menu > .dropdown > a {
         font-size: 14px;
         padding: 10px 4px;
         border-bottom: 1px solid #eee;
         white-space: normal;
         display: block;
     }
-
-    /* Dropdown trên mobile: toggle bằng JS */
     .dropdown-menu {
         position: static;
         box-shadow: none;
         padding: 0 0 0 12px;
         border-radius: 0;
-        /* Mặc định ẩn trên mobile cũng bằng max-height */
         opacity: 1;
         visibility: visible;
         transform: none;
@@ -215,34 +218,13 @@ body {
         overflow: hidden;
         transition: max-height 0.3s ease;
     }
-    .dropdown-menu.open-sub {
-        max-height: 300px;
-    }
-    .dropdown-menu a {
-        padding: 8px 12px;
-        font-size: 13px;
-        border-bottom: 1px solid #f0f0f0;
-    }
-
-    /* Mũi tên chỉ dropdown trên mobile */
-    .dropdown > a::after {
-        content: ' ▾';
-        font-size: 11px;
-        color: #888;
-    }
-    .dropdown.open-sub > a::after {
-        content: ' ▴';
-    }
-
-    .btn {
-        text-align: center;
-        padding: 10px;
-        margin-top: 6px;
-        border-radius: 12px;
-    }
+    .dropdown-menu.open-sub { max-height: 300px; }
+    .dropdown-menu a { padding: 8px 12px; font-size: 13px; border-bottom: 1px solid #f0f0f0; }
+    .dropdown > a::after { content: ' ▾'; font-size: 11px; color: #888; }
+    .dropdown.open-sub > a::after { content: ' ▴'; }
+    .btn { text-align: center; padding: 10px; margin-top: 6px; border-radius: 12px; }
 }
 
-/* text tiêu đề */
 .text {
     width: 100%;
     display: flex;
@@ -261,7 +243,6 @@ body {
 }
 @media (max-width: 768px) { .text p { top: 50px; } }
 
-/* arrows */
 .arrow {
     position: absolute;
     bottom: 0;
@@ -287,7 +268,6 @@ body {
     .arrow5 { left: 10%; }
 }
 
-/* ===== FLOATING ICONS ===== */
 .floating-icons {
     position: fixed;
     right: 12px;
@@ -323,10 +303,9 @@ body {
     font-size: 40px;
     margin-bottom: 50px;
     color: #5a2c0f;
-    font-family:Georgia, 'Times New Roman', Times, serif;
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
-/* ===== TABS ===== */
 .menu-tabs {
     display: flex;
     justify-content: center;
@@ -354,7 +333,6 @@ body {
 }
 .category { display: none; }
 
-/* ===== FOOD GRID ===== */
 .food-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -410,9 +388,49 @@ body {
 }
 .tick { font-size: 14px; transition: 0.2s; }
 .food-info input[type="checkbox"]:checked + .tick { color: #e67e22; transform: scale(1.1); }
+/* ===== NÚT ĐẶT MÓN NỔI ===== */
+#btn-datmon-float {
+    display: none;
+    position: fixed;
+    bottom: 24px;
+    right: 80px;
+    background: #e67e22;
+    color: #fff;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(230,126,34,0.5);
+    z-index: 99999;
+    transition: 0.2s;
+    animation: nhipTim 1.5s infinite;
+}
+#btn-datmon-float:hover { background: #cf711f; transform: scale(1.05); }
+@keyframes nhipTim {
+    0%, 100% { box-shadow: 0 8px 25px rgba(230,126,34,0.5); }
+    50%       { box-shadow: 0 8px 40px rgba(230,126,34,0.9); }
+}
 
-/* ===== ORDER BOX ===== */
-.order-box { text-align: center; margin-top: 80px; margin-bottom: 80px; }
+/* ===== TOAST THÔNG BÁO ===== */
+#toast {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.85);
+    color: #fff;
+    padding: 20px 32px;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    z-index: 999999;
+    max-width: 320px;
+    line-height: 1.6;
+}
 
 /* ===== GỌI ĐIỆN ===== */
 .goidien {
@@ -495,6 +513,15 @@ main { flex: 1; }
 </head>
 <body>
 
+<!-- Banner hiển thị số bàn -->
+<div id="ban-banner">🍜 Bạn đang ngồi <span id="so-ban-hien-thi">?</span> — Chọn món bên dưới và bấm Đặt món!</div>
+
+<!-- Toast thông báo -->
+<div id="toast"></div>
+
+<!-- Nút đặt món nổi -->
+<button id="btn-datmon-float" onclick="datMon()">🛒 Đặt món</button>
+
 <div id="d1">
     <img class="logo" src="https://icolor.vn/wp-content/uploads/2024/09/Logo-quan-pho-7.jpg" alt="Logo">
     <input class="search-box" type="text" placeholder="Tìm món...">
@@ -558,87 +585,16 @@ main { flex: 1; }
     <section id="pho" class="category">
         <h2 class="category-title">Phở</h2>
         <div class="food-grid">
-
-            <div class="food-card">
-                <img src="monan/pho-tai-lan.jpg" alt="Phở tái">
-                <div class="food-info">
-                    <h3>Phở tái</h3><p>30k</p>
-                    <label><input type="checkbox" name="order" value="Phở tái 30k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/phochin.jpg" alt="Phở chín">
-                <div class="food-info">
-                    <h3>Phở chín</h3><p>30k</p>
-                    <label><input type="checkbox" name="order" value="Phở chín 30k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/phodacbiet.png" alt="Phở đặc biệt">
-                <div class="food-info">
-                    <h3>Phở đặc biệt</h3><p>50k</p>
-                    <label><input type="checkbox" name="order" value="Phở đặc biệt 50k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/photaichin.jpg" alt="Phở tái chín">
-                <div class="food-info">
-                    <h3>Phở tái chín</h3><p>30k</p>
-                    <label><input type="checkbox" name="order" value="Phở tái chín 30k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/photinam.jpg" alt="Phở tái nạm">
-                <div class="food-info">
-                    <h3>Phở tái nạm</h3><p>35k</p>
-                    <label><input type="checkbox" name="order" value="Phở tái nạm 35k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/photigau.jpg" alt="Phở tái gầu">
-                <div class="food-info">
-                    <h3>Phở tái gầu</h3><p>35k</p>
-                    <label><input type="checkbox" name="order" value="Phở tái gầu 35k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/photibap.jpg" alt="Phở tái bắp">
-                <div class="food-info">
-                    <h3>Phở tái bắp</h3><p>35k</p>
-                    <label><input type="checkbox" name="order" value="Phở tái bắp 35k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/photilan.jpg" alt="Phở tái lăn">
-                <div class="food-info">
-                    <h3>Phở tái lăn</h3><p>35k</p>
-                    <label><input type="checkbox" name="order" value="Phở tái lăn 35k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/phoapchao.jpg" alt="Phở áp chảo">
-                <div class="food-info">
-                    <h3>Phở áp chảo</h3><p>35k</p>
-                    <label><input type="checkbox" name="order" value="Phở áp chảo 35k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/phoxao.jpg" alt="Phở xào">
-                <div class="food-info">
-                    <h3>Phở xào</h3><p>55k</p>
-                    <label><input type="checkbox" name="order" value="Phở xào 55k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
+            <div class="food-card"><img src="monan/pho-tai-lan.jpg" alt="Phở tái"><div class="food-info"><h3>Phở tái</h3><p>30k</p><label><input type="checkbox" name="order" value="Phở tái|30k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/phochin.jpg" alt="Phở chín"><div class="food-info"><h3>Phở chín</h3><p>30k</p><label><input type="checkbox" name="order" value="Phở chín|30k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/phodacbiet.png" alt="Phở đặc biệt"><div class="food-info"><h3>Phở đặc biệt</h3><p>50k</p><label><input type="checkbox" name="order" value="Phở đặc biệt|50k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/photaichin.jpg" alt="Phở tái chín"><div class="food-info"><h3>Phở tái chín</h3><p>30k</p><label><input type="checkbox" name="order" value="Phở tái chín|30k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/photinam.jpg" alt="Phở tái nạm"><div class="food-info"><h3>Phở tái nạm</h3><p>35k</p><label><input type="checkbox" name="order" value="Phở tái nạm|35k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/photigau.jpg" alt="Phở tái gầu"><div class="food-info"><h3>Phở tái gầu</h3><p>35k</p><label><input type="checkbox" name="order" value="Phở tái gầu|35k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/photibap.jpg" alt="Phở tái bắp"><div class="food-info"><h3>Phở tái bắp</h3><p>35k</p><label><input type="checkbox" name="order" value="Phở tái bắp|35k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/photilan.jpg" alt="Phở tái lăn"><div class="food-info"><h3>Phở tái lăn</h3><p>35k</p><label><input type="checkbox" name="order" value="Phở tái lăn|35k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/phoapchao.jpg" alt="Phở áp chảo"><div class="food-info"><h3>Phở áp chảo</h3><p>35k</p><label><input type="checkbox" name="order" value="Phở áp chảo|35k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/phoxao.jpg" alt="Phở xào"><div class="food-info"><h3>Phở xào</h3><p>55k</p><label><input type="checkbox" name="order" value="Phở xào|55k"><span class="tick">Chọn món</span></label></div></div>
         </div>
     </section>
 
@@ -646,63 +602,13 @@ main { flex: 1; }
     <section id="comrang" class="category">
         <h2 class="category-title">Cơm rang</h2>
         <div class="food-grid">
-
-            <div class="food-card">
-                <img src="monan/comrang.jpg" alt="Cơm rang">
-                <div class="food-info">
-                    <h3>Cơm rang</h3><p>50k</p>
-                    <label><input type="checkbox" name="order" value="Cơm rang 50k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/comrangtrung.jpg" alt="Cơm rang trứng">
-                <div class="food-info">
-                    <h3>Cơm rang trứng</h3><p>25k</p>
-                    <label><input type="checkbox" name="order" value="Cơm rang trứng 25k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/comrangxucxich.jpg" alt="Cơm rang xúc xích">
-                <div class="food-info">
-                    <h3>Cơm rang xúc xích</h3><p>30k</p>
-                    <label><input type="checkbox" name="order" value="Cơm rang xúc xích 30k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/comrangthapcam.jpg" alt="Cơm rang thập cẩm">
-                <div class="food-info">
-                    <h3>Cơm rang thập cẩm</h3><p>35k</p>
-                    <label><input type="checkbox" name="order" value="Cơm rang thập cẩm 35k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/comrangduabo.jpg" alt="Cơm rang dưa bò">
-                <div class="food-info">
-                    <h3>Cơm rang dưa bò</h3><p>35k</p>
-                    <label><input type="checkbox" name="order" value="Cơm rang dưa bò 35k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/comrangcaibo.jpg" alt="Cơm rang cải bò">
-                <div class="food-info">
-                    <h3>Cơm rang cải bò</h3><p>35k</p>
-                    <label><input type="checkbox" name="order" value="Cơm rang cải bò 35k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/comrangduiga.jpg" alt="Cơm rang đùi gà">
-                <div class="food-info">
-                    <h3>Cơm rang đùi gà</h3><p>35k</p>
-                    <label><input type="checkbox" name="order" value="Cơm rang đùi gà 35k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
+            <div class="food-card"><img src="monan/comrang.jpg" alt="Cơm rang"><div class="food-info"><h3>Cơm rang</h3><p>50k</p><label><input type="checkbox" name="order" value="Cơm rang|50k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/comrangtrung.jpg" alt="Cơm rang trứng"><div class="food-info"><h3>Cơm rang trứng</h3><p>25k</p><label><input type="checkbox" name="order" value="Cơm rang trứng|25k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/comrangxucxich.jpg" alt="Cơm rang xúc xích"><div class="food-info"><h3>Cơm rang xúc xích</h3><p>30k</p><label><input type="checkbox" name="order" value="Cơm rang xúc xích|30k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/comrangthapcam.jpg" alt="Cơm rang thập cẩm"><div class="food-info"><h3>Cơm rang thập cẩm</h3><p>35k</p><label><input type="checkbox" name="order" value="Cơm rang thập cẩm|35k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/comrangduabo.jpg" alt="Cơm rang dưa bò"><div class="food-info"><h3>Cơm rang dưa bò</h3><p>35k</p><label><input type="checkbox" name="order" value="Cơm rang dưa bò|35k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/comrangcaibo.jpg" alt="Cơm rang cải bò"><div class="food-info"><h3>Cơm rang cải bò</h3><p>35k</p><label><input type="checkbox" name="order" value="Cơm rang cải bò|35k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/comrangduiga.jpg" alt="Cơm rang đùi gà"><div class="food-info"><h3>Cơm rang đùi gà</h3><p>35k</p><label><input type="checkbox" name="order" value="Cơm rang đùi gà|35k"><span class="tick">Chọn món</span></label></div></div>
         </div>
     </section>
 
@@ -710,23 +616,8 @@ main { flex: 1; }
     <section id="my" class="category">
         <h2 class="category-title">Mỳ</h2>
         <div class="food-grid">
-
-            <div class="food-card">
-                <img src="monan/myxao.jpg" alt="Mỳ xào">
-                <div class="food-info">
-                    <h3>Mỳ xào</h3><p>40k</p>
-                    <label><input type="checkbox" name="order" value="Mỳ xào 40k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/boxaoraucai.jpg" alt="Bò xào rau cải">
-                <div class="food-info">
-                    <h3>Bò xào rau cải</h3><p>40k</p>
-                    <label><input type="checkbox" name="order" value="Bò xào rau cải 40k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
+            <div class="food-card"><img src="monan/myxao.jpg" alt="Mỳ xào"><div class="food-info"><h3>Mỳ xào</h3><p>40k</p><label><input type="checkbox" name="order" value="Mỳ xào|40k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/boxaoraucai.jpg" alt="Bò xào rau cải"><div class="food-info"><h3>Bò xào rau cải</h3><p>40k</p><label><input type="checkbox" name="order" value="Bò xào rau cải|40k"><span class="tick">Chọn món</span></label></div></div>
         </div>
     </section>
 
@@ -734,77 +625,16 @@ main { flex: 1; }
     <section id="nuoc" class="category">
         <h2 class="category-title">Nước</h2>
         <div class="food-grid">
-
-            <div class="food-card">
-                <img src="monan/pepsi.jpg" alt="Pepsi">
-                <div class="food-info">
-                    <h3>Pepsi</h3><p>10k</p>
-                    <label><input type="checkbox" name="order" value="Pepsi 10k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/7up.jpg" alt="7up">
-                <div class="food-info">
-                    <h3>7up</h3><p>10k</p>
-                    <label><input type="checkbox" name="order" value="7up 10k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/aquafina.jpg" alt="Aquafina">
-                <div class="food-info">
-                    <h3>Aquafina</h3><p>10k</p>
-                    <label><input type="checkbox" name="order" value="Aquafina 10k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/mirinda.jpg" alt="Mirinda">
-                <div class="food-info">
-                    <h3>Mirinda</h3><p>10k</p>
-                    <label><input type="checkbox" name="order" value="Mirinda 10k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/nuoctangluc.jpg" alt="Nước tăng lực">
-                <div class="food-info">
-                    <h3>Nước tăng lực</h3><p>15k</p>
-                    <label><input type="checkbox" name="order" value="Nước tăng lực 15k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/rockstar.jpg" alt="Rockstar">
-                <div class="food-info">
-                    <h3>Rockstar</h3><p>15k</p>
-                    <label><input type="checkbox" name="order" value="Rockstar 15k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/twister.jpg" alt="Cam ép Twister">
-                <div class="food-info">
-                    <h3>Cam ép Twister</h3><p>15k</p>
-                    <label><input type="checkbox" name="order" value="Cam ép Twister 15k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <img src="monan/teaplus.jpg" alt="Trà ô long Tea+">
-                <div class="food-info">
-                    <h3>Trà ô long Tea+</h3><p>10k</p>
-                    <label><input type="checkbox" name="order" value="Trà ô long Tea+ 10k"><span class="tick">Chọn món</span></label>
-                </div>
-            </div>
-
+            <div class="food-card"><img src="monan/pepsi.jpg" alt="Pepsi"><div class="food-info"><h3>Pepsi</h3><p>10k</p><label><input type="checkbox" name="order" value="Pepsi|10k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/7up.jpg" alt="7up"><div class="food-info"><h3>7up</h3><p>10k</p><label><input type="checkbox" name="order" value="7up|10k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/aquafina.jpg" alt="Aquafina"><div class="food-info"><h3>Aquafina</h3><p>10k</p><label><input type="checkbox" name="order" value="Aquafina|10k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/mirinda.jpg" alt="Mirinda"><div class="food-info"><h3>Mirinda</h3><p>10k</p><label><input type="checkbox" name="order" value="Mirinda|10k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/nuoctangluc.jpg" alt="Nước tăng lực"><div class="food-info"><h3>Nước tăng lực</h3><p>15k</p><label><input type="checkbox" name="order" value="Nước tăng lực|15k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/rockstar.jpg" alt="Rockstar"><div class="food-info"><h3>Rockstar</h3><p>15k</p><label><input type="checkbox" name="order" value="Rockstar|15k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/twister.jpg" alt="Cam ép Twister"><div class="food-info"><h3>Cam ép Twister</h3><p>15k</p><label><input type="checkbox" name="order" value="Cam ép Twister|15k"><span class="tick">Chọn món</span></label></div></div>
+            <div class="food-card"><img src="monan/teaplus.jpg" alt="Trà ô long Tea+"><div class="food-info"><h3>Trà ô long Tea+</h3><p>10k</p><label><input type="checkbox" name="order" value="Trà ô long Tea+|10k"><span class="tick">Chọn món</span></label></div></div>
         </div>
     </section>
-
-    <div class="order-box">
-        <button id="btn-datmon" class="btn" onclick="datMon()">Đặt Món</button>
-    </div>
 </div>
 
 <!-- ===== FOOTER ===== -->
@@ -839,186 +669,222 @@ main { flex: 1; }
         <div class="pho-footer__col">
             <h3 class="pho-footer__title">Mạng xã hội</h3>
             <div class="pho-footer__social">
-                <a href="#" aria-label="Facebook" class="pho-footer__social-link">
-                    <svg viewBox="0 0 24 24"><path d="M14 8.5V7c0-.8.5-1 1-1h2V3h-3c-3 0-4 2-4 4.5v2H7v3h3v8h4v-8h3l1-3h-4z"/></svg>
-                </a>
-                <a href="#" aria-label="Instagram" class="pho-footer__social-link">
-                    <svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5zM17.8 6.2a1.2 1.2 0 1 1-1.2 1.2 1.2 1.2 0 0 1 1.2-1.2z"/></svg>
-                </a>
-                <a href="#" aria-label="YouTube" class="pho-footer__social-link">
-                    <svg viewBox="0 0 24 24"><path d="M21.6 7.2a3 3 0 0 0-2.1-2.1C17.7 4.6 12 4.6 12 4.6s-5.7 0-7.5.5A3 3 0 0 0 2.4 7.2 31.4 31.4 0 0 0 2 12a31.4 31.4 0 0 0 .4 4.8 3 3 0 0 0 2.1 2.1c1.8.5 7.5.5 7.5.5s5.7 0 7.5-.5a3 3 0 0 0 2.1-2.1A31.4 31.4 0 0 0 22 12a31.4 31.4 0 0 0-.4-4.8zM10 15.2V8.8L15.5 12z"/></svg>
-                </a>
-                <a href="#" aria-label="Zalo" class="pho-footer__social-link">
-                    <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4V4zm3.2 5.1h4.8v.8l-3.1 4h3.2V15H6.8v-.8l3.1-4H7.2V9.1zm7.5 0h1.6v5.9h-1.6V9.1zm.8-2.1a.9.9 0 1 1 0 1.8.9.9 0 0 1 0-1.8z"/></svg>
-                </a>
+                <a href="#" aria-label="Facebook" class="pho-footer__social-link"><svg viewBox="0 0 24 24"><path d="M14 8.5V7c0-.8.5-1 1-1h2V3h-3c-3 0-4 2-4 4.5v2H7v3h3v8h4v-8h3l1-3h-4z"/></svg></a>
+                <a href="#" aria-label="Instagram" class="pho-footer__social-link"><svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5zM17.8 6.2a1.2 1.2 0 1 1-1.2 1.2 1.2 1.2 0 0 1 1.2-1.2z"/></svg></a>
+                <a href="#" aria-label="YouTube" class="pho-footer__social-link"><svg viewBox="0 0 24 24"><path d="M21.6 7.2a3 3 0 0 0-2.1-2.1C17.7 4.6 12 4.6 12 4.6s-5.7 0-7.5.5A3 3 0 0 0 2.4 7.2 31.4 31.4 0 0 0 2 12a31.4 31.4 0 0 0 .4 4.8 3 3 0 0 0 2.1 2.1c1.8.5 7.5.5 7.5.5s5.7 0 7.5-.5a3 3 0 0 0 2.1-2.1A31.4 31.4 0 0 0 22 12a31.4 31.4 0 0 0-.4-4.8zM10 15.2V8.8L15.5 12z"/></svg></a>
+                <a href="#" aria-label="Zalo" class="pho-footer__social-link"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4V4zm3.2 5.1h4.8v.8l-3.1 4h3.2V15H6.8v-.8l3.1-4H7.2V9.1zm7.5 0h1.6v5.9h-1.6V9.1zm.8-2.1a.9.9 0 1 1 0 1.8.9.9 0 0 1 0-1.8z"/></svg></a>
             </div>
         </div>
     </div>
     <div class="pho-footer__bottom">© 2025 Phở Cồ Nam Định. All rights reserved.</div>
 </footer>
 
+<!-- ====================================================
+     SUPABASE + LOGIC GỌI MÓN
+     ================================================== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ===== 1. STICKY MENU (chỉ 1 lần duy nhất) =====
-const menuBox = document.getElementById('menuBox');
-const menuTop = menuBox.offsetTop;
+// ============================================================
+// ⚠️ ĐIỀN 2 GIÁ TRỊ NÀY VÀO (lấy trong Supabase > Settings > API)
+// ============================================================
+var SUPABASE_URL = 'https://bdvzhcrwuivpzkzmczri.supabase.co';
+var SUPABASE_KEY = 'THAY_ANON_KEY_CUA_BAN_VAO_DAY';
+// ============================================================
+
+var db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ===== ĐỌC SỐ BÀN TỪ URL =====
+// QR code sẽ trỏ tới: thucdon.html?ban=3
+var soBan = null;
+
+function docSoBan() {
+    var params = new URLSearchParams(window.location.search);
+    var ban = parseInt(params.get('ban'));
+    if (ban && ban > 0) {
+        soBan = ban;
+        var banner = document.getElementById('ban-banner');
+        var hienThi = document.getElementById('so-ban-hien-thi');
+        hienThi.textContent = 'Bàn số ' + ban;
+        banner.style.display = 'block';
+        // Đẩy nội dung xuống để không bị che bởi banner
+        document.body.style.paddingTop = '40px';
+    }
+}
+
+// ===== STICKY MENU =====
+var menuBox = document.getElementById('menuBox');
+var menuTop = menuBox.offsetTop;
 window.addEventListener("scroll", function () {
     menuBox.classList.toggle("fixed", window.scrollY >= menuTop);
 });
 
-// ===== 2. HAMBURGER TOGGLE =====
-const hamburgerBtn = document.getElementById('hamburgerBtn');
-const mainMenu = document.getElementById('mainMenu');
+// ===== HAMBURGER =====
+var hamburgerBtn = document.getElementById('hamburgerBtn');
+var mainMenu = document.getElementById('mainMenu');
 hamburgerBtn.addEventListener('click', function () {
     mainMenu.classList.toggle('open');
 });
 
-// ===== 3. DROPDOWN TOGGLE TRÊN MOBILE =====
-const dropdownEl   = document.getElementById('dropdownThucdon');
-const dropdownToggleLink = document.getElementById('dropdownToggle');
-const dropdownMenu = document.getElementById('dropdownMenu');
+// ===== DROPDOWN MOBILE =====
+var dropdownEl = document.getElementById('dropdownThucdon');
+var dropdownToggleLink = document.getElementById('dropdownToggle');
+var dropdownMenu = document.getElementById('dropdownMenu');
 
 dropdownToggleLink.addEventListener('click', function (e) {
-    // Chỉ toggle trên mobile (menu đang mở = màn hình nhỏ)
     if (window.innerWidth <= 768) {
-        e.preventDefault(); // không chuyển trang khi đang toggle
+        e.preventDefault();
         dropdownEl.classList.toggle('open-sub');
         dropdownMenu.classList.toggle('open-sub');
     }
-    // Trên desktop: để link hoạt động bình thường (chuyển sang thucdon.html#menu-full)
 });
 
-// ===== 4. SHOW MENU SECTION + SCROLL =====
+// ===== SHOW MENU SECTION =====
 function showMenu(id) {
-    // Ẩn tất cả category
-    document.querySelectorAll('.category').forEach(cat => {
+    document.querySelectorAll('.category').forEach(function(cat) {
         cat.style.display = "none";
     });
-
-    // Hiện category được chọn
-    const target = document.getElementById(id);
+    var target = document.getElementById(id);
     if (target) target.style.display = "block";
 
-    // Cập nhật tab active
-    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove("active"));
-    const activeTab = document.querySelector('[onclick="showMenu(\'' + id + '\')"]');
+    document.querySelectorAll('.tab').forEach(function(tab) { tab.classList.remove("active"); });
+    var activeTab = document.querySelector('[onclick="showMenu(\'' + id + '\')"]');
     if (activeTab) activeTab.classList.add("active");
 
-    // Scroll xuống section (trừ lần đầu load)
     if (window._menuLoaded) {
-        setTimeout(() => {
-            const el = document.getElementById(id);
+        setTimeout(function() {
+            var el = document.getElementById(id);
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 50);
     }
 }
 
-// ===== 5. HÀM ĐIỀU HƯỚNG TỪ DROPDOWN MENU =====
-// Khi click "CÁC MÓN PHỞ" v.v. từ dropdown, hiện đúng tab và scroll xuống
 function goToSection(id, linkEl) {
-    // Nếu đang ở trang thucdon.html (trang hiện tại có #menu-full)
     if (document.getElementById('menu-full')) {
-        // Ngăn chuyển trang
-        if (linkEl) linkEl.preventDefault ? linkEl.preventDefault() : null;
         showMenu(id);
-
-        // Đóng mobile menu sau khi chọn
         mainMenu.classList.remove('open');
         dropdownEl.classList.remove('open-sub');
         dropdownMenu.classList.remove('open-sub');
     }
-    // Nếu ở trang khác: để href chuyển trang bình thường (thucdon.html#pho)
-    // Trang thucdon.html sẽ tự đọc hash khi load
 }
 
-// ===== 6. KHI LOAD TRANG: ĐỌC HASH URL ĐỂ HIỆN ĐÚNG MỤC =====
-window.onload = function () {
-    const hash = window.location.hash.replace('#', ''); // vd: "pho", "my", "comrang", "nuoc"
-    const validSections = ['pho', 'my', 'comrang', 'nuoc'];
+// ===== TOAST =====
+function hienToast(msg, thoiGian) {
+    var t = document.getElementById('toast');
+    t.innerHTML = msg;
+    t.style.display = 'block';
+    setTimeout(function() { t.style.display = 'none'; }, thoiGian || 2500);
+}
 
-    if (validSections.includes(hash)) {
-        showMenu(hash);
-        // Scroll sau khi trang load xong
-        setTimeout(() => {
-            const el = document.getElementById(hash);
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 300);
+// ===== QUẢN LÝ GIỎ MÓN (chỉ dùng trong tab, không cần sessionStorage) =====
+var gioMon = {}; // { "Phở tái": { gia: "30k", soLuong: 1 } }
+
+function capNhatNut() {
+    var tong = 0;
+    for (var k in gioMon) tong += gioMon[k].soLuong;
+
+    var btnFloat = document.getElementById('btn-datmon-float');
+    var btnMain  = document.getElementById('btn-datmon');
+
+    if (tong > 0) {
+        btnFloat.style.display = 'block';
+        btnFloat.textContent = '🛒 Đặt món (' + tong + ')';
+        btnMain.textContent  = '🛒 Đặt món (' + tong + ')';
     } else {
-        showMenu('pho'); // Mặc định hiện Phở
+        btnFloat.style.display = 'none';
+        btnMain.textContent  = '🛒 Đặt món';
     }
-
-    window._menuLoaded = true; // Đánh dấu đã load xong
-};
-
-// =====================================================
-//  CHỌN MÓN -> phải đặt bàn trước (nếu chưa có bàn)
-//  Giỏ dùng chung với trang Đặt bàn qua sessionStorage ('gioMon')
-// =====================================================
-function layGio()  { return JSON.parse(sessionStorage.getItem('gioMon') || '{}'); }
-function luuGio(g) { sessionStorage.setItem('gioMon', JSON.stringify(g)); }
-
-// tách "Phở tái 30k" -> tên món "Phở tái"
-function tachTenMon(value) {
-    return value.replace(/\s*\d+k\s*$/, '').trim();
 }
 
-// đếm tổng số món trong giỏ
-function demMon() {
-    const gio = layGio();
-    return Object.values(gio).reduce((t, n) => t + n, 0);
-}
+// Gắn sự kiện cho tất cả checkbox
+document.querySelectorAll('input[name="order"]').forEach(function(cb) {
+    cb.addEventListener('change', function() {
+        var parts = this.value.split('|'); // "Phở tái|30k"
+        var ten = parts[0];
+        var gia = parts[1] || '';
 
-// cập nhật nhãn nút "Đặt món"
-function capNhatNutDatMon() {
-    const btn = document.getElementById('btn-datmon');
-    if (!btn) return;
-    const n = demMon();
-    btn.textContent = n > 0 ? `🛒 Đặt món (${n})` : '🛒 Đặt món';
-}
-
-// Tick chọn món -> CHỈ cập nhật giỏ, KHÔNG chuyển trang
-document.querySelectorAll('input[name="order"]').forEach(cb => {
-    // tick lại theo giỏ hiện có khi load trang
-    const ten = tachTenMon(cb.value);
-    const gio = layGio();
-    if (gio[ten]) cb.checked = true;
-
-    cb.addEventListener('change', function () {
-        const ten = tachTenMon(this.value);
-        const gio = layGio();
-        if (this.checked) gio[ten] = (gio[ten] || 0) + 1;
-        else              delete gio[ten];
-        luuGio(gio);
-        capNhatNutDatMon();
+        if (this.checked) {
+            gioMon[ten] = { gia: gia, soLuong: 1 };
+        } else {
+            delete gioMon[ten];
+        }
+        capNhatNut();
     });
 });
 
-// Bấm "Đặt món" -> nếu CHƯA có bàn thì yêu cầu đặt bàn trước
-function datMon() {
-    if (demMon() === 0) {
-        alert('Bạn chưa chọn món nào. Hãy tick chọn món trước nhé!');
+// ===== ĐẶT MÓN → GỬI LÊN SUPABASE =====
+async function datMon() {
+    // Kiểm tra chưa chọn món
+    var danhSach = Object.keys(gioMon);
+    if (danhSach.length === 0) {
+        hienToast('⚠️ Bạn chưa chọn món nào!', 2000);
         return;
     }
-    if (sessionStorage.getItem('daDatBan') !== '1') {
-        if (confirm('Bạn cần ĐẶT BÀN trước khi gọi món.\nChuyển sang trang đặt bàn ngay?')) {
-            window.location.href = 'datban.html';
-        }
+
+    // Kiểm tra chưa quét QR bàn
+    if (!soBan) {
+        hienToast('⚠️ Không xác định được số bàn!\nVui lòng quét lại mã QR trên bàn.', 3000);
         return;
     }
-    // đã có bàn -> sang trang đặt bàn để xác nhận gọi thêm món
-    window.location.href = 'datban.html';
+
+    hienToast('⏳ Đang gửi đơn...', 5000);
+
+    // Tạo danh sách records để insert
+    var records = [];
+    for (var ten in gioMon) {
+        records.push({
+            so_ban:    soBan,
+            ten_mon:   ten,
+            so_luong:  gioMon[ten].soLuong,
+            gia:       gioMon[ten].gia,
+            trang_thai: 'cho_xu_ly'
+        });
+    }
+
+    var result = await db.from('orders').insert(records);
+
+    if (result.error) {
+        hienToast('❌ Gửi đơn thất bại!\n' + result.error.message, 4000);
+        return;
+    }
+
+    // Thành công: reset giỏ
+    hienToast('✅ Đặt món thành công!\nBàn ' + soBan + ' — ' + danhSach.length + ' món\nNhân viên sẽ phục vụ ngay!', 3500);
+
+    // Bỏ tick tất cả checkbox
+    document.querySelectorAll('input[name="order"]').forEach(function(cb) {
+        cb.checked = false;
+    });
+    gioMon = {};
+    capNhatNut();
 }
 
-// cập nhật số lượng trên nút "Đặt Món" giữa màn hình khi tải trang
-capNhatNutDatMon();
+// ===== LOAD TRANG =====
+window.onload = function() {
+    docSoBan();
+
+    var hash = window.location.hash.replace('#', '');
+    var validSections = ['pho', 'my', 'comrang', 'nuoc'];
+    if (validSections.includes(hash)) {
+        showMenu(hash);
+        setTimeout(function() {
+            var el = document.getElementById(hash);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 300);
+    } else {
+        showMenu('pho');
+    }
+    window._menuLoaded = true;
+};
 </script>
+
 <!-- ===== POPUP BẢN ĐỒ ===== -->
 <script>
 function openMap() {
-    let m = document.getElementById('mapModal');
+    var m = document.getElementById('mapModal');
     if (!m) {
         m = document.createElement('div');
         m.id = 'mapModal';
-        m.onclick = e => { if (e.target === m) closeMap(); };
+        m.onclick = function(e) { if (e.target === m) closeMap(); };
         m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:100000;padding:16px;';
         m.innerHTML =
             '<div style="position:relative;width:min(900px,95vw);background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4);">' +
@@ -1033,10 +899,10 @@ function openMap() {
     m.style.display = 'flex';
 }
 function closeMap() {
-    const m = document.getElementById('mapModal');
+    var m = document.getElementById('mapModal');
     if (m) m.style.display = 'none';
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMap(); });
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeMap(); });
 </script>
 
 </body>
