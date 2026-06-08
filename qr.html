@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mã QR gọi món từng bàn — Quán Phở Cồ Nam Định</title>
+<style>
+    * { box-sizing: border-box; }
+    body {
+        font-family: Georgia, serif; margin: 0; background: #f6f1e7; color: #5a2c0f;
+        padding: 24px;
+    }
+    h1 { text-align: center; margin: 0 0 4px; }
+    .sub { text-align: center; color: #8a6a4f; margin: 0 0 20px; font-size: 14px; }
+
+    .controls {
+        max-width: 900px; margin: 0 auto 22px; display: flex; gap: 10px;
+        align-items: center; justify-content: center; flex-wrap: wrap;
+    }
+    .controls label { font-weight: 700; }
+    .controls input {
+        width: 70px; padding: 6px 8px; border: 1px solid #c8a27a; border-radius: 8px;
+        font-size: 15px; text-align: center;
+    }
+    .controls button {
+        padding: 8px 16px; border: none; border-radius: 8px; background: #e67e22; color: #fff;
+        font-weight: 700; cursor: pointer; font-family: inherit; font-size: 14px;
+    }
+    .controls button.ghost { background: #fff; color: #5a2c0f; border: 1px solid #c8a27a; }
+
+    .grid {
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 18px; max-width: 1100px; margin: 0 auto;
+    }
+    .card {
+        background: #fff; border: 1px solid #e3d4be; border-radius: 14px; padding: 16px;
+        text-align: center; box-shadow: 0 6px 18px rgba(0,0,0,.06);
+    }
+    .card h2 { margin: 0 0 4px; font-size: 20px; }
+    .card .quan { font-size: 12px; color: #8a6a4f; margin: 0 0 10px; }
+    .card img { width: 180px; height: 180px; display: block; margin: 0 auto; }
+    .card .hint { margin: 10px 0 0; font-size: 12px; color: #8a6a4f; }
+
+    @media print {
+        .controls, .sub { display: none; }
+        body { background: #fff; padding: 0; }
+        .card { break-inside: avoid; box-shadow: none; }
+    }
+</style>
+</head>
+<body>
+    <h1>🍜 Mã QR gọi món từng bàn</h1>
+    <p class="sub">Quán Phở Cồ Nam Định — khách quét QR ở bàn để mở thực đơn &amp; gọi món</p>
+
+    <div class="controls">
+        <label>Số bàn: <input id="soBan" type="number" min="1" max="100" value="10"></label>
+        <button onclick="taoQR()">Tạo QR</button>
+        <button class="ghost" onclick="window.print()">🖨️ In ra dán bàn</button>
+    </div>
+
+    <div id="grid" class="grid"></div>
+
+<script>
+// Mỗi QR trỏ tới: <địa chỉ web hiện tại>/thucdon.html?ban=N
+// Trang thucdon.html đọc ?ban=N (hàm docSoBan) -> tự hiện banner & gắn số bàn cho đơn.
+// Dùng location.origin nên chạy đúng cả ở localhost lẫn khi deploy thật.
+function urlBan(n) {
+    return location.origin + '/thucdon.html?ban=' + n;
+}
+
+// Sinh ảnh QR qua dịch vụ miễn phí api.qrserver.com (chỉ cần đặt <img>)
+function imgQR(noiDung) {
+    return 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data='
+        + encodeURIComponent(noiDung);
+}
+
+function taoQR() {
+    var soBan = Math.max(1, Math.min(100, parseInt(document.getElementById('soBan').value, 10) || 10));
+    var grid = document.getElementById('grid');
+    grid.innerHTML = '';
+
+    for (var n = 1; n <= soBan; n++) {
+        var link = urlBan(n);
+        var card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML =
+            '<h2>Bàn ' + n + '</h2>' +
+            '<p class="quan">Quán Phở Cồ Nam Định</p>' +
+            '<img alt="QR bàn ' + n + '" src="' + imgQR(link) + '">' +
+            '<p class="hint">Quét để gọi món</p>';
+        grid.appendChild(card);
+    }
+}
+
+taoQR();
+</script>
+</body>
+</html>

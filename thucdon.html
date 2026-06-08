@@ -786,12 +786,11 @@ function capNhatNut() {
     var btnMain  = document.getElementById('btn-datmon');
 
     if (tong > 0) {
-        btnFloat.style.display = 'block';
-        btnFloat.textContent = '🛒 Đặt món (' + tong + ')';
-        btnMain.textContent  = '🛒 Đặt món (' + tong + ')';
+        if (btnFloat) { btnFloat.style.display = 'block'; btnFloat.textContent = '🛒 Đặt món (' + tong + ')'; }
+        if (btnMain)  { btnMain.textContent  = '🛒 Đặt món (' + tong + ')'; }
     } else {
-        btnFloat.style.display = 'none';
-        btnMain.textContent  = '🛒 Đặt món';
+        if (btnFloat) btnFloat.style.display = 'none';
+        if (btnMain)  btnMain.textContent  = '🛒 Đặt món';
     }
 }
 
