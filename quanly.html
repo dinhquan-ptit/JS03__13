@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quản lý - Phở Cồ Nam Định</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
+
+.ql-wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+
+.ql-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+.ql-title { font-size: 22px; font-weight: bold; color: #5a2c0f; font-family: Georgia, serif; }
+.ql-title span { color: #999; font-size: 14px; font-weight: normal; margin-left: 8px; }
+
+.ql-reload { display: flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; border: 1px solid #ddd; background: #fff; font-size: 13px; color: #555; cursor: pointer; }
+.ql-reload:hover { background: #f0f0f0; }
+
+.ql-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+.ql-stat { background: #fff; border-radius: 10px; padding: 16px; border: 1px solid #eee; }
+.ql-stat-label { font-size: 12px; color: #999; margin-bottom: 6px; }
+.ql-stat-num { font-size: 26px; font-weight: bold; color: #5a2c0f; }
+
+.ql-tabs { display: flex; gap: 4px; background: #eee; border-radius: 10px; padding: 4px; }
+.ql-tab { flex: 1; padding: 8px 16px; border-radius: 8px; border: none; background: transparent; font-size: 13px; font-weight: bold; color: #777; cursor: pointer; transition: 0.2s; }
+.ql-tab.active { background: #fff; color: #5a2c0f; border: 1px solid #ddd; }
+.ql-tab:hover:not(.active) { color: #333; }
+
+.ql-panel { display: none; margin-top: 16px; }
+.ql-panel.show { display: block; }
+
+.ql-toolbar { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.ql-filter { padding: 7px 12px; border-radius: 8px; border: 1px solid #ddd; background: #fff; font-size: 13px; color: #333; }
+.ql-search { padding: 7px 12px; border-radius: 8px; border: 1px solid #ddd; background: #fff; font-size: 13px; color: #333; flex: 1; min-width: 150px; outline: none; }
+.ql-search:focus { border-color: #e67e22; }
+
+.ql-table-wrap { border: 1px solid #eee; border-radius: 12px; overflow: hidden; background: #fff; }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { background: #fafafa; padding: 10px 14px; text-align: left; font-weight: bold; font-size: 12px; color: #888; border-bottom: 1px solid #eee; }
+tbody td { padding: 10px 14px; border-bottom: 1px solid #f5f5f5; color: #333; vertical-align: top; word-break: break-word; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: #fffaf5; }
+
+.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+.badge-pending  { background: #fff3cd; color: #856404; }
+.badge-done     { background: #d1f0e0; color: #155724; }
+.badge-confirmed{ background: #cce5ff; color: #004085; }
+.badge-cancelled{ background: #f8d7da; color: #721c24; }
+
+.stars { color: #f59e0b; font-size: 14px; }
+
+.ql-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn-sm { padding: 4px 10px; border-radius: 6px; border: 1px solid #ddd; background: #fff; font-size: 12px; cursor: pointer; color: #555; transition: 0.15s; }
+.btn-sm:hover { background: #f0f0f0; }
+.btn-done   { border-color: #28a745; color: #28a745; }
+.btn-done:hover { background: #d4edda; }
+.btn-ok     { border-color: #007bff; color: #007bff; }
+.btn-ok:hover { background: #cce5ff; }
+.btn-del    { border-color: #dc3545; color: #dc3545; }
+.btn-del:hover { background: #f8d7da; }
+.btn-cancel { border-color: #e67e22; color: #e67e22; }
+.btn-cancel:hover { background: #fff3e0; }
+
+.ql-empty { text-align: center; padding: 40px; color: #aaa; font-size: 14px; }
+.ql-loading { text-align: center; padding: 40px; color: #aaa; font-size: 14px; }
+
+@media (max-width: 600px) {
+  .ql-stats { grid-template-columns: 1fr; }
+  .ql-tabs { flex-direction: column; }
+  table { display: block; overflow-x: auto; }
+}
+</style>
+</head>
+<body>
+
+<div class="ql-wrap">
+
+  <div class="ql-header">
+    <div>
+      <div class="ql-title">Quản lý nhà hàng <span>Phở Cồ Nam Định</span></div>
+    </div>
+    <button class="ql-reload" onclick="loadAll()">↻ Tải lại</button>
+  </div>
+
+  <!-- THỐNG KÊ -->
+  <div class="ql-stats">
+    <div class="ql-stat">
+      <div class="ql-stat-label">Đơn gọi món</div>
+      <div class="ql-stat-num" id="cnt-orders">...</div>
+    </div>
+    <div class="ql-stat">
+      <div class="ql-stat-label">Đặt bàn</div>
+      <div class="ql-stat-num" id="cnt-reservations">...</div>
+    </div>
+    <div class="ql-stat">
+      <div class="ql-stat-label">Đánh giá</div>
+      <div class="ql-stat-num" id="cnt-reviews">...</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="ql-tabs">
+    <button class="ql-tab active" onclick="switchTab('orders', this)">🍜 Gọi món</button>
+    <button class="ql-tab" onclick="switchTab('reservations', this)">📅 Đặt bàn</button>
+    <button class="ql-tab" onclick="switchTab('reviews', this)">⭐ Đánh giá</button>
+  </div>
+
+  <!-- PANEL GỌI MÓN -->
+  <div id="panel-orders" class="ql-panel show">
+    <div class="ql-toolbar">
+      <select class="ql-filter" id="filter-orders" onchange="renderOrders()">
+        <option value="">Tất cả trạng thái</option>
+        <option value="pending">Chờ xử lý</option>
+        <option value="done">Hoàn thành</option>
+      </select>
+      <input class="ql-search" id="search-orders" placeholder="Tìm bàn, món ăn..." oninput="renderOrders()">
+    </div>
+    <div class="ql-table-wrap">
+      <div id="tbl-orders" class="ql-loading">Đang tải...</div>
+    </div>
+  </div>
+
+  <!-- PANEL ĐẶT BÀN -->
+  <div id="panel-reservations" class="ql-panel">
+    <div class="ql-toolbar">
+      <select class="ql-filter" id="filter-reservations" onchange="renderReservations()">
+        <option value="">Tất cả trạng thái</option>
+        <option value="pending">Chờ xác nhận</option>
+        <option value="confirmed">Đã xác nhận</option>
+        <option value="cancelled">Đã huỷ</option>
+      </select>
+      <input class="ql-search" id="search-reservations" placeholder="Tìm tên, SĐT..." oninput="renderReservations()">
+    </div>
+    <div class="ql-table-wrap">
+      <div id="tbl-reservations" class="ql-loading">Đang tải...</div>
+    </div>
+  </div>
+
+  <!-- PANEL ĐÁNH GIÁ -->
+  <div id="panel-reviews" class="ql-panel">
+    <div class="ql-toolbar">
+      <select class="ql-filter" id="filter-reviews" onchange="renderReviews()">
+        <option value="">Tất cả sao</option>
+        <option value="5">5 sao</option>
+        <option value="4">4 sao</option>
+        <option value="3">3 sao</option>
+        <option value="2">2 sao</option>
+        <option value="1">1 sao</option>
+      </select>
+      <input class="ql-search" id="search-reviews" placeholder="Tìm tên, nội dung..." oninput="renderReviews()">
+    </div>
+    <div class="ql-table-wrap">
+      <div id="tbl-reviews" class="ql-loading">Đang tải...</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+var SUPABASE_URL = 'https://bdvzhcrwuivpzkzmczri.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkdnpoY3J3dWl2cHprem1jenJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MDIwMTMsImV4cCI6MjA5NjQ3ODAxM30.rO5zV9oL8DHR30NjfEO72MmZcwviohxdTuiyKrC2m8g';
+var db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+var dataOrders = [];
+var dataReservations = [];
+var dataReviews = [];
+
+// ===== CHUYỂN TAB =====
+function switchTab(name, btn) {
+  document.querySelectorAll('.ql-panel').forEach(function(p) { p.classList.remove('show'); });
+  document.querySelectorAll('.ql-tab').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('panel-' + name).classList.add('show');
+  btn.classList.add('active');
+}
+
+// ===== BADGE TRẠNG THÁI =====
+function badge(status) {
+  var map = {
+    pending:   ['badge-pending',   'Chờ xử lý'],
+    done:      ['badge-done',      'Hoàn thành'],
+    confirmed: ['badge-confirmed', 'Đã xác nhận'],
+    cancelled: ['badge-cancelled', 'Đã huỷ']
+  };
+  var v = map[status] || ['badge-pending', status || 'Mới'];
+  return '<span class="badge ' + v[0] + '">' + v[1] + '</span>';
+}
+
+// ===== SAO =====
+function stars(n) {
+  var s = '';
+  for (var i = 0; i < 5; i++) s += i < n ? '★' : '☆';
+  return '<span class="stars">' + s + '</span>';
+}
+
+// ===== ĐỊNH DẠNG NGÀY GIỜ =====
+function fmtDate(d) {
+  if (!d) return '—';
+  var dt = new Date(d);
+  return dt.toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+// ===== ĐỔI TRẠNG THÁI ĐƠN MÓN =====
+async function changeOrderStatus(id, newStatus) {
+  await db.from('orders').update({ trang_thai: newStatus }).eq('id', id);
+  loadOrders();
+}
+
+// ===== XOÁ ĐƠN MÓN =====
+async function deleteOrder(id) {
+  if (!confirm('Xoá đơn này?')) return;
+  await db.from('orders').delete().eq('id', id);
+  loadOrders();
+}
+
+// ===== ĐỔI TRẠNG THÁI ĐẶT BÀN =====
+async function changeReservationStatus(id, newStatus) {
+  await db.from('reservations').update({ trang_thai: newStatus }).eq('id', id);
+  loadReservations();
+}
+
+// ===== RENDER ĐƠN GỌI MÓN =====
+function renderOrders() {
+  var filter = document.getElementById('filter-orders').value;
+  var search = document.getElementById('search-orders').value.toLowerCase();
+
+  var rows = dataOrders.filter(function(r) {
+    if (filter && r.trang_thai !== filter) return false;
+    if (search && !(String(r.so_ban || '').includes(search) || (r.ten_mon || '').toLowerCase().includes(search))) return false;
+    return true;
+  });
+
+  if (!rows.length) {
+    document.getElementById('tbl-orders').innerHTML = '<div class="ql-empty">Không có đơn nào</div>';
+    return;
+  }
+
+  var html = '<table><thead><tr>' +
+    '<th>ID</th><th>Bàn</th><th>Món đã gọi</th><th>Trạng thái</th><th>Thời gian</th><th>Thao tác</th>' +
+    '</tr></thead><tbody>';
+
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i];
+    html += '<tr>' +
+      '<td>' + (r.id || '') + '</td>' +
+      '<td><b>Bàn ' + (r.so_ban || '?') + '</b></td>' +
+      '<td>' + (r.ten_mon || '—') + '</td>' +
+      '<td>' + badge(r.trang_thai) + '</td>' +
+      '<td>' + fmtDate(r.created_at) + '</td>' +
+      '<td><div class="ql-actions">';
+
+    if (r.trang_thai !== 'done') {
+      html += '<button class="btn-sm btn-done" onclick="changeOrderStatus(' + r.id + ', \'done\')">✓ Xong</button>';
+    }
+    html += '<button class="btn-sm btn-del" onclick="deleteOrder(' + r.id + ')">✕ Xoá</button>';
+    html += '</div></td></tr>';
+  }
+
+  html += '</tbody></table>';
+  document.getElementById('tbl-orders').innerHTML = html;
+}
+
+// ===== RENDER ĐẶT BÀN =====
+function renderReservations() {
+  var filter = document.getElementById('filter-reservations').value;
+  var search = document.getElementById('search-reservations').value.toLowerCase();
+
+  var rows = dataReservations.filter(function(r) {
+    if (filter && r.trang_thai !== filter) return false;
+    if (search && !((r.ho_ten || '').toLowerCase().includes(search) || (r.sdt || '').includes(search))) return false;
+    return true;
+  });
+
+  if (!rows.length) {
+    document.getElementById('tbl-reservations').innerHTML = '<div class="ql-empty">Không có đặt bàn nào</div>';
+    return;
+  }
+
+  var html = '<table><thead><tr>' +
+    '<th>ID</th><th>Họ tên</th><th>SĐT</th><th>Số người</th><th>Ngày</th><th>Giờ</th><th>Trạng thái</th><th>Thao tác</th>' +
+    '</tr></thead><tbody>';
+
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i];
+    var tt = r.trang_thai || 'pending';
+    html += '<tr>' +
+      '<td>' + (r.id || '') + '</td>' +
+      '<td>' + (r.ho_ten || '—') + '</td>' +
+      '<td>' + (r.sdt || '—') + '</td>' +
+      '<td>' + (r.so_nguoi || '?') + '</td>' +
+      '<td>' + (r.ngay || '—') + '</td>' +
+      '<td>' + (r.gio || '—') + '</td>' +
+      '<td>' + badge(tt) + '</td>' +
+      '<td><div class="ql-actions">';
+
+    if (tt === 'pending') {
+      html += '<button class="btn-sm btn-ok" onclick="changeReservationStatus(' + r.id + ', \'confirmed\')">✓ Xác nhận</button>';
+    }
+    if (tt !== 'cancelled') {
+      html += '<button class="btn-sm btn-cancel" onclick="changeReservationStatus(' + r.id + ', \'cancelled\')">✕ Huỷ</button>';
+    }
+    html += '</div></td></tr>';
+  }
+
+  html += '</tbody></table>';
+  document.getElementById('tbl-reservations').innerHTML = html;
+}
+
+// ===== RENDER ĐÁNH GIÁ =====
+function renderReviews() {
+  var filter = document.getElementById('filter-reviews').value;
+  var search = document.getElementById('search-reviews').value.toLowerCase();
+
+  var rows = dataReviews.filter(function(r) {
+    if (filter && String(r.sao) !== filter) return false;
+    if (search && !((r.ten || '').toLowerCase().includes(search) || (r.noidung || '').toLowerCase().includes(search))) return false;
+    return true;
+  });
+
+  if (!rows.length) {
+    document.getElementById('tbl-reviews').innerHTML = '<div class="ql-empty">Không có đánh giá nào</div>';
+    return;
+  }
+
+  var html = '<table><thead><tr>' +
+    '<th>ID</th><th>Tên</th><th>Nội dung</th><th>Sao</th><th>Thời gian</th>' +
+    '</tr></thead><tbody>';
+
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i];
+    html += '<tr>' +
+      '<td>' + (r.id || '') + '</td>' +
+      '<td>' + (r.ten || '—') + '</td>' +
+      '<td>' + (r.noidung || '—') + '</td>' +
+      '<td>' + stars(r.sao || 0) + '</td>' +
+      '<td>' + fmtDate(r.created_at) + '</td>' +
+      '</tr>';
+  }
+
+  html += '</tbody></table>';
+  document.getElementById('tbl-reviews').innerHTML = html;
+}
+
+// ===== LOAD DỮ LIỆU =====
+async function loadOrders() {
+  var res = await db.from('orders').select('*').order('id', { ascending: false });
+  dataOrders = res.data || [];
+  document.getElementById('cnt-orders').textContent = dataOrders.length;
+  renderOrders();
+}
+
+async function loadReservations() {
+  var res = await db.from('reservations').select('*').order('id', { ascending: false });
+  dataReservations = res.data || [];
+  document.getElementById('cnt-reservations').textContent = dataReservations.length;
+  renderReservations();
+}
+
+async function loadReviews() {
+  var res = await db.from('reviews').select('*').order('id', { ascending: false });
+  dataReviews = res.data || [];
+  document.getElementById('cnt-reviews').textContent = dataReviews.length;
+  renderReviews();
+}
+
+async function loadAll() {
+  document.getElementById('cnt-orders').textContent = '...';
+  document.getElementById('cnt-reservations').textContent = '...';
+  document.getElementById('cnt-reviews').textContent = '...';
+  await Promise.all([loadOrders(), loadReservations(), loadReviews()]);
+}
+
+loadAll();
+</script>
+
+</body>
+</html>
