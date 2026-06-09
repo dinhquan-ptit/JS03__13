@@ -967,6 +967,13 @@ textarea { resize: none; line-height: 1.6; }
         <div class="search-hint">Nhấn vào món để xem trong thực đơn</div>
     </div>
 </div>
+<!-- SUPABASE (goi truc tiep tu trinh duyet, khong can server Node) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+var SUPABASE_URL = 'https://bdvzhcrwuivpzkzmczri.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkdnpoY3J3dWl2cHprem1jenJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MDIwMTMsImV4cCI6MjA5NjQ3ODAxM30.rO5zV9oL8DHR30NjfEO72MmZcwviohxdTuiyKrC2m8g';
+var db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
 <script>
 // ===== DỮ LIỆU MÓN ĂN =====
 const ALL_DISHES = [
@@ -1223,20 +1230,17 @@ async function datBan() {
         tong_tien: tinhTongTien()
     };
 
-    // ----- Gửi tới CSDL (PHP/MySQL) -----
+    // ----- Gửi thẳng lên Supabase (khong can server Node) -----
     showMsg('Đang gửi...', '');
     try {
-        const res = await fetch('/api/datban', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-        const data = await res.json();
-        if (!res.ok || !data.ok) {
-            return showMsg('❌ ' + (data.error || 'Đặt bàn thất bại.'), 'error');
+        // Chi kiem tra LOI cua insert. KHONG doc lai (.select/.single)
+        // vi RLS co the chan doc -> du da luu nhung lai bao that bai.
+        const { error } = await db.from('datban').insert(payload);
+        if (error) {
+            return showMsg('❌ Đặt bàn thất bại: ' + error.message, 'error');
         }
 
-        showMsg('✅ Đặt bàn thành công (mã #' + data.id + ')! Chúng tôi sẽ liên hệ qua ' + payload.sdt + '.', 'success');
+        showMsg('✅ Đặt bàn thành công! Chúng tôi sẽ liên hệ qua ' + payload.sdt + '.', 'success');
 
         // đã có bàn -> đánh dấu, xoá giỏ
         sessionStorage.setItem('daDatBan', '1');
@@ -1244,7 +1248,7 @@ async function datBan() {
         renderMenu();
         [name, phone, email, guests, date, time, note].forEach(el => el.value = '');
     } catch (err) {
-        showMsg('❌ Không kết nối được máy chủ. Hãy chạy server Node (npm start) rồi mở qua http://localhost:3000', 'error');
+        showMsg('❌ Không gửi được đặt bàn: ' + (err.message || err), 'error');
     }
 }
 </script>
