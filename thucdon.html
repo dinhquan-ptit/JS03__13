@@ -830,23 +830,32 @@ async function datMon() {
     }
 
     // Gộp tên các món và giá thành một chuỗi (Ví dụ: "Phở tái (30k), Pepsi (10k)")
+    // Đồng thời tính tổng số lượng và tổng tiền thật.
     var chiTietDonHang = [];
+    var tongSoLuong = 0;
+    var tongTien = 0;
     for (var tenMon in gioMon) {
-        chiTietDonHang.push(tenMon + " (" + gioMon[tenMon].gia + ")");
+        var sl  = gioMon[tenMon].soLuong || 1;
+        // gia dạng chuỗi "30k" -> số 30000
+        var gia = parseInt(String(gioMon[tenMon].gia).replace(/[^\d]/g, ''), 10) || 0;
+        if (/k/i.test(gioMon[tenMon].gia)) gia *= 1000;
+        tongSoLuong += sl;
+        tongTien    += gia * sl;
+        chiTietDonHang.push(tenMon + " (" + gioMon[tenMon].gia + ") x" + sl);
     }
     var chuoiMonAn = chiTietDonHang.join(", ");
 
     try {
-        // Gửi dữ liệu lên bảng 'orders' của Supabase khớp theo ảnh image_b279c8.png
+        // Gửi dữ liệu lên bảng 'orders' của Supabase
         const { data, error } = await db
             .from('orders')
             .insert([
-                { 
-                    so_ban: soBan,          // Khớp với cột 'so_ban' (int4)
-                    ten_mon: chuoiMonAn,    // Khớp với cột 'ten_mon' (text)
-                    so_luong: 1,            // Khớp với cột 'so_luong' (int4) - tạm thời để 1 nhóm đơn
-                    gia: "Xem chi tiết",     // Khớp với cột 'gia' (text)
-                    trang_thai: 'pending'   // Khớp với cột 'trang_thai' (text)
+                {
+                    so_ban: soBan,                          // Khớp với cột 'so_ban' (int4)
+                    ten_mon: chuoiMonAn,                    // Khớp với cột 'ten_mon' (text)
+                    so_luong: tongSoLuong,                  // Tổng số lượng món
+                    gia: tongTien.toLocaleString('vi-VN') + 'đ', // Giá thật, ví dụ "75.000đ"
+                    trang_thai: 'pending'                   // Khớp với cột 'trang_thai' (text)
                 }
             ]);
 
