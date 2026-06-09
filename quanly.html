@@ -217,10 +217,13 @@ async function deleteOrder(id) {
   loadOrders();
 }
 
-// ===== ĐỔI TRẠNG THÁI ĐẶT BÀN =====
 async function changeReservationStatus(id, newStatus) {
-  await db.from('reservations').update({ trang_thai: newStatus }).eq('id', id);
+  await db.from('datban')
+    .update({ trang_thai: newStatus })
+    .eq('id', id);
+
   loadReservations();
+
 }
 
 // ===== RENDER ĐƠN GỌI MÓN =====
@@ -352,20 +355,33 @@ async function loadOrders() {
   document.getElementById('cnt-orders').textContent = dataOrders.length;
   renderOrders();
 }
-
 async function loadReservations() {
-  var res = await db.from('reservations').select('*').order('id', { ascending: false });
+  var res = await db.from('datban')
+    .select('*')
+    .order('id', { ascending: false });
+
+  console.log(res);
+
   dataReservations = res.data || [];
-  document.getElementById('cnt-reservations').textContent = dataReservations.length;
+  document.getElementById('cnt-reservations').textContent =
+    dataReservations.length;
+
   renderReservations();
 }
-
 async function loadReviews() {
-  var res = await db.from('reviews').select('*').order('id', { ascending: false });
+  var res = await db.from('danhgia')
+    .select('*')
+    .order('id', { ascending: false });
+
+  console.log(res);
+
   dataReviews = res.data || [];
-  document.getElementById('cnt-reviews').textContent = dataReviews.length;
+  document.getElementById('cnt-reviews').textContent =
+    dataReviews.length;
+
   renderReviews();
 }
+
 
 async function loadAll() {
   document.getElementById('cnt-orders').textContent = '...';
