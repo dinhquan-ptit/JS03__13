@@ -1,397 +1,379 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quản lý - Phở Cồ Nam Định</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
-
-.ql-wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
-
-.ql-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
-.ql-title { font-size: 22px; font-weight: bold; color: #5a2c0f; font-family: Georgia, serif; }
-.ql-title span { color: #999; font-size: 14px; font-weight: normal; margin-left: 8px; }
-
-.ql-reload { display: flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; border: 1px solid #ddd; background: #fff; font-size: 13px; color: #555; cursor: pointer; }
-.ql-reload:hover { background: #f0f0f0; }
-
-.ql-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
-.ql-stat { background: #fff; border-radius: 10px; padding: 16px; border: 1px solid #eee; }
-.ql-stat-label { font-size: 12px; color: #999; margin-bottom: 6px; }
-.ql-stat-num { font-size: 26px; font-weight: bold; color: #5a2c0f; }
-
-.ql-tabs { display: flex; gap: 4px; background: #eee; border-radius: 10px; padding: 4px; }
-.ql-tab { flex: 1; padding: 8px 16px; border-radius: 8px; border: none; background: transparent; font-size: 13px; font-weight: bold; color: #777; cursor: pointer; transition: 0.2s; }
-.ql-tab.active { background: #fff; color: #5a2c0f; border: 1px solid #ddd; }
-.ql-tab:hover:not(.active) { color: #333; }
-
-.ql-panel { display: none; margin-top: 16px; }
-.ql-panel.show { display: block; }
-
-.ql-toolbar { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
-.ql-filter { padding: 7px 12px; border-radius: 8px; border: 1px solid #ddd; background: #fff; font-size: 13px; color: #333; }
-.ql-search { padding: 7px 12px; border-radius: 8px; border: 1px solid #ddd; background: #fff; font-size: 13px; color: #333; flex: 1; min-width: 150px; outline: none; }
-.ql-search:focus { border-color: #e67e22; }
-
-.ql-table-wrap { border: 1px solid #eee; border-radius: 12px; overflow: hidden; background: #fff; }
-
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-thead th { background: #fafafa; padding: 10px 14px; text-align: left; font-weight: bold; font-size: 12px; color: #888; border-bottom: 1px solid #eee; }
-tbody td { padding: 10px 14px; border-bottom: 1px solid #f5f5f5; color: #333; vertical-align: top; word-break: break-word; }
-tbody tr:last-child td { border-bottom: none; }
-tbody tr:hover { background: #fffaf5; }
-
-.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
-.badge-pending  { background: #fff3cd; color: #856404; }
-.badge-done     { background: #d1f0e0; color: #155724; }
-.badge-confirmed{ background: #cce5ff; color: #004085; }
-.badge-cancelled{ background: #f8d7da; color: #721c24; }
-
-.stars { color: #f59e0b; font-size: 14px; }
-
-.ql-actions { display: flex; gap: 6px; flex-wrap: wrap; }
-.btn-sm { padding: 4px 10px; border-radius: 6px; border: 1px solid #ddd; background: #fff; font-size: 12px; cursor: pointer; color: #555; transition: 0.15s; }
-.btn-sm:hover { background: #f0f0f0; }
-.btn-done   { border-color: #28a745; color: #28a745; }
-.btn-done:hover { background: #d4edda; }
-.btn-ok     { border-color: #007bff; color: #007bff; }
-.btn-ok:hover { background: #cce5ff; }
-.btn-del    { border-color: #dc3545; color: #dc3545; }
-.btn-del:hover { background: #f8d7da; }
-.btn-cancel { border-color: #e67e22; color: #e67e22; }
-.btn-cancel:hover { background: #fff3e0; }
-
-.ql-empty { text-align: center; padding: 40px; color: #aaa; font-size: 14px; }
-.ql-loading { text-align: center; padding: 40px; color: #aaa; font-size: 14px; }
-
-@media (max-width: 600px) {
-  .ql-stats { grid-template-columns: 1fr; }
-  .ql-tabs { flex-direction: column; }
-  table { display: block; overflow-x: auto; }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý - Phở Cồ Nam Định</title>
+  <link rel="stylesheet" href="quanly.css">
 </head>
 <body>
 
-<div class="ql-wrap">
-
-  <div class="ql-header">
-    <div>
-      <div class="ql-title">Quản lý nhà hàng <span>Phở Cồ Nam Định</span></div>
+  <!-- ========================================
+       SIDEBAR - Thanh điều hướng bên trái
+  ======================================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="logo.jpg" alt="Logo Phở Cồ" onerror="this.style.display='none'">
+      <div class="sidebar-brand">Phở Cồ<br><small>Nam Định</small></div>
     </div>
-    <button class="ql-reload" onclick="loadAll()">↻ Tải lại</button>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" onclick="switchSection('tongquan', this)">
+        <span class="nav-icon">📊</span>
+        <span>Tổng quan</span>
+      </button>
+      <button class="nav-item" onclick="switchSection('monan', this)">
+        <span class="nav-icon">🍜</span>
+        <span>Món ăn</span>
+      </button>
+      <button class="nav-item" onclick="switchSection('ban', this)">
+        <span class="nav-icon">🪑</span>
+        <span>Bàn ăn</span>
+      </button>
+      <button class="nav-item" onclick="switchSection('donhang', this)">
+        <span class="nav-icon">📋</span>
+        <span>Đơn hàng</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="index.html" class="nav-back">← Về trang chủ</a>
+    </div>
+  </aside>
+
+  <!-- Lớp phủ tối khi mở sidebar trên mobile -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+  <!-- ========================================
+       LAYOUT CHÍNH - Phần bên phải sidebar
+  ======================================== -->
+  <div class="layout">
+
+    <!-- TOPBAR - Thanh tiêu đề trên cùng -->
+    <header class="topbar">
+      <button class="hamburger-btn" id="hamburger-btn" onclick="toggleSidebar()">☰</button>
+      <div class="topbar-title" id="topbar-title">Tổng quan</div>
+      <div class="topbar-right">
+        <span id="current-time" class="topbar-time"></span>
+      </div>
+    </header>
+
+    <!-- NỘI DUNG CHÍNH -->
+    <main class="main">
+
+      <!-- ==========================================
+           SECTION 1: TỔNG QUAN (Dashboard)
+      =========================================== -->
+      <section id="section-tongquan" class="section show">
+        <div class="page-title">Tổng quan</div>
+
+        <!-- 4 ô thống kê -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">🍜</div>
+            <div class="stat-info">
+              <div class="stat-num" id="stat-monan">0</div>
+              <div class="stat-label">Tổng số món</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🪑</div>
+            <div class="stat-info">
+              <div class="stat-num" id="stat-ban">0</div>
+              <div class="stat-label">Tổng số bàn</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📋</div>
+            <div class="stat-info">
+              <div class="stat-num" id="stat-donhang">0</div>
+              <div class="stat-label">Tổng đơn hàng</div>
+            </div>
+          </div>
+          <div class="stat-card stat-revenue">
+            <div class="stat-icon">💰</div>
+            <div class="stat-info">
+              <div class="stat-num" id="stat-doanhthu">0đ</div>
+              <div class="stat-label">Doanh thu (đơn hoàn thành)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sơ đồ trạng thái bàn nhanh -->
+        <div class="card mt-20">
+          <div class="card-title">🪑 Trạng thái bàn hiện tại</div>
+          <div id="ban-quick-grid" class="ban-quick-grid"></div>
+        </div>
+
+        <!-- 5 đơn hàng gần nhất -->
+        <div class="card mt-20">
+          <div class="card-title">📋 Đơn hàng gần nhất</div>
+          <div id="recent-orders-wrap"></div>
+        </div>
+      </section>
+
+
+      <!-- ==========================================
+           SECTION 2: QUẢN LÝ MÓN ĂN
+      =========================================== -->
+      <section id="section-monan" class="section">
+        <div class="page-header">
+          <div class="page-title">Quản lý món ăn</div>
+          <button class="btn btn-primary" onclick="openModalMonAn()">+ Thêm món</button>
+        </div>
+
+        <!-- Bộ lọc và tìm kiếm -->
+        <div class="toolbar">
+          <select class="filter-select" id="filter-loai-mon" onchange="renderMonAn()">
+            <option value="">Tất cả loại</option>
+            <option value="mon-chinh">Món chính</option>
+            <option value="do-uong">Đồ uống</option>
+            <option value="trang-miet">Tráng miệng</option>
+          </select>
+          <input class="search-input" id="search-mon" placeholder="🔍 Tìm tên món..." oninput="renderMonAn()">
+        </div>
+
+        <!-- Bảng danh sách món -->
+        <div id="monan-table-wrap"></div>
+      </section>
+
+
+      <!-- ==========================================
+           SECTION 3: QUẢN LÝ BÀN ĂN
+      =========================================== -->
+      <section id="section-ban" class="section">
+        <div class="page-header">
+          <div class="page-title">Quản lý bàn ăn</div>
+          <button class="btn btn-primary" onclick="openModalThemBan()">+ Thêm bàn</button>
+        </div>
+
+        <!-- Chú thích màu trạng thái -->
+        <div class="ban-legend">
+          <span class="legend-item"><span class="dot dot-trong"></span> Trống</span>
+          <span class="legend-item"><span class="dot dot-phucvu"></span> Đang phục vụ</span>
+          <span class="legend-item"><span class="dot dot-dadat"></span> Đã đặt trước</span>
+        </div>
+
+        <!-- Lưới bàn ăn -->
+        <div id="ban-grid" class="ban-grid"></div>
+      </section>
+
+
+      <!-- ==========================================
+           SECTION 4: QUẢN LÝ ĐƠN HÀNG
+      =========================================== -->
+      <section id="section-donhang" class="section">
+        <div class="page-header">
+          <div class="page-title">Quản lý đơn hàng</div>
+          <button class="btn btn-primary" onclick="openModalTaoDon()">+ Tạo đơn mới</button>
+        </div>
+
+        <!-- Bộ lọc -->
+        <div class="toolbar">
+          <select class="filter-select" id="filter-trang-thai-don" onchange="renderDonHang()">
+            <option value="">Tất cả trạng thái</option>
+            <option value="dang-xu-ly">Đang xử lý</option>
+            <option value="hoan-thanh">Hoàn thành</option>
+            <option value="da-huy">Đã huỷ</option>
+          </select>
+          <input class="search-input" id="search-don" placeholder="🔍 Tìm theo số bàn..." oninput="renderDonHang()">
+        </div>
+
+        <!-- Bảng đơn hàng -->
+        <div id="donhang-table-wrap"></div>
+      </section>
+
+    </main>
   </div>
 
-  <!-- THỐNG KÊ -->
-  <div class="ql-stats">
-    <div class="ql-stat">
-      <div class="ql-stat-label">Đơn gọi món</div>
-      <div class="ql-stat-num" id="cnt-orders">...</div>
-    </div>
-    <div class="ql-stat">
-      <div class="ql-stat-label">Đặt bàn</div>
-      <div class="ql-stat-num" id="cnt-reservations">...</div>
-    </div>
-    <div class="ql-stat">
-      <div class="ql-stat-label">Đánh giá</div>
-      <div class="ql-stat-num" id="cnt-reviews">...</div>
+
+  <!-- ========================================
+       MODAL 1: THÊM / SỬA MÓN ĂN
+  ======================================== -->
+  <div class="modal-overlay" id="modal-monan" onclick="closeModal('modal-monan')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title" id="modal-monan-title">Thêm món ăn</div>
+        <button class="modal-close" onclick="closeModal('modal-monan')">✕</button>
+      </div>
+      <div class="modal-body">
+        <!-- ID ẩn để biết đang sửa món nào (rỗng = thêm mới) -->
+        <input type="hidden" id="mon-edit-id">
+
+        <div class="form-group">
+          <label>Tên món <span class="req">*</span></label>
+          <input type="text" id="mon-ten" class="form-input" placeholder="VD: Phở đặc biệt">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Giá (VNĐ) <span class="req">*</span></label>
+            <input type="number" id="mon-gia" class="form-input" placeholder="VD: 75000" min="0">
+          </div>
+          <div class="form-group">
+            <label>Loại món <span class="req">*</span></label>
+            <select id="mon-loai" class="form-input">
+              <option value="mon-chinh">Món chính</option>
+              <option value="do-uong">Đồ uống</option>
+              <option value="trang-miet">Tráng miệng</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Chọn ảnh từ thư mục monan/ -->
+        <div class="form-group">
+          <label>Ảnh minh hoạ (chọn từ thư mục monan/)</label>
+          <select id="mon-hinh" class="form-input" onchange="previewHinh(this.value)">
+            <option value="">— Không chọn ảnh —</option>
+            <option value="monan/phodacbiet.png">Phở đặc biệt</option>
+            <option value="monan/photaichin.jpg">Phở tái chín</option>
+            <option value="monan/phochin.jpg">Phở chín</option>
+            <option value="monan/pho-tai-lan.jpg">Phở tái lăn</option>
+            <option value="monan/phoapchao.jpg">Phở áp chảo</option>
+            <option value="monan/photigau.jpg">Phở tái gầu</option>
+            <option value="monan/photibap.jpg">Phở tái bắp</option>
+            <option value="monan/photinam.jpg">Phở tái nạm</option>
+            <option value="monan/phoxao.jpg">Phở xào</option>
+            <option value="monan/comrang.jpg">Cơm rang</option>
+            <option value="monan/comrangcaibo.jpg">Cơm rang cải bò</option>
+            <option value="monan/comrangduabo.jpg">Cơm rang dưa bò</option>
+            <option value="monan/comrangduiga.jpg">Cơm rang dưa gà</option>
+            <option value="monan/comrangthapcam.jpg">Cơm rang thập cẩm</option>
+            <option value="monan/comrangtrung.jpg">Cơm rang trứng</option>
+            <option value="monan/comrangxucxich.jpg">Cơm rang xúc xích</option>
+            <option value="monan/myxao.jpg">Mỳ xào</option>
+            <option value="monan/boxaoraucai.jpg">Bò xào rau cải</option>
+            <option value="monan/pepsi.jpg">Pepsi</option>
+            <option value="monan/7up.jpg">7UP</option>
+            <option value="monan/mirinda.jpg">Mirinda</option>
+            <option value="monan/aquafina.jpg">Aquafina</option>
+            <option value="monan/nuoctangluc.jpg">Nước tăng lực</option>
+            <option value="monan/teaplus.jpg">Tea Plus</option>
+            <option value="monan/twister.jpg">Twister</option>
+            <option value="monan/rockstar.jpg">Rockstar</option>
+          </select>
+          <!-- Preview ảnh được chọn -->
+          <img id="mon-hinh-preview" src="" alt="Preview" class="hinh-preview" style="display:none">
+        </div>
+
+        <div class="form-group">
+          <label>Mô tả ngắn</label>
+          <input type="text" id="mon-mota" class="form-input" placeholder="VD: Phở bò tươi ngon, nước dùng đậm đà">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('modal-monan')">Huỷ</button>
+        <button class="btn btn-primary" onclick="saveMonAn()">💾 Lưu món</button>
+      </div>
     </div>
   </div>
 
-  <!-- TABS -->
-  <div class="ql-tabs">
-    <button class="ql-tab active" onclick="switchTab('orders', this)">🍜 Gọi món</button>
-    <button class="ql-tab" onclick="switchTab('reservations', this)">📅 Đặt bàn</button>
-    <button class="ql-tab" onclick="switchTab('reviews', this)">⭐ Đánh giá</button>
-  </div>
 
-  <!-- PANEL GỌI MÓN -->
-  <div id="panel-orders" class="ql-panel show">
-    <div class="ql-toolbar">
-      <select class="ql-filter" id="filter-orders" onchange="renderOrders()">
-        <option value="">Tất cả trạng thái</option>
-        <option value="pending">Chờ xử lý</option>
-        <option value="done">Hoàn thành</option>
-      </select>
-      <input class="ql-search" id="search-orders" placeholder="Tìm bàn, món ăn..." oninput="renderOrders()">
-    </div>
-    <div class="ql-table-wrap">
-      <div id="tbl-orders" class="ql-loading">Đang tải...</div>
-    </div>
-  </div>
-
-  <!-- PANEL ĐẶT BÀN -->
-  <div id="panel-reservations" class="ql-panel">
-    <div class="ql-toolbar">
-      <select class="ql-filter" id="filter-reservations" onchange="renderReservations()">
-        <option value="">Tất cả trạng thái</option>
-        <option value="pending">Chờ xác nhận</option>
-        <option value="confirmed">Đã xác nhận</option>
-        <option value="cancelled">Đã huỷ</option>
-      </select>
-      <input class="ql-search" id="search-reservations" placeholder="Tìm tên, SĐT..." oninput="renderReservations()">
-    </div>
-    <div class="ql-table-wrap">
-      <div id="tbl-reservations" class="ql-loading">Đang tải...</div>
+  <!-- ========================================
+       MODAL 2: THÊM BÀN MỚI
+  ======================================== -->
+  <div class="modal-overlay" id="modal-ban" onclick="closeModal('modal-ban')">
+    <div class="modal modal-sm" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title">Thêm bàn mới</div>
+        <button class="modal-close" onclick="closeModal('modal-ban')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Số bàn <span class="req">*</span></label>
+          <input type="number" id="ban-so" class="form-input" placeholder="VD: 11" min="1">
+        </div>
+        <div class="form-group">
+          <label>Sức chứa (số người)</label>
+          <input type="number" id="ban-suc-chua" class="form-input" placeholder="VD: 4" min="1" value="4">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('modal-ban')">Huỷ</button>
+        <button class="btn btn-primary" onclick="saveThemBan()">💾 Thêm bàn</button>
+      </div>
     </div>
   </div>
 
-  <!-- PANEL ĐÁNH GIÁ -->
-  <div id="panel-reviews" class="ql-panel">
-    <div class="ql-toolbar">
-      <select class="ql-filter" id="filter-reviews" onchange="renderReviews()">
-        <option value="">Tất cả sao</option>
-        <option value="5">5 sao</option>
-        <option value="4">4 sao</option>
-        <option value="3">3 sao</option>
-        <option value="2">2 sao</option>
-        <option value="1">1 sao</option>
-      </select>
-      <input class="ql-search" id="search-reviews" placeholder="Tìm tên, nội dung..." oninput="renderReviews()">
-    </div>
-    <div class="ql-table-wrap">
-      <div id="tbl-reviews" class="ql-loading">Đang tải...</div>
+
+  <!-- ========================================
+       MODAL 3: TẠO ĐƠN HÀNG MỚI
+  ======================================== -->
+  <div class="modal-overlay" id="modal-taodon" onclick="closeModal('modal-taodon')">
+    <div class="modal modal-lg" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title">Tạo đơn hàng mới</div>
+        <button class="modal-close" onclick="closeModal('modal-taodon')">✕</button>
+      </div>
+      <div class="modal-body">
+
+        <!-- Bước 1: Chọn bàn -->
+        <div class="form-group">
+          <label>Chọn bàn <span class="req">*</span></label>
+          <select id="don-chon-ban" class="form-input">
+            <option value="">— Chọn bàn —</option>
+          </select>
+        </div>
+
+        <!-- Bước 2: Thêm món vào đơn -->
+        <div class="don-add-mon">
+          <div class="don-add-title">Thêm món vào đơn:</div>
+          <div class="form-row">
+            <div class="form-group fg-grow2">
+              <label>Chọn món ăn</label>
+              <select id="don-chon-mon" class="form-input">
+                <option value="">— Chọn món —</option>
+              </select>
+            </div>
+            <div class="form-group fg-grow1">
+              <label>Số lượng</label>
+              <input type="number" id="don-so-luong" class="form-input" value="1" min="1">
+            </div>
+            <div class="form-group fg-auto">
+              <label>&nbsp;</label>
+              <button class="btn btn-primary" onclick="themMonVaoDon()">+ Thêm</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Danh sách món đã chọn trong đơn -->
+        <div class="don-items-wrap">
+          <div class="don-items-title">Danh sách món đã chọn:</div>
+          <div id="don-items-list"></div>
+          <div class="don-total">
+            Tổng tiền: <strong id="don-tong-tien">0đ</strong>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('modal-taodon')">Huỷ</button>
+        <button class="btn btn-primary" onclick="saveDonHang()">💾 Lưu đơn hàng</button>
+      </div>
     </div>
   </div>
 
-</div>
 
-<!-- SUPABASE -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-var SUPABASE_URL = 'https://bdvzhcrwuivpzkzmczri.supabase.co';
-var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkdnpoY3J3dWl2cHprem1jenJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MDIwMTMsImV4cCI6MjA5NjQ3ODAxM30.rO5zV9oL8DHR30NjfEO72MmZcwviohxdTuiyKrC2m8g';
-var db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-var dataOrders = [];
-var dataReservations = [];
-var dataReviews = [];
-
-// ===== CHUYỂN TAB =====
-function switchTab(name, btn) {
-  document.querySelectorAll('.ql-panel').forEach(function(p) { p.classList.remove('show'); });
-  document.querySelectorAll('.ql-tab').forEach(function(b) { b.classList.remove('active'); });
-  document.getElementById('panel-' + name).classList.add('show');
-  btn.classList.add('active');
-}
-
-// ===== BADGE TRẠNG THÁI =====
-function badge(status) {
-  var map = {
-    pending:   ['badge-pending',   'Chờ xử lý'],
-    done:      ['badge-done',      'Hoàn thành'],
-    confirmed: ['badge-confirmed', 'Đã xác nhận'],
-    cancelled: ['badge-cancelled', 'Đã huỷ']
-  };
-  var v = map[status] || ['badge-pending', status || 'Mới'];
-  return '<span class="badge ' + v[0] + '">' + v[1] + '</span>';
-}
-
-// ===== SAO =====
-function stars(n) {
-  var s = '';
-  for (var i = 0; i < 5; i++) s += i < n ? '★' : '☆';
-  return '<span class="stars">' + s + '</span>';
-}
-
-// ===== ĐỊNH DẠNG NGÀY GIỜ =====
-function fmtDate(d) {
-  if (!d) return '—';
-  var dt = new Date(d);
-  return dt.toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-}
-
-// ===== ĐỔI TRẠNG THÁI ĐƠN MÓN =====
-async function changeOrderStatus(id, newStatus) {
-  await db.from('orders').update({ trang_thai: newStatus }).eq('id', id);
-  loadOrders();
-}
-
-// ===== XOÁ ĐƠN MÓN =====
-async function deleteOrder(id) {
-  if (!confirm('Xoá đơn này?')) return;
-  await db.from('orders').delete().eq('id', id);
-  loadOrders();
-}
-
-async function changeReservationStatus(id, newStatus) {
-  await db.from('datban')
-    .update({ trang_thai: newStatus })
-    .eq('id', id);
-
-  loadReservations();
-
-}
-
-// ===== RENDER ĐƠN GỌI MÓN =====
-function renderOrders() {
-  var filter = document.getElementById('filter-orders').value;
-  var search = document.getElementById('search-orders').value.toLowerCase();
-
-  var rows = dataOrders.filter(function(r) {
-    if (filter && r.trang_thai !== filter) return false;
-    if (search && !(String(r.so_ban || '').includes(search) || (r.ten_mon || '').toLowerCase().includes(search))) return false;
-    return true;
-  });
-
-  if (!rows.length) {
-    document.getElementById('tbl-orders').innerHTML = '<div class="ql-empty">Không có đơn nào</div>';
-    return;
-  }
-
-  var html = '<table><thead><tr>' +
-    '<th>ID</th><th>Bàn</th><th>Món đã gọi</th><th>Trạng thái</th><th>Thời gian</th><th>Thao tác</th>' +
-    '</tr></thead><tbody>';
-
-  for (var i = 0; i < rows.length; i++) {
-    var r = rows[i];
-    html += '<tr>' +
-      '<td>' + (r.id || '') + '</td>' +
-      '<td><b>Bàn ' + (r.so_ban || '?') + '</b></td>' +
-      '<td>' + (r.ten_mon || '—') + '</td>' +
-      '<td>' + badge(r.trang_thai) + '</td>' +
-      '<td>' + fmtDate(r.created_at) + '</td>' +
-      '<td><div class="ql-actions">';
-
-    if (r.trang_thai !== 'done') {
-      html += '<button class="btn-sm btn-done" onclick="changeOrderStatus(' + r.id + ', \'done\')">✓ Xong</button>';
-    }
-    html += '<button class="btn-sm btn-del" onclick="deleteOrder(' + r.id + ')">✕ Xoá</button>';
-    html += '</div></td></tr>';
-  }
-
-  html += '</tbody></table>';
-  document.getElementById('tbl-orders').innerHTML = html;
-}
-
-// ===== RENDER ĐẶT BÀN =====
-function renderReservations() {
-  var filter = document.getElementById('filter-reservations').value;
-  var search = document.getElementById('search-reservations').value.toLowerCase();
-
-  var rows = dataReservations.filter(function(r) {
-    if (filter && r.trang_thai !== filter) return false;
-    if (search && !((r.ho_ten || '').toLowerCase().includes(search) || (r.sdt || '').includes(search))) return false;
-    return true;
-  });
-
-  if (!rows.length) {
-    document.getElementById('tbl-reservations').innerHTML = '<div class="ql-empty">Không có đặt bàn nào</div>';
-    return;
-  }
-
-  var html = '<table><thead><tr>' +
-    '<th>ID</th><th>Họ tên</th><th>SĐT</th><th>Số người</th><th>Ngày</th><th>Giờ</th><th>Trạng thái</th><th>Thao tác</th>' +
-    '</tr></thead><tbody>';
-
-  for (var i = 0; i < rows.length; i++) {
-    var r = rows[i];
-    var tt = r.trang_thai || 'pending';
-    html += '<tr>' +
-      '<td>' + (r.id || '') + '</td>' +
-      '<td>' + (r.ho_ten || '—') + '</td>' +
-      '<td>' + (r.sdt || '—') + '</td>' +
-      '<td>' + (r.so_nguoi || '?') + '</td>' +
-      '<td>' + (r.ngay || '—') + '</td>' +
-      '<td>' + (r.gio || '—') + '</td>' +
-      '<td>' + badge(tt) + '</td>' +
-      '<td><div class="ql-actions">';
-
-    if (tt === 'pending') {
-      html += '<button class="btn-sm btn-ok" onclick="changeReservationStatus(' + r.id + ', \'confirmed\')">✓ Xác nhận</button>';
-    }
-    if (tt !== 'cancelled') {
-      html += '<button class="btn-sm btn-cancel" onclick="changeReservationStatus(' + r.id + ', \'cancelled\')">✕ Huỷ</button>';
-    }
-    html += '</div></td></tr>';
-  }
-
-  html += '</tbody></table>';
-  document.getElementById('tbl-reservations').innerHTML = html;
-}
-
-// ===== RENDER ĐÁNH GIÁ =====
-function renderReviews() {
-  var filter = document.getElementById('filter-reviews').value;
-  var search = document.getElementById('search-reviews').value.toLowerCase();
-
-  var rows = dataReviews.filter(function(r) {
-    if (filter && String(r.sao) !== filter) return false;
-    if (search && !((r.ten || '').toLowerCase().includes(search) || (r.noidung || '').toLowerCase().includes(search))) return false;
-    return true;
-  });
-
-  if (!rows.length) {
-    document.getElementById('tbl-reviews').innerHTML = '<div class="ql-empty">Không có đánh giá nào</div>';
-    return;
-  }
-
-  var html = '<table><thead><tr>' +
-    '<th>ID</th><th>Tên</th><th>Nội dung</th><th>Sao</th><th>Thời gian</th>' +
-    '</tr></thead><tbody>';
-
-  for (var i = 0; i < rows.length; i++) {
-    var r = rows[i];
-    html += '<tr>' +
-      '<td>' + (r.id || '') + '</td>' +
-      '<td>' + (r.ten || '—') + '</td>' +
-      '<td>' + (r.noidung || '—') + '</td>' +
-      '<td>' + stars(r.sao || 0) + '</td>' +
-      '<td>' + fmtDate(r.created_at) + '</td>' +
-      '</tr>';
-  }
-
-  html += '</tbody></table>';
-  document.getElementById('tbl-reviews').innerHTML = html;
-}
-
-// ===== LOAD DỮ LIỆU =====
-async function loadOrders() {
-  var res = await db.from('orders').select('*').order('id', { ascending: false });
-  dataOrders = res.data || [];
-  document.getElementById('cnt-orders').textContent = dataOrders.length;
-  renderOrders();
-}
-async function loadReservations() {
-  var res = await db.from('datban')
-    .select('*')
-    .order('id', { ascending: false });
-
-  console.log(res);
-
-  dataReservations = res.data || [];
-  document.getElementById('cnt-reservations').textContent =
-    dataReservations.length;
-
-  renderReservations();
-}
-async function loadReviews() {
-  var res = await db.from('danhgia')
-    .select('*')
-    .order('id', { ascending: false });
-
-  console.log(res);
-
-  dataReviews = res.data || [];
-  document.getElementById('cnt-reviews').textContent =
-    dataReviews.length;
-
-  renderReviews();
-}
+  <!-- ========================================
+       MODAL 4: XEM CHI TIẾT ĐƠN HÀNG
+  ======================================== -->
+  <div class="modal-overlay" id="modal-chitiet" onclick="closeModal('modal-chitiet')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title">Chi tiết đơn hàng</div>
+        <button class="modal-close" onclick="closeModal('modal-chitiet')">✕</button>
+      </div>
+      <div class="modal-body" id="modal-chitiet-body">
+        <!-- Được render bởi JS khi click "Xem" -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('modal-chitiet')">Đóng</button>
+      </div>
+    </div>
+  </div>
 
 
-async function loadAll() {
-  document.getElementById('cnt-orders').textContent = '...';
-  document.getElementById('cnt-reservations').textContent = '...';
-  document.getElementById('cnt-reviews').textContent = '...';
-  await Promise.all([loadOrders(), loadReservations(), loadReviews()]);
-}
-
-loadAll();
-</script>
-
+  <!-- Nhúng file JS logic -->
+  <script src="quanly.js"></script>
 </body>
 </html>
