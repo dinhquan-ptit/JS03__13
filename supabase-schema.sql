@@ -25,5 +25,26 @@ create table if not exists danhgia (
   created_at timestamptz default now()
 );
 
--- Server dùng key service_role nên bỏ qua RLS, không cần policy.
--- (Nếu sau này muốn gọi trực tiếp từ trình duyệt bằng anon key thì mới cần bật RLS + policy.)
+-- Bảng đơn gọi món tại bàn (từ trang thucdon.html qua QR code)
+create table if not exists orders (
+  id         bigint generated always as identity primary key,
+  so_ban     int         not null,
+  ten_mon    text        not null,
+  so_luong   int         not null default 1,
+  gia        text,
+  trang_thai text        not null default 'pending',
+  created_at timestamptz default now()
+);
+
+-- Cho phép anon key đọc/ghi các bảng này (cần bật RLS + policy khi dùng anon key từ trình duyệt)
+alter table datban  enable row level security;
+alter table danhgia enable row level security;
+alter table orders  enable row level security;
+
+-- Policy: cho phép insert từ client (anon)
+create policy "allow_insert_datban"  on datban  for insert to anon with check (true);
+create policy "allow_insert_danhgia" on danhgia for insert to anon with check (true);
+create policy "allow_insert_orders"  on orders  for insert to anon with check (true);
+
+-- Policy: cho phép đọc đánh giá từ client
+create policy "allow_select_danhgia" on danhgia for select to anon using (true);

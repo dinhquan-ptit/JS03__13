@@ -509,6 +509,8 @@ body {
 html, body { margin: 0; padding: 0; }
 body { min-height: 100vh; display: flex; flex-direction: column; }
 main { flex: 1; }
+
+/* ===== SEARCH OVERLAY ===== */
 .search-overlay {
     display: none;
     position: fixed;
@@ -527,6 +529,11 @@ main { flex: 1; }
     max-width: 560px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.4);
     overflow: hidden;
+    animation: slideDown 0.25s ease;
+}
+@keyframes slideDown {
+    from { transform: translateY(-30px); opacity: 0; }
+    to   { transform: translateY(0);     opacity: 1; }
 }
 .search-modal-header {
     display: flex;
@@ -549,6 +556,8 @@ main { flex: 1; }
     font-size: 22px;
     cursor: pointer;
     color: #888;
+    line-height: 1;
+    padding: 0 4px;
 }
 .search-close-btn:hover { color: #e67e22; }
 .search-results { max-height: 400px; overflow-y: auto; padding: 8px 0; }
@@ -567,8 +576,16 @@ main { flex: 1; }
 .search-result-info { flex: 1; }
 .search-result-info strong { display: block; font-size: 14px; color: #2c3e50; font-family: Georgia, serif; }
 .search-result-info span { font-size: 13px; color: #e67e22; font-weight: bold; }
-.search-result-tag { font-size: 11px; background: #fff0e0; color: #c0660f; padding: 2px 8px; border-radius: 10px; font-weight: bold; white-space: nowrap; }
-.search-empty { text-align: center; padding: 30px 20px; color: #888; font-family: Georgia, serif; }
+.search-result-tag {
+    font-size: 11px;
+    background: #fff0e0;
+    color: #c0660f;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+.search-empty { text-align: center; padding: 30px 20px; color: #888; font-family: Georgia, serif; font-size: 14px; }
 .search-empty span { font-size: 28px; display: block; margin-bottom: 8px; }
 .search-hint { padding: 14px 20px; font-size: 12px; color: #aaa; border-top: 1px solid #f0f0f0; text-align: center; font-family: Georgia, serif; }
 </style>
@@ -624,28 +641,15 @@ main { flex: 1; }
 </div>
 
 <div class="floating-icons">
-<img src="icon tìmmkieems.jpg" class="icon" onclick="openSearch()" title="TÌM MÓN" alt="Tìm kiếm">
+    <img src="icon tìmmkieems.jpg" class="icon" onclick="openSearch()" title="TÌM MÓN" alt="Tìm kiếm">
     <img src="bản đồ.jpg" class="icon" onclick="openMap()" title="TRA VỊ TRÍ" alt="Bản đồ">
 </div>
 <a href="tel:0363005144" class="goidien">
     <img src="ảnh gọi điện.png" alt="Gọi điện">
     <span>GỌI NGAY</span>
 </a>
-<div class="search-overlay" id="searchOverlay" onclick="handleOverlayClick(event)">
-    <div class="search-modal">
-        <div class="search-modal-header">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e67e22" stroke-width="2.5" stroke-linecap="round">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
-            <input class="search-modal-input" id="searchModalInput" type="text"
-                placeholder="Tìm món ăn... (vd: phở tái, cơm rang)"
-                autocomplete="off" oninput="renderSearchResults(this.value)">
-            <button class="search-close-btn" onclick="closeSearch()">✕</button>
-        </div>
-        <div class="search-results" id="searchResults"></div>
-        <div class="search-hint">Nhấn vào món để cuộn đến mục đó</div>
-    </div>
-</div>
+
+<!-- ===== THỰC ĐƠN ===== -->
 <div id="menu-full">
     <h2 class="menu-title">MENU THỰC ĐƠN</h2>
 
@@ -759,95 +763,9 @@ main { flex: 1; }
      ================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-var ALL_DISHES = [
-    { ten: 'Phở tái',           gia: '30k', hinh: 'monan/pho-tai-lan.jpg',    tab: 'pho',     tag: 'Phở' },
-    { ten: 'Phở chín',          gia: '30k', hinh: 'monan/phochin.jpg',         tab: 'pho',     tag: 'Phở' },
-    { ten: 'Phở đặc biệt',      gia: '50k', hinh: 'monan/phodacbiet.png',      tab: 'pho',     tag: 'Phở' },
-    { ten: 'Phở tái chín',      gia: '30k', hinh: 'monan/photaichin.jpg',      tab: 'pho',     tag: 'Phở' },
-    { ten: 'Phở tái nạm',       gia: '35k', hinh: 'monan/photinam.jpg',        tab: 'pho',     tag: 'Phở' },
-    { ten: 'Phở tái gầu',       gia: '35k', hinh: 'monan/photigau.jpg',        tab: 'pho',     tag: 'Phở' },
-    { ten: 'Phở tái bắp',       gia: '35k', hinh: 'monan/photibap.jpg',        tab: 'pho',     tag: 'Phở' },
-    { ten: 'Phở tái lăn',       gia: '35k', hinh: 'monan/photilan.jpg',        tab: 'pho',     tag: 'Phở' },
-    { ten: 'Phở áp chảo',       gia: '35k', hinh: 'monan/phoapchao.jpg',       tab: 'pho',     tag: 'Phở' },
-    { ten: 'Phở xào',           gia: '55k', hinh: 'monan/phoxao.jpg',          tab: 'pho',     tag: 'Phở' },
-    { ten: 'Cơm rang',          gia: '50k', hinh: 'monan/comrang.jpg',          tab: 'comrang', tag: 'Cơm rang' },
-    { ten: 'Cơm rang trứng',    gia: '25k', hinh: 'monan/comrangtrung.jpg',     tab: 'comrang', tag: 'Cơm rang' },
-    { ten: 'Cơm rang xúc xích', gia: '30k', hinh: 'monan/comrangxucxich.jpg',  tab: 'comrang', tag: 'Cơm rang' },
-    { ten: 'Cơm rang thập cẩm', gia: '35k', hinh: 'monan/comrangthapcam.jpg',  tab: 'comrang', tag: 'Cơm rang' },
-    { ten: 'Cơm rang dưa bò',   gia: '35k', hinh: 'monan/comrangduabo.jpg',    tab: 'comrang', tag: 'Cơm rang' },
-    { ten: 'Cơm rang cải bò',   gia: '35k', hinh: 'monan/comrangcaibo.jpg',    tab: 'comrang', tag: 'Cơm rang' },
-    { ten: 'Cơm rang đùi gà',   gia: '35k', hinh: 'monan/comrangduiga.jpg',    tab: 'comrang', tag: 'Cơm rang' },
-    { ten: 'Mỳ xào',            gia: '40k', hinh: 'monan/myxao.jpg',           tab: 'my',      tag: 'Mỳ' },
-    { ten: 'Bò xào rau cải',    gia: '40k', hinh: 'monan/boxaoraucai.jpg',     tab: 'my',      tag: 'Mỳ' },
-    { ten: 'Pepsi',             gia: '10k', hinh: 'monan/pepsi.jpg',            tab: 'nuoc',    tag: 'Nước' },
-    { ten: '7up',               gia: '10k', hinh: 'monan/7up.jpg',             tab: 'nuoc',    tag: 'Nước' },
-    { ten: 'Aquafina',          gia: '10k', hinh: 'monan/aquafina.jpg',         tab: 'nuoc',    tag: 'Nước' },
-    { ten: 'Mirinda',           gia: '10k', hinh: 'monan/mirinda.jpg',          tab: 'nuoc',    tag: 'Nước' },
-    { ten: 'Nước tăng lực',     gia: '15k', hinh: 'monan/nuoctangluc.jpg',      tab: 'nuoc',    tag: 'Nước' },
-    { ten: 'Rockstar',          gia: '15k', hinh: 'monan/rockstar.jpg',         tab: 'nuoc',    tag: 'Nước' },
-    { ten: 'Cam ép Twister',    gia: '15k', hinh: 'monan/twister.jpg',          tab: 'nuoc',    tag: 'Nước' },
-    { ten: 'Trà ô long Tea+',   gia: '10k', hinh: 'monan/teaplus.jpg',          tab: 'nuoc',    tag: 'Nước' }
-];
-
-function removeAccents(str) {
-    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-}
-
-function openSearch() {
-    document.getElementById('searchOverlay').classList.add('active');
-    setTimeout(function() { document.getElementById('searchModalInput').focus(); }, 100);
-    renderSearchResults('');
-}
-
-function closeSearch() {
-    document.getElementById('searchOverlay').classList.remove('active');
-    document.getElementById('searchModalInput').value = '';
-    document.getElementById('searchResults').innerHTML = '';
-}
-
-function handleOverlayClick(e) {
-    if (e.target === document.getElementById('searchOverlay')) closeSearch();
-}
-
-function renderSearchResults(keyword) {
-    var box = document.getElementById('searchResults');
-    var kw = removeAccents(keyword.trim());
-
-    var list = kw === ''
-        ? ALL_DISHES.filter(function(d) {
-            return ['Phở đặc biệt','Phở xào','Cơm rang thập cẩm','Mỳ xào'].indexOf(d.ten) >= 0;
-          })
-        : ALL_DISHES.filter(function(d) {
-            return removeAccents(d.ten).indexOf(kw) >= 0;
-          });
-
-    if (list.length === 0) {
-        box.innerHTML = '<div class="search-empty"><span>🍜</span>Không tìm thấy món phù hợp</div>';
-        return;
-    }
-
-    var html = '';
-    for (var i = 0; i < list.length; i++) {
-        var d = list[i];
-        html += '<div class="search-result-item" onclick="chonMonTuSearch(\'' + d.tab + '\')">' +
-            '<img src="' + d.hinh + '" alt="' + d.ten + '" onerror="this.style.display=\'none\'">' +
-            '<div class="search-result-info"><strong>' + d.ten + '</strong><span>' + d.gia + '</span></div>' +
-            '<span class="search-result-tag">' + d.tag + '</span>' +
-        '</div>';
-    }
-    box.innerHTML = html;
-}
-
-function chonMonTuSearch(tab) {
-    closeSearch();
-    showMenu(tab);
-    setTimeout(function() {
-        var el = document.getElementById(tab);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
-}
-
-document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeSearch(); });
+// ============================================================
+// ⚠️ ĐIỀN 2 GIÁ TRỊ NÀY VÀO (lấy trong Supabase > Settings > API)
+// ============================================================
 var SUPABASE_URL = 'https://bdvzhcrwuivpzkzmczri.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkdnpoY3J3dWl2cHprem1jenJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MDIwMTMsImV4cCI6MjA5NjQ3ODAxM30.rO5zV9oL8DHR30NjfEO72MmZcwviohxdTuiyKrC2m8g';
 // ============================================================
@@ -1055,6 +973,117 @@ window.onload = function() {
     }
     window._menuLoaded = true;
 };
+</script>
+
+<!-- ===== SEARCH OVERLAY ===== -->
+<div class="search-overlay" id="searchOverlay" onclick="handleOverlayClick(event)">
+    <div class="search-modal">
+        <div class="search-modal-header">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e67e22" stroke-width="2.5" stroke-linecap="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input
+                class="search-modal-input"
+                id="searchModalInput"
+                type="text"
+                placeholder="Tìm món ăn... (vd: phở tái, cơm rang)"
+                autocomplete="off"
+                oninput="renderSearchResults(this.value)"
+            >
+            <button class="search-close-btn" onclick="closeSearch()">✕</button>
+        </div>
+        <div class="search-results" id="searchResults"></div>
+        <div class="search-hint">Nhấn vào món để xem ngay trong thực đơn</div>
+    </div>
+</div>
+<script>
+// ===== DỮ LIỆU MÓN ĂN =====
+var ALL_DISHES_SEARCH = [
+    { name: "Phở tái",           price: "30k", img: "monan/pho-tai-lan.jpg",   section: "pho",     tag: "Phở" },
+    { name: "Phở chín",          price: "30k", img: "monan/phochin.jpg",        section: "pho",     tag: "Phở" },
+    { name: "Phở đặc biệt",      price: "50k", img: "monan/phodacbiet.png",     section: "pho",     tag: "Phở" },
+    { name: "Phở tái chín",      price: "30k", img: "monan/photaichin.jpg",     section: "pho",     tag: "Phở" },
+    { name: "Phở tái nạm",       price: "35k", img: "monan/photinam.jpg",       section: "pho",     tag: "Phở" },
+    { name: "Phở tái gầu",       price: "35k", img: "monan/photigau.jpg",       section: "pho",     tag: "Phở" },
+    { name: "Phở tái bắp",       price: "35k", img: "monan/photibap.jpg",       section: "pho",     tag: "Phở" },
+    { name: "Phở tái lăn",       price: "35k", img: "monan/photilan.jpg",       section: "pho",     tag: "Phở" },
+    { name: "Phở áp chảo",       price: "35k", img: "monan/phoapchao.jpg",      section: "pho",     tag: "Phở" },
+    { name: "Phở xào",           price: "55k", img: "monan/phoxao.jpg",         section: "pho",     tag: "Phở" },
+    { name: "Cơm rang",          price: "50k", img: "monan/comrang.jpg",        section: "comrang", tag: "Cơm rang" },
+    { name: "Cơm rang trứng",    price: "25k", img: "monan/comrangtrung.jpg",   section: "comrang", tag: "Cơm rang" },
+    { name: "Cơm rang xúc xích", price: "30k", img: "monan/comrangxucxich.jpg", section: "comrang", tag: "Cơm rang" },
+    { name: "Cơm rang thập cẩm", price: "35k", img: "monan/comrangthapcam.jpg", section: "comrang", tag: "Cơm rang" },
+    { name: "Cơm rang dưa bò",   price: "35k", img: "monan/comrangduabo.jpg",   section: "comrang", tag: "Cơm rang" },
+    { name: "Cơm rang cải bò",   price: "35k", img: "monan/comrangcaibo.jpg",   section: "comrang", tag: "Cơm rang" },
+    { name: "Cơm rang đùi gà",   price: "35k", img: "monan/comrangduiga.jpg",   section: "comrang", tag: "Cơm rang" },
+    { name: "Mỳ xào",            price: "40k", img: "monan/myxao.jpg",          section: "my",      tag: "Mỳ" },
+    { name: "Bò xào rau cải",    price: "40k", img: "monan/boxaoraucai.jpg",    section: "my",      tag: "Mỳ" },
+    { name: "Pepsi",             price: "10k", img: "monan/pepsi.jpg",          section: "nuoc",    tag: "Nước" },
+    { name: "7up",               price: "10k", img: "monan/7up.jpg",            section: "nuoc",    tag: "Nước" },
+    { name: "Aquafina",          price: "10k", img: "monan/aquafina.jpg",       section: "nuoc",    tag: "Nước" },
+    { name: "Mirinda",           price: "10k", img: "monan/mirinda.jpg",        section: "nuoc",    tag: "Nước" },
+    { name: "Nước tăng lực",     price: "15k", img: "monan/nuoctangluc.jpg",    section: "nuoc",    tag: "Nước" },
+    { name: "Rockstar",          price: "15k", img: "monan/rockstar.jpg",       section: "nuoc",    tag: "Nước" },
+    { name: "Cam ép Twister",    price: "15k", img: "monan/twister.jpg",        section: "nuoc",    tag: "Nước" },
+    { name: "Trà ô long Tea+",   price: "10k", img: "monan/teaplus.jpg",        section: "nuoc",    tag: "Nước" },
+];
+
+function openSearch() {
+    document.getElementById('searchOverlay').classList.add('active');
+    setTimeout(function() { document.getElementById('searchModalInput').focus(); }, 100);
+    renderSearchResults('');
+}
+
+function closeSearch() {
+    document.getElementById('searchOverlay').classList.remove('active');
+    document.getElementById('searchModalInput').value = '';
+    document.getElementById('searchResults').innerHTML = '';
+}
+
+function handleOverlayClick(e) {
+    if (e.target === document.getElementById('searchOverlay')) closeSearch();
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeSearch();
+});
+
+function renderSearchResults(query) {
+    var q = query.trim().toLowerCase();
+    var box = document.getElementById('searchResults');
+    var bestSeller = ['Phở đặc biệt', 'Phở xào', 'Cơm rang thập cẩm', 'Mỳ xào'];
+    var list = q === ''
+        ? ALL_DISHES_SEARCH.filter(function(d) { return bestSeller.indexOf(d.name) >= 0; })
+        : ALL_DISHES_SEARCH.filter(function(d) { return d.name.toLowerCase().indexOf(q) >= 0; });
+
+    if (list.length === 0) {
+        box.innerHTML = '<div class="search-empty"><span>🍜</span>Không tìm thấy món "<strong>' + query + '</strong>"</div>';
+        return;
+    }
+
+    box.innerHTML = list.map(function(d) {
+        return '<a class="search-result-item" href="javascript:void(0)" onclick="showMenu(\'' + d.section + '\');closeSearch()">' +
+            '<img src="' + d.img + '" alt="' + d.name + '" onerror="this.src=\'phodacbiet.jpg\'">' +
+            '<div class="search-result-info"><strong>' + highlightSearch(d.name, q) + '</strong><span>' + d.price + '</span></div>' +
+            '<div class="search-result-tag">' + d.tag + '</div>' +
+            '</a>';
+    }).join('');
+}
+
+function highlightSearch(text, q) {
+    if (!q) return text;
+    var re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+    return text.replace(re, '<mark style="background:#ffe0b2;border-radius:3px;padding:0 2px">$1</mark>');
+}
+
+var _tdHeaderSearch = document.querySelector('.search-box');
+if (_tdHeaderSearch) {
+    _tdHeaderSearch.addEventListener('focus', openSearch);
+    _tdHeaderSearch.addEventListener('input', function() {
+        document.getElementById('searchModalInput').value = this.value;
+        renderSearchResults(this.value);
+    });
+}
 </script>
 
 <!-- ===== POPUP BẢN ĐỒ ===== -->

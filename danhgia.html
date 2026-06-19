@@ -938,6 +938,12 @@ button {
         <div class="search-hint">Nhấn vào món để xem trong thực đơn</div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+var SUPABASE_URL = 'https://bdvzhcrwuivpzkzmczri.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkdnpoY3J3dWl2cHprem1jenJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MDIwMTMsImV4cCI6MjA5NjQ3ODAxM30.rO5zV9oL8DHR30NjfEO72MmZcwviohxdTuiyKrC2m8g';
+var db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
 <script>
 // ===== DỮ LIỆU MÓN ĂN =====
 const ALL_DISHES = [
@@ -1116,23 +1122,15 @@ async function guiDanhGia(){
 
     const review = { ten: ten.value.trim(), noidung: noidung.value.trim(), sao: sao };
 
-    // ----- Gửi tới CSDL (PHP/MySQL) -----
     try {
-        const res = await fetch('/api/danhgia', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(review)
-        });
-        const data = await res.json();
-        if(!res.ok || !data.ok){
-            alert('❌ ' + (data.error || 'Gửi đánh giá thất bại.'));
+        const { error } = await db.from('danhgia').insert(review);
+        if (error) {
+            alert('❌ Gửi đánh giá thất bại: ' + error.message);
             return;
         }
 
-        // hiển thị ngay (mới nhất lên đầu)
         document.getElementById('danhsach').prepend(taoReviewHTML(review));
 
-        // reset form
         ten.value = '';
         noidung.value = '';
         document.getElementById('sao').value = '0';
@@ -1140,22 +1138,22 @@ async function guiDanhGia(){
 
         alert('Cảm ơn bạn đã đánh giá! ⭐');
     } catch(err) {
-        alert('❌ Không kết nối được máy chủ. Hãy chạy server Node (npm start) rồi mở qua http://localhost:3000');
+        alert('❌ Lỗi kết nối: ' + (err.message || err));
     }
 }
 
-// load các đánh giá đã lưu trong CSDL khi mở trang
 async function loadDanhGia(){
     try {
-        const res = await fetch('/api/danhgia');
-        const data = await res.json();
-        if(data.ok){
+        const { data, error } = await db
+            .from('danhgia')
+            .select('*')
+            .order('created_at', { ascending: false });
+        if (!error && data) {
             const danhsach = document.getElementById('danhsach');
-            // API trả mới nhất trước; prepend để mới nhất nằm trên cùng
-            data.data.slice().reverse().forEach(r => danhsach.prepend(taoReviewHTML(r)));
+            data.slice().reverse().forEach(r => danhsach.prepend(taoReviewHTML(r)));
         }
     } catch(err) {
-        // chạy bằng mở file trực tiếp (không qua server) -> bỏ qua
+        // bỏ qua nếu không kết nối được
     }
 }
 loadDanhGia();
