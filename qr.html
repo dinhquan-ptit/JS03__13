@@ -61,11 +61,8 @@
     <div id="grid" class="grid"></div>
 
 <script>
-// Mỗi QR trỏ tới: <địa chỉ web hiện tại>/thucdon.html?ban=N
-// Trang thucdon.html đọc ?ban=N (hàm docSoBan) -> tự hiện banner & gắn số bàn cho đơn.
-// Dùng location.origin nên chạy đúng cả ở localhost lẫn khi deploy thật.
 function urlBan(n) {
-    return location.origin + '/thucdon.html?ban=' + n;
+    return 'https://dinhquan-ptit.github.io/JS03__13/thucdon.html?ban=' + n;
 }
 
 // Sinh ảnh QR qua dịch vụ miễn phí api.qrserver.com (chỉ cần đặt <img>)
