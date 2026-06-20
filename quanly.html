@@ -4,13 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quản lý - Phở Cồ Nam Định</title>
+
   <link rel="stylesheet" href="quanly.css">
 </head>
 <body>
-
-  <!-- ========================================
-       SIDEBAR - Thanh điều hướng bên trái
-  ======================================== -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <img src="logo.jpg" alt="Logo Phở Cồ" onerror="this.style.display='none'">
@@ -44,9 +41,7 @@
   <!-- Lớp phủ tối khi mở sidebar trên mobile -->
   <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
-  <!-- ========================================
-       LAYOUT CHÍNH - Phần bên phải sidebar
-  ======================================== -->
+
   <div class="layout">
 
     <!-- TOPBAR - Thanh tiêu đề trên cùng -->
@@ -61,9 +56,7 @@
     <!-- NỘI DUNG CHÍNH -->
     <main class="main">
 
-      <!-- ==========================================
-           SECTION 1: TỔNG QUAN (Dashboard)
-      =========================================== -->
+
       <section id="section-tongquan" class="section show">
         <div class="page-title">Tổng quan</div>
 
@@ -113,9 +106,7 @@
       </section>
 
 
-      <!-- ==========================================
-           SECTION 2: QUẢN LÝ MÓN ĂN
-      =========================================== -->
+    
       <section id="section-monan" class="section">
         <div class="page-header">
           <div class="page-title">Quản lý món ăn</div>
@@ -138,9 +129,6 @@
       </section>
 
 
-      <!-- ==========================================
-           SECTION 3: QUẢN LÝ BÀN ĂN
-      =========================================== -->
       <section id="section-ban" class="section">
         <div class="page-header">
           <div class="page-title">Quản lý bàn ăn</div>
@@ -186,10 +174,6 @@
     </main>
   </div>
 
-
-  <!-- ========================================
-       MODAL 1: THÊM / SỬA MÓN ĂN
-  ======================================== -->
   <div class="modal-overlay" id="modal-monan" onclick="closeModal('modal-monan')">
     <div class="modal" onclick="event.stopPropagation()">
       <div class="modal-header">
@@ -269,9 +253,6 @@
   </div>
 
 
-  <!-- ========================================
-       MODAL 2: THÊM BÀN MỚI
-  ======================================== -->
   <div class="modal-overlay" id="modal-ban" onclick="closeModal('modal-ban')">
     <div class="modal modal-sm" onclick="event.stopPropagation()">
       <div class="modal-header">
@@ -295,10 +276,6 @@
     </div>
   </div>
 
-
-  <!-- ========================================
-       MODAL 3: TẠO ĐƠN HÀNG MỚI
-  ======================================== -->
   <div class="modal-overlay" id="modal-taodon" onclick="closeModal('modal-taodon')">
     <div class="modal modal-lg" onclick="event.stopPropagation()">
       <div class="modal-header">
@@ -354,9 +331,6 @@
   </div>
 
 
-  <!-- ========================================
-       MODAL 4: XEM CHI TIẾT ĐƠN HÀNG
-  ======================================== -->
   <div class="modal-overlay" id="modal-chitiet" onclick="closeModal('modal-chitiet')">
     <div class="modal" onclick="event.stopPropagation()">
       <div class="modal-header">
@@ -371,9 +345,7 @@
       </div>
     </div>
   </div>
-
-
-  <!-- Nhúng file JS logic -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="quanly.js"></script>
 </body>
 </html>
