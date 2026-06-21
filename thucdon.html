@@ -12,8 +12,6 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     background: #f5f5f5;
 }
-
-/* ===== BANNER BÀN ===== */
 #ban-banner {
     display: none;
     position: fixed;
@@ -30,7 +28,6 @@ body {
 }
 #ban-banner span { font-size: 18px; }
 
-/* ===== HEADER ===== */
 #d1 {
     position: relative;
     height: 60vw;
@@ -63,7 +60,6 @@ body {
 }
 @media (max-width: 600px) { .search-box { display: none; } }
 
-/* ===== MENU BOX ===== */
 .menu-box {
     position: absolute;
     top: clamp(70px, 14vw, 100px);
@@ -290,7 +286,6 @@ body {
 }
 .icon:hover { transform: scale(1.1); }
 
-/* ===== MENU FULL ===== */
 #menu-full {
     padding: 80px 5%;
     text-align: center;
@@ -388,7 +383,6 @@ body {
 }
 .tick { font-size: 14px; transition: 0.2s; }
 .food-info input[type="checkbox"]:checked + .tick { color: #e67e22; transform: scale(1.1); }
-/* ===== NÚT ĐẶT MÓN NỔI ===== */
 #btn-datmon-float {
     display: none;
     position: fixed;
@@ -413,7 +407,6 @@ body {
     50%       { box-shadow: 0 8px 40px rgba(230,126,34,0.9); }
 }
 
-/* ===== TOAST THÔNG BÁO ===== */
 #toast {
     display: none;
     position: fixed;
@@ -432,7 +425,6 @@ body {
     line-height: 1.6;
 }
 
-/* ===== GỌI ĐIỆN ===== */
 .goidien {
     position: fixed;
     left: 12px;
@@ -467,7 +459,6 @@ body {
     .goidien img { margin-right: 0; }
 }
 
-/* ===== FOOTER ===== */
 .pho-footer { background: #0d0d0d; color: #fff; }
 .pho-footer__inner {
     max-width: 1200px;
@@ -510,7 +501,6 @@ html, body { margin: 0; padding: 0; }
 body { min-height: 100vh; display: flex; flex-direction: column; }
 main { flex: 1; }
 
-/* ===== SEARCH OVERLAY ===== */
 .search-overlay {
     display: none;
     position: fixed;
@@ -592,13 +582,12 @@ main { flex: 1; }
 </head>
 <body>
 
-<!-- Banner hiển thị số bàn -->
+
 <div id="ban-banner">🍜 Bạn đang ngồi <span id="so-ban-hien-thi">?</span> — Chọn món bên dưới và bấm Đặt món!</div>
 
-<!-- Toast thông báo -->
 <div id="toast"></div>
 
-<!-- Nút đặt món nổi -->
+
 <button id="btn-datmon-float" onclick="datMon()">🛒 Đặt món</button>
 
 <div id="d1">
@@ -649,7 +638,7 @@ main { flex: 1; }
     <span>GỌI NGAY</span>
 </a>
 
-<!-- ===== THỰC ĐƠN ===== -->
+
 <div id="menu-full">
     <h2 class="menu-title">MENU THỰC ĐƠN</h2>
 
@@ -716,7 +705,6 @@ main { flex: 1; }
     </section>
 </div>
 
-<!-- ===== FOOTER ===== -->
 <footer id="lienhe" class="pho-footer">
     <div class="pho-footer__inner">
         <div class="pho-footer__col pho-footer__brand">
@@ -757,23 +745,14 @@ main { flex: 1; }
     </div>
     <div class="pho-footer__bottom">© 2025 Phở Cồ Nam Định. All rights reserved.</div>
 </footer>
-
-<!-- ====================================================
-     SUPABASE + LOGIC GỌI MÓN
-     ================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ============================================================
-// ⚠️ ĐIỀN 2 GIÁ TRỊ NÀY VÀO (lấy trong Supabase > Settings > API)
-// ============================================================
+
 var SUPABASE_URL = 'https://bdvzhcrwuivpzkzmczri.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkdnpoY3J3dWl2cHprem1jenJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MDIwMTMsImV4cCI6MjA5NjQ3ODAxM30.rO5zV9oL8DHR30NjfEO72MmZcwviohxdTuiyKrC2m8g';
 // ============================================================
 
 var db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-// ===== ĐỌC SỐ BÀN TỪ URL =====
-// QR code sẽ trỏ tới: thucdon.html?ban=3
 var soBan = null;
 
 function docSoBan() {
@@ -789,22 +768,17 @@ function docSoBan() {
         document.body.style.paddingTop = '40px';
     }
 }
-
-// ===== STICKY MENU =====
 var menuBox = document.getElementById('menuBox');
 var menuTop = menuBox.offsetTop;
 window.addEventListener("scroll", function () {
     menuBox.classList.toggle("fixed", window.scrollY >= menuTop);
 });
 
-// ===== HAMBURGER =====
 var hamburgerBtn = document.getElementById('hamburgerBtn');
 var mainMenu = document.getElementById('mainMenu');
 hamburgerBtn.addEventListener('click', function () {
     mainMenu.classList.toggle('open');
 });
-
-// ===== DROPDOWN MOBILE =====
 var dropdownEl = document.getElementById('dropdownThucdon');
 var dropdownToggleLink = document.getElementById('dropdownToggle');
 var dropdownMenu = document.getElementById('dropdownMenu');
@@ -845,17 +819,13 @@ function goToSection(id, linkEl) {
         dropdownMenu.classList.remove('open-sub');
     }
 }
-
-// ===== TOAST =====
 function hienToast(msg, thoiGian) {
     var t = document.getElementById('toast');
     t.innerHTML = msg;
     t.style.display = 'block';
     setTimeout(function() { t.style.display = 'none'; }, thoiGian || 2500);
 }
-
-// ===== QUẢN LÝ GIỎ MÓN (chỉ dùng trong tab, không cần sessionStorage) =====
-var gioMon = {}; // { "Phở tái": { gia: "30k", soLuong: 1 } }
+var gioMon = {}; 
 
 function capNhatNut() {
     var tong = 0;
@@ -872,11 +842,9 @@ function capNhatNut() {
         if (btnMain)  btnMain.textContent  = '🛒 Đặt món';
     }
 }
-
-// Gắn sự kiện cho tất cả checkbox
 document.querySelectorAll('input[name="order"]').forEach(function(cb) {
     cb.addEventListener('change', function() {
-        var parts = this.value.split('|'); // "Phở tái|30k"
+        var parts = this.value.split('|');
         var ten = parts[0];
         var gia = parts[1] || '';
 
@@ -888,9 +856,6 @@ document.querySelectorAll('input[name="order"]').forEach(function(cb) {
         capNhatNut();
     });
 });
-
-// ===== ĐẶT MÓN → GỬI LÊN SUPABASE =====
-// ===== ĐẶT MÓN → GỬI LÊN SUPABASE (Đã sửa đổi cho khớp với Database) =====
 async function datMon() {
     var danhSachMoneys = Object.keys(gioMon);
     if (danhSachMoneys.length === 0) {
@@ -907,9 +872,6 @@ async function datMon() {
         }
         soBan = parseInt(nhapBan);
     }
-
-    // Gộp tên các món và giá thành một chuỗi (Ví dụ: "Phở tái (30k), Pepsi (10k)")
-    // Đồng thời tính tổng số lượng và tổng tiền thật.
     var chiTietDonHang = [];
     var tongSoLuong = 0;
     var tongTien = 0;
@@ -925,16 +887,15 @@ async function datMon() {
     var chuoiMonAn = chiTietDonHang.join(", ");
 
     try {
-        // Gửi dữ liệu lên bảng 'orders' của Supabase
         const { data, error } = await db
             .from('orders')
             .insert([
                 {
-                    so_ban: soBan,                          // Khớp với cột 'so_ban' (int4)
-                    ten_mon: chuoiMonAn,                    // Khớp với cột 'ten_mon' (text)
-                    so_luong: tongSoLuong,                  // Tổng số lượng món
-                    gia: tongTien.toLocaleString('vi-VN') + 'đ', // Giá thật, ví dụ "75.000đ"
-                    trang_thai: 'pending'                   // Khớp với cột 'trang_thai' (text)
+                    so_ban: soBan,                          
+                    ten_mon: chuoiMonAn,                  
+                    so_luong: tongSoLuong,                 
+                    gia: tongTien.toLocaleString('vi-VN') + 'đ',
+                    trang_thai: 'pending'                 
                 }
             ]);
 
@@ -942,8 +903,6 @@ async function datMon() {
 
         // Xử lý thành công
         hienToast("🎉 Đặt món thành công!<br>Đơn hàng của Bàn " + soBan + " đã được gửi tới nhà bếp.");
-        
-        // Reset lại giao diện và giỏ hàng
         gioMon = {};
         document.querySelectorAll('input[name="order"]').forEach(function(cb) {
             cb.checked = false;
@@ -956,7 +915,6 @@ async function datMon() {
         hienToast("❌ Có lỗi xảy ra khi gửi đơn hàng. Vui lòng liên hệ nhân viên!");
     }
 }
-// ===== LOAD TRANG =====
 window.onload = function() {
     docSoBan();
 
@@ -974,8 +932,6 @@ window.onload = function() {
     window._menuLoaded = true;
 };
 </script>
-
-<!-- ===== SEARCH OVERLAY ===== -->
 <div class="search-overlay" id="searchOverlay" onclick="handleOverlayClick(event)">
     <div class="search-modal">
         <div class="search-modal-header">
@@ -997,7 +953,6 @@ window.onload = function() {
     </div>
 </div>
 <script>
-// ===== DỮ LIỆU MÓN ĂN =====
 var ALL_DISHES_SEARCH = [
     { name: "Phở tái",           price: "30k", img: "monan/pho-tai-lan.jpg",   section: "pho",     tag: "Phở" },
     { name: "Phở chín",          price: "30k", img: "monan/phochin.jpg",        section: "pho",     tag: "Phở" },
@@ -1085,8 +1040,6 @@ if (_tdHeaderSearch) {
     });
 }
 </script>
-
-<!-- ===== POPUP BẢN ĐỒ ===== -->
 <script>
 function openMap() {
     var m = document.getElementById('mapModal');
